@@ -7,9 +7,9 @@ import com.game.pts3.PTS3Game;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.title = "PTS3-Game";
-		config.width = 800;
-		config.height = 480;
+		config.title = "PTS3-Game!";
+		config.width = 1280;
+		config.height = 720;
 		new LwjglApplication(new PTS3Game(), config);
 	}
 }
