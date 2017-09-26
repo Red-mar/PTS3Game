@@ -1,12 +1,14 @@
 package com.game.classes;
 
+import com.example.network.Client.Client;
+
 public class Chat {
     private Game game;
-    private String message;
     private String[] chatlog;
+    private Client client;
 
-    public Chat(){
-        chatlog = new String[50];
+    public Chat(Client client){
+        this.client = client;
     }
 
     public Game getGame() {
@@ -17,19 +19,19 @@ public class Chat {
         this.game = game;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String[] getChatlog() {
         return chatlog;
     }
 
     public void setChatlog(String[] chatlog) {
         this.chatlog = chatlog;
+    }
+
+    public void sendMessageAll(String message){
+        client.sendMessageAll(message);
+    }
+
+    public void sendMessageWhisper(String playerName, String message){
+        client.sendMessageWhisper(playerName, message);
     }
 }

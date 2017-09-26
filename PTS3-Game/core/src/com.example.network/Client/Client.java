@@ -1,5 +1,7 @@
 package com.example.network.Client;
 
+import com.game.classes.Game;
+
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.Socket;
@@ -16,10 +18,6 @@ public class Client {
         if (userInput.startsWith("/all ")){
             sendMessageAll(userInput.substring(userInput.indexOf(" ")+1));
         }
-        else if (userInput.startsWith("/move ")){
-            String[] mSplit = userInput.split(" ");
-            sendMessageB(mSplit[1]);
-        }
         else if (userInput.startsWith("/whisper ")){
             String[] mSplit = userInput.split(" ");
 
@@ -35,16 +33,9 @@ public class Client {
             }
             sendMessageSetName(mSplit[1]);
         }
-        else if (userInput.startsWith("/look ")){
-            String[] mSplit = userInput.split(" ");
-            if (mSplit[1].isEmpty() || mSplit[2].isEmpty()){
-                return;
-            }
-            sendMessageLook(Integer.parseInt(mSplit[1]), Integer.parseInt(mSplit[2]));
-        }
         else{
             System.out.println("Use '/all 'message'' to send everyone a message");
-            System.out.println("Use /whisper 'to' 'message' to send a message to one persone ");
+            System.out.println("Use /whisper 'to' 'message' to send a message to one person ");
             System.out.println("Use /name 'name' to set your name");
             System.out.println("Use /move 'direction' to move");
             System.out.println("Use / look 'x' 'y' to look");
@@ -59,8 +50,6 @@ public class Client {
         connectionHandler.sendMessageAll(message);
     }
 
-    public void sendMessageB(String message) { connectionHandler.sendMessageB(message); }
-
     public void sendMessageWhisper(String message, String message2) {
         connectionHandler.sendMessageWhisper(message, message2);
     }
@@ -68,8 +57,6 @@ public class Client {
     public void sendMessageSetName(String name){
         connectionHandler.sendMessageSetName(name);
     }
-
-    public void sendMessageLook(int x, int y) {connectionHandler.sendMessageLook(x, y);}
 
     public void stop(){
         connectionHandler.close();
@@ -104,23 +91,9 @@ public class Client {
             }
         }
 
-        private void sendMessageB(String message){
-            try {
-                // Set the first byte
-                // 2 = Message B
-                out.writeByte(2);
-                out.writeUTF(message);
-
-                // Send the data
-                out.flush();
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-        }
-
         private void sendMessageWhisper(String to, String message){
             try {
-                out.writeByte(3);
+                out.writeByte(2);
                 out.writeUTF(to);
                 out.writeUTF(message); //Split Message
 
@@ -133,7 +106,7 @@ public class Client {
 
         private void sendMessageSetName(String name){
             try {
-                out.writeByte(4);
+                out.writeByte(3);
                 out.writeUTF(name);
 
                 out.flush();
@@ -142,13 +115,34 @@ public class Client {
             }
         }
 
-        private void sendMessageLook(int x, int y){
+        private void startGame(Game game){
+            try {
+                out.writeByte(4);
+                //TODO
+                out.flush();
+
+            } catch (IOException e){
+
+            }
+        }
+
+        private void endTurn(Game game){
             try {
                 out.writeByte(5);
-                out.writeInt(x);
-                out.writeInt(y);
-
+                //TODO
                 out.flush();
+
+            } catch (IOException e){
+
+            }
+        }
+
+        private void sendGameState(Game game){
+            try {
+                out.writeByte(5);
+                //TODO
+                out.flush();
+
             } catch (IOException e){
 
             }
@@ -172,8 +166,6 @@ public class Client {
 
                 in = new DataInputStream(socket.getInputStream());
                 out = new DataOutputStream(socket.getOutputStream());
-
-                byte[] buffer = new byte[512];
 
                 while (isReceivingMessages && !socket.isClosed()){
                     int messageType = in.readByte();

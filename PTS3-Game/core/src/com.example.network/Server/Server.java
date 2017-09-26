@@ -1,5 +1,7 @@
 package com.example.network.Server;
 
+import com.game.classes.Game;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -46,14 +48,8 @@ public class Server {
         }
     }
 
-    public String look(int x, int y){
-        for (ConnectionHandler client: clients){
-            if (client.getClientInfo().getX() == x && client.getClientInfo().getY() == y){
-                client.sendMessageA("Someone looked at you!");
-                return client.clientInfo.getName();
-            }
-        }
-        return "Nothing.";
+    public void sendGameState(Game game){
+        //TODO
     }
 
     /*
@@ -139,66 +135,29 @@ public class Server {
             String message;
 
             switch (messageType){
-                case 1: //Type A
+                case 1: // SEND ALL
                     message = "Message A from: " + clientInfo.getName() + ": " + in.readUTF();
                     sendMessageAll(this, message);
                     break;
-                case 2: //Type B
-                    String position = in.readUTF();
-                    int i = 0;
-                    if (position.equals("north")){
-                        i = 0;
-                    }
-                    else if (position.equals("east")){
-                        i = 1;
-                    }
-                    else if (position.equals("south")){
-                        i = 2;
-                    }
-                    else if (position.equals("west")){
-                        i = 3;
-                    }
-                    switch (i){
-                        case 0:
-                            System.out.println("Moving " + this.getClientInfo().getName() + " north!");
-                            clientInfo.setPosition(clientInfo.getX(), clientInfo.getY() + 1);
-                            break;
-                        case 1:
-                            System.out.println("Moving " + this.getClientInfo().getName() + " east!");
-                            clientInfo.setPosition(clientInfo.getX() + 1, clientInfo.getY());
-                            break;
-                        case 2:
-                            System.out.println("Moving " + this.getClientInfo().getName() + " south!");
-                            clientInfo.setPosition(clientInfo.getX(), clientInfo.getY() - 1);
-                            break;
-                        case 3:
-                            System.out.println("Moving " + this.getClientInfo().getName() + " west!");
-                            clientInfo.setPosition(clientInfo.getX() - 1, clientInfo.getX());
-                            break;
-                    }
-                    sendMessageWhisper("Server", this.getClientInfo().getName(),
-                            "Position set to: x" + clientInfo.getX() + " y" + clientInfo.getY());
-                    break;
-                case 3: //TypeC
+                case 2: // SEND WHISPER
                     String to = in.readUTF();
                     String whisper = in.readUTF();
 
                     sendMessageWhisper(clientInfo.getName(), to, whisper);
                     break;
-                case 4: //ChangeName
+                case 3: // SET NAME
                     String previousName = clientInfo.getName();
                     clientInfo.setName(in.readUTF());
                     System.out.println("Name set to: " + clientInfo.getName() + ", was " + previousName);
                     break;
-                case 5: //Look
-                    int x, y;
-                    x = in.readInt();
-                    y = in.readInt();
-
-                    sendMessageWhisper("Server", this.clientInfo.getName(), "You saw: "  + look(x, y) + " at location: " + " x" + x + " y" + y);
+                case 4: // START GAME
+                    //TODO
+                    break;
+                case 5: // END TURN
+                    //TODO
                     break;
                 default:
-                    System.out.println("no know?");
+                    System.out.println("I DON'T KNOW");
             }
         }
 

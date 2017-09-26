@@ -7,12 +7,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.example.network.Client.Client;
+import com.game.classes.Game;
 
 public class PTS3Game extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	float red = 1;
 	float green = 1;
+
+
+	Game game = new Game(new Client("localhost"));
 
 	@Override
 	public void create () {
@@ -30,6 +34,7 @@ public class PTS3Game extends ApplicationAdapter {
 
 		if(Gdx.input.isKeyPressed(Keys.LEFT) && red > 0.1f){
 			red-= 0.01f;
+			game.getClient().sendMessageWhisper("?", "Hallo");
 		}
 		if(Gdx.input.isKeyPressed(Keys.RIGHT) && red < 0.9f){
 			red+= 0.01f;
