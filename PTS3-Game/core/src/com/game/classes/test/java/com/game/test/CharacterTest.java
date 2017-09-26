@@ -9,8 +9,8 @@ public class CharacterTest {
 
     @Test
     public void getName() throws Exception {
-        com.game.classes.Character c = new com.game.classes.Character("test", 10, 20, 30, 40);
-        assertEquals("test", c.getName());
+        Character c = new Character("", 10, 20, 30, 40);
+        assertEquals("", c.getName());
     }
 
     @Test
