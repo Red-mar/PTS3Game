@@ -10,9 +10,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.example.network.Client.Client;
 import com.game.classes.Game;
 
@@ -25,7 +27,7 @@ public class PTS3Game extends ApplicationAdapter {
 	Skin skin;
 
 
-//	Game game = new Game(new Client("localhost"));
+	Game game;
 
 	@Override
 	public void create () {
@@ -52,7 +54,13 @@ public class PTS3Game extends ApplicationAdapter {
 		buttonStyle.font = skin.getFont("default");
 		skin.add("default", buttonStyle);
 
-		TextButton test = new TextButton("Hallo Button!", skin);
+		TextButton test = new TextButton("Connect with server!", skin);
+		test.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game = new Game(new Client("localhost"));
+            }
+        });
 		test.setPosition(100,100);
 		stage.addActor(test);
 	}
