@@ -14,6 +14,10 @@ public class Client {
         connectionHandler = new ConnectionHandler(this, serverIP);
     }
 
+    /*
+        Reads the input from a text input.
+     */
+
     public void readInput(String userInput){
         if (userInput.startsWith("/all ")){
             sendMessageAll(userInput.substring(userInput.indexOf(" ")+1));
@@ -37,11 +41,12 @@ public class Client {
             System.out.println("Use '/all 'message'' to send everyone a message");
             System.out.println("Use /whisper 'to' 'message' to send a message to one person ");
             System.out.println("Use /name 'name' to set your name");
-            System.out.println("Use /move 'direction' to move");
-            System.out.println("Use / look 'x' 'y' to look");
         }
     }
 
+    /*
+        Starts the client and looks for the server.
+     */
     public void start(){
         connectionHandler.start();
     }
@@ -118,18 +123,24 @@ public class Client {
         private void startGame(Game game){
             try {
                 out.writeByte(4);
-                //TODO
+                //TODO - game object has to be serialized into a byte array
+                // http://www.java2s.com/Code/Java/File-Input-Output/Convertobjecttobytearrayandconvertbytearraytoobject.htm
                 out.flush();
 
             } catch (IOException e){
 
             }
         }
+
+        /*
+            Ends the turn.
+            Sends
+         */
 
         private void endTurn(Game game){
             try {
                 out.writeByte(5);
-                //TODO
+                //TODO - Same as startGame
                 out.flush();
 
             } catch (IOException e){
@@ -137,10 +148,14 @@ public class Client {
             }
         }
 
+        /*
+            Sends the game state but does not end the turn
+            Does not have to be implemented yet.
+         */
         private void sendGameState(Game game){
             try {
                 out.writeByte(5);
-                //TODO
+                //TODO - Same as startGame
                 out.flush();
 
             } catch (IOException e){
