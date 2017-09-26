@@ -1,4 +1,4 @@
-package com.game.test;
+package com.game.classes.unitTest;
 
 import org.junit.After;
 import org.junit.Before;

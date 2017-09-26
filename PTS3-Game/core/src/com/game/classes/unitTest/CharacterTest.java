@@ -1,4 +1,4 @@
-package com.game.test;
+package com.game.classes.unitTest;
 
 import com.game.classes.Character;
 import org.junit.Test;
