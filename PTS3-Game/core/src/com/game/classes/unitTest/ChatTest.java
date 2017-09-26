@@ -1,5 +1,6 @@
 package com.game.classes.unitTest;
 
+import com.game.classes.Chat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ChatTest {
+
     @Before
     public void setUp() throws Exception {
     }
