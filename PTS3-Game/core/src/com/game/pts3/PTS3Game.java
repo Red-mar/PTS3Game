@@ -6,13 +6,14 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.example.network.Client.Client;
 
 public class PTS3Game extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	float red = 1;
 	float green = 1;
-	
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
