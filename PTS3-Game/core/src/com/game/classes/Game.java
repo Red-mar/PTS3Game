@@ -18,6 +18,8 @@ public class Game
     {
         this.client = client;
         this.client.start();
+        players = new ArrayList<Player>();
+        inGame = false;
     }
 
     //methods
@@ -33,13 +35,15 @@ public class Game
 
     public void removePlayer(Player player)
     {
+        Player temp = player;
         for (Player current:players)
         {
             if(current.equals(player))
             {
-                players.remove(current);
+                temp = current;
             }
         }
+        players.remove(temp);
     }
 
     public Map getMap()
@@ -57,9 +61,14 @@ public class Game
         this.chat = chat;
     }
 
+    public Chat getChat()
+    {
+        return this.chat;
+    }
+
     public boolean getInGame()
     {
-        return getInGame();
+        return inGame;
     }
 
     public void setInGame(boolean inGame)

@@ -1,5 +1,10 @@
 package com.game.classes.unitTest;
 
+import com.example.network.Client.Client;
+import com.game.classes.Chat;
+import com.game.classes.Game;
+import com.game.classes.Map;
+import com.game.classes.Player;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,44 +12,98 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GameTest {
+
+    //fields
+    Game instance;
+    Client client;
+
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception
+    {
+        client = new Client("gameTest");
+        instance = new Game(client);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception
+    {
+
     }
 
     @Test
-    public void getPlayers() throws Exception {
+    public void getPlayers() throws Exception
+    {
+        assertNotEquals(null, instance);
     }
 
     @Test
-    public void addPlayer() throws Exception {
+    public void addPlayer() throws Exception
+    {
+        Player testPlayer = new Player("test");
+        instance.addPlayer(testPlayer);
+        assertEquals(1, instance.getPlayers().size());
     }
 
     @Test
-    public void removePlayer() throws Exception {
+    public void removePlayer() throws Exception
+    {
+        Player testPlayer = new Player("test");
+        instance.addPlayer(testPlayer);
+        instance.removePlayer(testPlayer);
+        assertEquals(0, instance.getPlayers().size());
     }
 
     @Test
-    public void getMap() throws Exception {
+    public void getMap() throws Exception
+    {
+        Map expected = new Map(10,10);
+        instance.setMap(expected);
+        Map result = instance.getMap();
+        assertEquals(expected, result);
     }
 
     @Test
-    public void setMap() throws Exception {
+    public void setMap() throws Exception
+    {
+        assertEquals(null, instance.getMap());
+        Map toAdd = new Map(10,10);
+        instance.setMap(toAdd);
+        assertNotNull(instance.getMap());
     }
 
     @Test
-    public void setChat() throws Exception {
+    public void setChat() throws Exception
+    {
+        Chat chat = new Chat(client);
+        assertEquals(null,instance.getChat());
+        instance.setChat(chat);
+        assertNotNull(instance.getChat());
     }
 
     @Test
-    public void getInGame() throws Exception {
+    public void getChat() throws Exception
+    {
+        Chat chat = new Chat(client);
+        assertEquals(null, instance.getChat());
+        instance.setChat(chat);
+        assertNotNull(instance.getChat());
     }
 
     @Test
-    public void setInGame() throws Exception {
+    public void getInGame() throws Exception
+    {
+        assertEquals(false, instance.getInGame());
+        instance.setInGame(true);
+        assertEquals(true, instance.getInGame());
+    }
+
+    @Test
+    public void setInGame() throws Exception
+    {
+        assertEquals(false, instance.getInGame());
+        instance.setInGame(true);
+        assertEquals(true, instance.getInGame());
     }
 
 }
