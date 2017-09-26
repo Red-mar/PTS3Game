@@ -1,20 +1,26 @@
 package com.game.test;
 
+import com.game.classes.Character;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class CharacterTest {
+
     @Test
     public void getName() throws Exception {
+        com.game.classes.Character c = new com.game.classes.Character("test", 10, 20, 30, 40);
+        assertEquals("test", c.getName());
     }
 
     @Test
     public void setName() throws Exception {
+
     }
 
     @Test
     public void getMaxHealthPoints() throws Exception {
+
     }
 
     @Test
