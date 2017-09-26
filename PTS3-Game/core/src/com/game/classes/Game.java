@@ -1,5 +1,7 @@
 package com.game.classes;
 
+import com.example.network.Client.Client;
+
 import java.util.ArrayList;
 
 public class Game
@@ -9,11 +11,13 @@ public class Game
     private Map map;
     private Chat chat;
     private Boolean inGame;
+    private Client client;
 
     //constructor
-    public Game()
+    public Game(Client client)
     {
-
+        this.client = client;
+        this.client.start();
     }
 
     //methods
@@ -61,5 +65,9 @@ public class Game
     public void setInGame(boolean inGame)
     {
         this.inGame = inGame;
+    }
+
+    public Client getClient() {
+        return client;
     }
 }
