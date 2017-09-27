@@ -24,7 +24,7 @@ public class ScreenLobby implements Screen {
     float red = 0;
     float green = 0;
 
-    public ScreenLobby(Game game, final String name){
+    public ScreenLobby(final Game game, final String name){
         this.game = game;
 
         stage = new Stage();
@@ -71,7 +71,7 @@ public class ScreenLobby implements Screen {
         enterText = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (gameState == null || gameState.getClient() == null ){
+                if (gameState.getClient() == null ){
                     chat.getTextArea().appendText("Geen connectie met een server.\n");
                     chat.getTextField().setText("");
                 } else {
