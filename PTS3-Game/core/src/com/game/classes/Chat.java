@@ -1,6 +1,6 @@
 package com.game.classes;
 
-import com.example.network.Client.Client;
+import network.Client.Client;
 
 public class Chat {
     private Game game;

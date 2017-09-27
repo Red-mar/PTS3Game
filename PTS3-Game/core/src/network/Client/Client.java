@@ -1,4 +1,4 @@
-package com.example.network.Client;
+package network.Client;
 
 import com.game.classes.Game;
 
@@ -10,17 +10,16 @@ public class Client {
 
     private ConnectionHandler connectionHandler;
 
+    private IClientEvents clientEvents;
+
     /**
      * Creates a client that will make a connection with a server.
      * @param serverIP The IP the server is running on. (use localhost for local use.)
      */
     public Client(String serverIP){
+        clientEvents = new ClientEventHandler();
         connectionHandler = new ConnectionHandler(this, serverIP);
     }
-
-    /*
-        Reads the input from a text input.
-     */
 
     /**
      * Reads text input from a console.
@@ -254,6 +253,7 @@ public class Client {
                             System.out.println(in.readUTF());
                             break;
                         case 3: //TypeC
+                            clientEvents.onMessaged("message");
                             System.out.println("Message C [1]: " + in.readUTF());
                             System.out.println("Message C [2]: " + in.readUTF());
                             break;

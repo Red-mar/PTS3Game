@@ -1,6 +1,6 @@
 package com.game.classes.unitTest;
 
-import com.example.network.Client.Client;
+import network.Client.Client;
 import com.game.classes.Chat;
 import com.game.classes.Game;
 import com.game.classes.Map;

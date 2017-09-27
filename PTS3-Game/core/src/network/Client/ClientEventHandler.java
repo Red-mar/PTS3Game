@@ -1,4 +1,4 @@
-package com.example;
+package network.Client;
 
 public class ClientEventHandler implements IClientEvents {
 
