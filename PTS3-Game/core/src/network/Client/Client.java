@@ -5,20 +5,23 @@ import com.game.classes.Game;
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client {
 
     private ConnectionHandler connectionHandler;
-
-    private IClientEvents clientEvents;
+    private ArrayList<IClientEvents> listeners = new ArrayList<IClientEvents>();
 
     /**
      * Creates a client that will make a connection with a server.
      * @param serverIP The IP the server is running on. (use localhost for local use.)
      */
     public Client(String serverIP){
-        clientEvents = new ClientEventHandler();
         connectionHandler = new ConnectionHandler(this, serverIP);
+    }
+
+    public void addListener(IClientEvents listener){
+        listeners.add(listener);
     }
 
     /**
@@ -234,6 +237,9 @@ public class Client {
             }
         }
 
+        /**
+         * Start processing received messages.
+         */
         @Override
         public void run() {
             try {
@@ -242,23 +248,34 @@ public class Client {
                 in = new DataInputStream(socket.getInputStream());
                 out = new DataOutputStream(socket.getOutputStream());
 
+                for (IClientEvents ce: listeners) {
+                    ce.onConnect(serverIP);
+                }
+
                 while (isReceivingMessages && !socket.isClosed()){
                     int messageType = in.readByte();
+                    String message;
 
                     switch (messageType) {
                         case 1: //Type A
-                            System.out.println(in.readUTF());
+                            message = in.readUTF();
+                            for (IClientEvents ce: listeners) {
+                                ce.onMessaged(message);
+                            }
+                            System.out.println(message);
                             break;
                         case 2: //Type B
-                            System.out.println(in.readUTF());
+                            message = in.readUTF();
+                            for (IClientEvents ce: listeners) {
+                                ce.onMessaged(message);
+                            }
+                            System.out.println(message);
                             break;
                         case 3: //TypeC
-                            clientEvents.onMessaged("message");
                             System.out.println("Message C [1]: " + in.readUTF());
                             System.out.println("Message C [2]: " + in.readUTF());
                             break;
                         default:
-                            //buffer = new byte[512];
                             System.out.println("no know?");
                     }
                 }

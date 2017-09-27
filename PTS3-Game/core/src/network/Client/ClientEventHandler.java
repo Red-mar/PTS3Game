@@ -14,6 +14,5 @@ public class ClientEventHandler implements IClientEvents {
 
     @Override
     public void onMessaged(String message) {
-        System.out.println(message);
     }
 }

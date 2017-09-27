@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import network.Client.Client;
 import com.game.classes.Game;
+import network.Client.IClientEvents;
 
 public class PTS3Game extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -28,8 +29,8 @@ public class PTS3Game extends ApplicationAdapter {
 	float green = 1;
 	Skin skin;
 
-
 	Game game;
+	Chat chat;
 
 	@Override
 	public void create () {
@@ -59,11 +60,12 @@ public class PTS3Game extends ApplicationAdapter {
 		*/
 
         Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-        final TextArea chat = new TextArea("Welcome to this GAME\nNew line\nwaddup", skin);
-        chat.setPosition(300,300);
-        chat.setWidth(200);
-        chat.setHeight(200);
-        stage.addActor(chat);
+
+        chat = new Chat(new TextArea("test", skin));
+        chat.getTextArea().setPosition(300,300);
+        chat.getTextArea().setWidth(500);
+        chat.getTextArea().setHeight(200);
+        stage.addActor(chat.getTextArea());
 
 		TextButton test = new TextButton("Connect with server!", skin);
 		test.addListener(new ChangeListener() {
@@ -71,10 +73,9 @@ public class PTS3Game extends ApplicationAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 if (game == null){
                     game = new Game(new Client("localhost"));
+                    game.getClient().addListener(chat);
                 } else{
                     game.getClient().sendMessageWhisper("?", "hallo!");
-                    //TODO Event listener
-                    chat.appendText("test\n");
                 }
 
             }
