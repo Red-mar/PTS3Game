@@ -12,11 +12,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import network.Client.Client;
 import com.game.classes.Game;
 import network.Client.IClientEvents;
@@ -63,9 +61,15 @@ public class PTS3Game extends ApplicationAdapter {
         Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
         chat = new Chat(new TextArea("Welcome to the game!\n", skin));
-        chat.getTextArea().setPosition(10,100);
-        chat.getTextArea().setWidth(500);
-        chat.getTextArea().setHeight(200);
+
+        //chat.getTextArea().setPosition(10,100);
+        chat.getTextArea().setDisabled(true);
+        //chat.getTextArea().setSize(500f,200f);
+        final ScrollPane scrollPane = new ScrollPane(chat.getTextArea(), skin);
+        scrollPane.setForceScroll(false, true);
+        scrollPane.setFlickScroll(false);
+        scrollPane.setOverscroll(false,true);
+        scrollPane.setBounds(10f, 100f, 500f, 200f);
 
         final TextField textField = new TextField("", skin);
         textField.setPosition(10, 40);
@@ -107,7 +111,8 @@ public class PTS3Game extends ApplicationAdapter {
 
 		stage.addActor(test);
 		stage.addActor(btnSendMessage);
-        stage.addActor(chat.getTextArea());
+        //stage.addActor(chat.getTextArea());
+        stage.addActor(scrollPane);
         stage.addActor(textField);
 	}
 
@@ -124,7 +129,6 @@ public class PTS3Game extends ApplicationAdapter {
 
 		if(Gdx.input.isKeyPressed(Keys.LEFT) && red > 0.1f){
 			red-= 0.01f;
-//			game.getClient().sendMessageWhisper("?", "Hallo");
 		}
 		if(Gdx.input.isKeyPressed(Keys.RIGHT) && red < 0.9f){
 			red+= 0.01f;
