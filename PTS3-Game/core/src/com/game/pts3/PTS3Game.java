@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
@@ -61,11 +63,15 @@ public class PTS3Game extends ApplicationAdapter {
 
         Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-        chat = new Chat(new TextArea("test", skin));
-        chat.getTextArea().setPosition(300,300);
+        chat = new Chat(new TextArea("Welcome to the game!\n", skin));
+        chat.getTextArea().setPosition(10,100);
         chat.getTextArea().setWidth(500);
         chat.getTextArea().setHeight(200);
-        stage.addActor(chat.getTextArea());
+
+        final TextField textField = new TextField("", skin);
+        textField.setPosition(10, 40);
+        textField.setWidth(500);
+        textField.setHeight(50);
 
 		TextButton test = new TextButton("Connect with server!", skin);
 		test.addListener(new ChangeListener() {
@@ -77,11 +83,31 @@ public class PTS3Game extends ApplicationAdapter {
                 } else{
                     game.getClient().sendMessageWhisper("?", "hallo!");
                 }
-
             }
         });
-		test.setPosition(100,100);
+		test.setPosition(10,10);
+		test.setWidth(250);
+		test.setHeight(20);
+		TextButton btnSendMessage = new TextButton("Send Message", skin);
+		btnSendMessage.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (game == null || game.getClient() == null ){
+                    chat.getTextArea().appendText("Geen connectie met een server.\n");
+                } else {
+                    game.getClient().readInput(textField.getText());
+                    textField.setText("");
+                }
+            }
+        });
+		btnSendMessage.setPosition(260, 10);
+		btnSendMessage.setWidth(250);
+		btnSendMessage.setHeight(20);
+
 		stage.addActor(test);
+		stage.addActor(btnSendMessage);
+        stage.addActor(chat.getTextArea());
+        stage.addActor(textField);
 	}
 
 	@Override
