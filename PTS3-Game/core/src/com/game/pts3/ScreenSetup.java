@@ -32,7 +32,7 @@ public class ScreenSetup implements Screen {
         tfName.setSize(250, 30);
         tfName.setPosition(10, 40);
 
-        TextButton btnStart = new TextButton("Start", skin);
+        TextButton btnStart = new TextButton("To game lobby", skin);
         btnStart.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

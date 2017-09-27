@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,8 +21,8 @@ public class ScreenLobby implements Screen {
     Chat chat;
     EventListener enterText;
 
-    float red = 1;
-    float green = 1;
+    float red = 0;
+    float green = 0;
 
     public ScreenLobby(Game game, final String name){
         this.game = game;
@@ -65,15 +64,16 @@ public class ScreenLobby implements Screen {
         btnConnect.setHeight(20);
 
         Label lblPlayerName = new Label("Player name: " + name, skin);
-        lblPlayerName.setPosition(10,600);
+        lblPlayerName.setPosition(10,330);
         Label lblMap = new Label("Selected map: N/A", skin);
-        lblMap.setPosition(10,580);
+        lblMap.setPosition(10,310);
 
         enterText = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (gameState == null || gameState.getClient() == null ){
                     chat.getTextArea().appendText("Geen connectie met een server.\n");
+                    chat.getTextField().setText("");
                 } else {
                     if (!isNameSet){
                         gameState.getClient().sendMessageSetName(name);
