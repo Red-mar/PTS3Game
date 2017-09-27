@@ -13,7 +13,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.example.network.Client.Client;
 import com.game.classes.Game;
@@ -36,6 +38,7 @@ public class PTS3Game extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 
+		/*
 		BitmapFont font = new BitmapFont();
 		font.setColor(Color.BLUE);
 		skin = new Skin();
@@ -53,12 +56,27 @@ public class PTS3Game extends ApplicationAdapter {
 		buttonStyle.over = skin.newDrawable("background", Color.LIGHT_GRAY);
 		buttonStyle.font = skin.getFont("default");
 		skin.add("default", buttonStyle);
+		*/
+
+        Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+        final TextArea chat = new TextArea("Welcome to this GAME\nNew line\nwaddup", skin);
+        chat.setPosition(300,300);
+        chat.setWidth(200);
+        chat.setHeight(200);
+        stage.addActor(chat);
 
 		TextButton test = new TextButton("Connect with server!", skin);
 		test.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game = new Game(new Client("localhost"));
+                if (game == null){
+                    game = new Game(new Client("localhost"));
+                } else{
+                    game.getClient().sendMessageWhisper("?", "hallo!");
+                    //TODO Event listener
+                    chat.appendText("test\n");
+                }
+
             }
         });
 		test.setPosition(100,100);
@@ -88,6 +106,7 @@ public class PTS3Game extends ApplicationAdapter {
 		}
 		if(Gdx.input.isKeyPressed(Keys.UP) && green < 0.9f){
 			green+= 0.01f;
+
 		}
 	}
 	
