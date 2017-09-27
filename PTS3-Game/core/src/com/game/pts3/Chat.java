@@ -1,17 +1,42 @@
 package com.game.pts3;
 
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import network.Client.IClientEvents;
 
 public class Chat implements IClientEvents {
     TextArea textArea;
+    ScrollPane scrollPane;
+    TextField textField;
+    TextButton btnSendMessage;
 
-    public Chat(TextArea textArea){
+    public Chat(TextArea textArea,
+                ScrollPane scrollPane,
+                TextField textField,
+                TextButton textButton) {
+
         this.textArea = textArea;
+        this.scrollPane = scrollPane;
+        this.textField = textField;
+        this.btnSendMessage = textButton;
     }
 
     public TextArea getTextArea() {
         return textArea;
+    }
+
+    public ScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
+    public TextButton getBtnSendMessage() {
+        return btnSendMessage;
+    }
+
+    public TextField getTextField() {
+        return textField;
     }
 
     @Override

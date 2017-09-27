@@ -9,7 +9,7 @@ public class ClientEventHandler implements IClientEvents {
 
     @Override
     public void onDisconnect() {
-        System.out.println("Disconnected.");
+        System.out.println("Not connected.");
     }
 
     @Override

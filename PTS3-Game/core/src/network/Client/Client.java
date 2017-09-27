@@ -29,10 +29,7 @@ public class Client {
      * @param userInput Input from a console.
      */
     public void readInput(String userInput){
-        if (userInput.startsWith("/all ")){
-            sendMessageAll(userInput.substring(userInput.indexOf(" ")+1));
-        }
-        else if (userInput.startsWith("/whisper ")){
+        if (userInput.startsWith("/whisper ")){
             String[] mSplit = userInput.split(" ");
 
             String textMessage = userInput.substring(userInput.indexOf(" ")+1);
@@ -47,10 +44,12 @@ public class Client {
             }
             sendMessageSetName(mSplit[1]);
         }
-        else{
+        else if (userInput.startsWith("/help")){
             System.out.println("Use '/all 'message'' to send everyone a message");
             System.out.println("Use /whisper 'to' 'message' to send a message to one person ");
             System.out.println("Use /name 'name' to set your name");
+        } else{
+            sendMessageAll(userInput.substring(userInput.indexOf(" ")+1));
         }
     }
 
@@ -167,7 +166,7 @@ public class Client {
 
                 out.flush();
             } catch (IOException e){
-
+                e.printStackTrace();
             }
         }
 
