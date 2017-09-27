@@ -233,7 +233,7 @@ public class Client {
                 isReceivingMessages = false;
                 this.socket.close();
             } catch (IOException e){
-                e.printStackTrace();
+                System.out.println("Server unexpectedly closed.");
             }
         }
 
@@ -281,7 +281,9 @@ public class Client {
                 }
 
             } catch (Exception e){
-                e.printStackTrace();
+                for (IClientEvents ce: listeners) {
+                    ce.onDisconnect();
+                }
                 this.close();
             }
         }

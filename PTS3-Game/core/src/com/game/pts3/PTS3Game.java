@@ -3,6 +3,7 @@ package com.game.pts3;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -10,10 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -33,6 +31,7 @@ public class PTS3Game extends ApplicationAdapter {
 
 	Game game;
 	Chat chat;
+	EventListener enterText;
 
 	@Override
 	public void create () {
@@ -89,7 +88,7 @@ public class PTS3Game extends ApplicationAdapter {
 		test.setWidth(250);
 		test.setHeight(20);
 		TextButton btnSendMessage = new TextButton("Send Message", skin);
-		btnSendMessage.addListener(new ChangeListener() {
+		enterText = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (game == null || game.getClient() == null ){
@@ -99,7 +98,9 @@ public class PTS3Game extends ApplicationAdapter {
                     textField.setText("");
                 }
             }
-        });
+        };
+
+		btnSendMessage.addListener(enterText);
 		btnSendMessage.setPosition(260, 10);
 		btnSendMessage.setWidth(250);
 		btnSendMessage.setHeight(20);
@@ -135,6 +136,10 @@ public class PTS3Game extends ApplicationAdapter {
 			green+= 0.01f;
 
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER)){
+            enterText.handle(new ChangeListener.ChangeEvent());
+        }
+
 	}
 	
 	@Override

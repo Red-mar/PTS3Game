@@ -16,12 +16,12 @@ public class Chat implements IClientEvents {
 
     @Override
     public void onConnect(String serverName) {
-        textArea.appendText("Connected with " + serverName + "\n");
+        textArea.appendText("Connected with " + serverName + ".\n");
     }
 
     @Override
     public void onDisconnect() {
-
+        textArea.appendText("Disconnected from server.\n");
     }
 
     @Override
