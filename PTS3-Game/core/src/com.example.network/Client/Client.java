@@ -10,6 +10,10 @@ public class Client {
 
     private ConnectionHandler connectionHandler;
 
+    /**
+     * Creates a client that will make a connection with a server.
+     * @param serverIP The IP the server is running on. (use localhost for local use.)
+     */
     public Client(String serverIP){
         connectionHandler = new ConnectionHandler(this, serverIP);
     }
@@ -18,6 +22,10 @@ public class Client {
         Reads the input from a text input.
      */
 
+    /**
+     * Reads text input from a console.
+     * @param userInput Input from a console.
+     */
     public void readInput(String userInput){
         if (userInput.startsWith("/all ")){
             sendMessageAll(userInput.substring(userInput.indexOf(" ")+1));
@@ -44,28 +52,48 @@ public class Client {
         }
     }
 
-    /*
-        Starts the client and looks for the server.
+    /**
+     * Starts the client and looks for a server.
      */
     public void start(){
         connectionHandler.start();
     }
 
+    /**
+     * Sends a 'All' message.
+     * This will send a message to everyone.
+     * @param message The message to send.
+     */
     public void sendMessageAll(String message){
         connectionHandler.sendMessageAll(message);
     }
 
-    public void sendMessageWhisper(String message, String message2) {
-        connectionHandler.sendMessageWhisper(message, message2);
+    /**
+     * Sends a 'Whisper' message.
+     * This will send a message to a specific player.
+     * @param to The name of the client where the message should go to.
+     * @param message The message to send.
+     */
+    public void sendMessageWhisper(String to, String message) {
+        connectionHandler.sendMessageWhisper(to, message);
     }
 
+    /**
+     * Sends a 'SetName' message.
+     * This will set the name of the client on the server.
+     * @param name The name of the client.
+     */
     public void sendMessageSetName(String name){
         connectionHandler.sendMessageSetName(name);
     }
 
+    /**
+     * Stops the connection with the server.
+     */
     public void stop(){
         connectionHandler.close();
     }
+
 
     private class ConnectionHandler extends Thread{
         private Client client;
@@ -77,11 +105,21 @@ public class Client {
         private DataOutputStream out;
         private boolean isReceivingMessages = true;
 
+        /**
+         * This class will handle the connection with the server.
+         * @param client The client that will connect with the server.
+         * @param serverIP The IP address to connect to.
+         */
         ConnectionHandler(Client client, String serverIP){
             this.serverIP = serverIP;
             this.client = client;
         }
 
+        /**
+         * Sends a 'All' message.
+         * This will send a message to everyone.
+         * @param message The message to send.
+         */
         private void sendMessageAll(String message){
             try {
                 // Set the first byte
@@ -96,6 +134,12 @@ public class Client {
             }
         }
 
+        /**
+         * Sends a 'Whisper' message.
+         * This will send a message to a specific player.
+         * @param to The name of the client where the message should go to.
+         * @param message The message to send.
+         */
         private void sendMessageWhisper(String to, String message){
             try {
                 out.writeByte(2);
@@ -109,6 +153,11 @@ public class Client {
             }
         }
 
+        /**
+         * Sends a 'SetName' message.
+         * This will set the name of the client on the server.
+         * @param name The name of the client.
+         */
         private void sendMessageSetName(String name){
             try {
                 out.writeByte(3);
@@ -120,6 +169,11 @@ public class Client {
             }
         }
 
+        /**
+         * Send a 'StartGame' message.
+         * This will signal to the server that the game should begin.
+         * @param game The game that should start.
+         */
         private void startGame(Game game){
             try {
                 out.writeByte(4);
@@ -132,11 +186,12 @@ public class Client {
             }
         }
 
-        /*
-            Ends the turn.
-            Sends
+        /**
+         * Sends a 'endTurn' message.
+         * This will signal to the server that the turn of the current
+         * player has ended.
+         * @param game The game.
          */
-
         private void endTurn(Game game){
             try {
                 out.writeByte(5);
@@ -148,9 +203,12 @@ public class Client {
             }
         }
 
-        /*
-            Sends the game state but does not end the turn
-            Does not have to be implemented yet.
+        /**
+         * Sends a 'GameState' message.
+         * This will send the current game state to the server
+         * but will not end the turn. This way everyone can
+         * see what the current player is doing.
+         * @param game The current game.
          */
         private void sendGameState(Game game){
             try {
@@ -163,6 +221,9 @@ public class Client {
             }
         }
 
+        /**
+         * Closes the connection with the server.
+         */
         private void close(){
             try {
                 out.writeByte(-1);
