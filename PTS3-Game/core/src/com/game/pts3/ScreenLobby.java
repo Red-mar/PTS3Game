@@ -71,7 +71,7 @@ public class ScreenLobby implements Screen {
         enterText = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (gameState.getClient() == null ){
+                if (gameState == null || gameState.getClient() == null){
                     chat.getTextArea().appendText("Geen connectie met een server.\n");
                     chat.getTextField().setText("");
                 } else {
