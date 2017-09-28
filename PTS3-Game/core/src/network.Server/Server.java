@@ -3,9 +3,7 @@ package network.Server;
 import com.game.classes.Game;
 import com.game.classes.Player;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -49,6 +47,12 @@ public class Server {
         }
     }
 
+    public void sendGameMessagePlayers(){
+        for (ConnectionHandler client: clients.values()) {
+            client.sendGameMessagePlayers(MessageType.GameSendPlayersMessage);
+        }
+    }
+
     public void sendGameState(Game game){
         //TODO
     }
@@ -81,7 +85,8 @@ public class Server {
 
                     Player player = new Player("?");
                     System.out.println("Client found! Connecting...");
-                    ConnectionHandler handler = new ConnectionHandler(server, serviceSocket, player);
+                    game.addPlayer(player);
+                    ConnectionHandler handler = new ConnectionHandler(server, serviceSocket, player, game);
                     server.clients.put(player, handler);
 
                     handler.start();
@@ -104,11 +109,13 @@ public class Server {
         private Server server;
         private boolean receivingMessages = true;
         private Player player;
+        private Game game;
 
-        public ConnectionHandler(Server server, Socket socket, Player player){
+        public ConnectionHandler(Server server, Socket socket, Player player, Game game){
             this.serviceSocket = socket;
             this.server = server;
             this.player = player;
+            this.game = game;
         }
 
         public void HandleConnection(){
@@ -133,8 +140,11 @@ public class Server {
         private void handleMessage(MessageType type, DataInputStream in) throws IOException {
 
             String message;
+            System.out.println("Received Message Type of:" + type.toString());
 
             switch (type){
+                case TestMessage:
+                    break;
                 case ChatMessage: // SEND ALL
                     message = "Message A from: " + player.getName() + ": " + in.readUTF();
                     sendMessageAll(this, message);
@@ -142,7 +152,6 @@ public class Server {
                 case WhisperMessage: // SEND WHISPER
                     String to = in.readUTF();
                     String whisper = in.readUTF();
-
                     sendMessageWhisper(player.getName(), to, whisper);
                     break;
                 case SetNameMessage: // SET NAME
@@ -150,11 +159,12 @@ public class Server {
                     player.setName(in.readUTF());
                     System.out.println("Name set to: " + player.getName() + ", was " + previousName);
                     break;
-                case TestMessage: // START GAME
-                    //TODO
+                case GameSendPlayersMessage: // START GAME
+                    Server.this.sendGameMessagePlayers();
                     break;
                 default:
                     System.out.println("I DON'T KNOW");
+                    break;
             }
         }
 
@@ -165,6 +175,19 @@ public class Server {
                 out.flush();
             } catch (Exception e){
                 System.out.println("Error sending message");
+                e.printStackTrace();
+            }
+        }
+
+        private void sendGameMessagePlayers(MessageType type){
+            try {
+                out.writeByte(type.ordinal());
+                ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+                ObjectOutputStream os = new ObjectOutputStream(bOut);
+                os.writeObject(game.getPlayers());
+                out.write(bOut.toByteArray());
+                out.flush();
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }

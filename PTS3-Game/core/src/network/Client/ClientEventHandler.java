@@ -1,5 +1,9 @@
 package network.Client;
 
+import com.game.classes.Player;
+
+import java.util.ArrayList;
+
 public class ClientEventHandler implements IClientEvents {
 
     @Override
@@ -14,5 +18,9 @@ public class ClientEventHandler implements IClientEvents {
 
     @Override
     public void onMessaged(String message) {
+    }
+
+    @Override
+    public void onGetPlayers(ArrayList<Player> players) {
     }
 }

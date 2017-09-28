@@ -1,6 +1,7 @@
 package network.Client;
 
 import com.game.classes.Game;
+import com.game.classes.Player;
 import network.Server.MessageType;
 
 import javax.xml.crypto.Data;
@@ -49,7 +50,10 @@ public class Client {
             System.out.println("Use '/all 'message'' to send everyone a message");
             System.out.println("Use /whisper 'to' 'message' to send a message to one person ");
             System.out.println("Use /name 'name' to set your name");
-        } else{
+        }
+        else if (userInput.startsWith("/players")){
+            sendMessageGetPlayers();
+        } else {
             sendMessageAll(userInput.substring(userInput.indexOf(" ")+1));
         }
     }
@@ -87,6 +91,10 @@ public class Client {
      */
     public void sendMessageSetName(String name){
         connectionHandler.sendMessage(MessageType.SetNameMessage, name);
+    }
+
+    public void sendMessageGetPlayers(){
+        connectionHandler.sendMessage(MessageType.GameSendPlayersMessage, "?");
     }
 
     /**
@@ -159,7 +167,7 @@ public class Client {
          */
         private void startGame(Game game){
             try {
-                out.writeByte(4);
+                //out.writeByte(4);
                 //TODO - game object has to be serialized into a byte array
                 // http://www.java2s.com/Code/Java/File-Input-Output/Convertobjecttobytearrayandconvertbytearraytoobject.htm
                 out.flush();
@@ -177,7 +185,7 @@ public class Client {
          */
         private void endTurn(Game game){
             try {
-                out.writeByte(5);
+                //out.writeByte(5);
                 //TODO - Same as startGame
                 out.flush();
 
@@ -195,7 +203,7 @@ public class Client {
          */
         private void sendGameState(Game game){
             try {
-                out.writeByte(5);
+                //out.writeByte(5);
                 //TODO - Same as startGame
                 out.flush();
 
@@ -234,27 +242,45 @@ public class Client {
                 }
 
                 while (isReceivingMessages && !socket.isClosed()){
-                    int messageType = in.readByte();
+                    MessageType type = MessageType.values()[in.readByte()];
                     String message;
 
-                    switch (messageType) {
-                        case 1: //Type A
+                    byte[] buffer = new byte[1024];
+                    System.out.println("Received Message Type of:" + type.toString());
+
+                    switch (type) {
+                        case ChatMessage: //Type A
                             message = in.readUTF();
                             for (IClientEvents ce: listeners) {
                                 ce.onMessaged(message);
                             }
                             System.out.println(message);
                             break;
-                        case 2: //Type B
+                        case WhisperMessage: //Type B
                             message = in.readUTF();
                             for (IClientEvents ce: listeners) {
                                 ce.onMessaged(message);
                             }
                             System.out.println(message);
                             break;
-                        case 3: //TypeC
+                        case SetNameMessage: //TypeC
                             System.out.println("Message C [1]: " + in.readUTF());
                             System.out.println("Message C [2]: " + in.readUTF());
+                            break;
+                        case GameSendPlayersMessage:
+                            try {
+                                in.read(buffer);
+                                System.out.println(buffer.length);
+                                ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
+                                ObjectInputStream is = new ObjectInputStream(bIn);
+                                ArrayList<Player> players = ((ArrayList<Player>) is.readObject());
+
+                                for (IClientEvents ce : listeners) {
+                                    ce.onGetPlayers(players);
+                                }
+                            } catch (Exception e){
+                                e.printStackTrace();
+                            }
                             break;
                         default:
                             System.out.println("no know?");
