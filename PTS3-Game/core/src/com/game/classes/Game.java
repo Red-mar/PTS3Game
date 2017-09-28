@@ -1,6 +1,7 @@
 package com.game.classes;
 
 import network.Client.Client;
+import network.Server.Server;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class Game
     private Chat chat;
     private Boolean inGame;
     private Client client;
+    private Server server;
 
     /**
      * The game.
@@ -21,6 +23,13 @@ public class Game
     {
         this.client = client;
         this.client.start();
+        players = new ArrayList<Player>();
+        inGame = false;
+    }
+
+    public Game(Server server){
+        this.server = server;
+        //this.server.start();
         players = new ArrayList<Player>();
         inGame = false;
     }

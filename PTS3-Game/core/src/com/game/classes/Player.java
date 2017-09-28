@@ -27,6 +27,10 @@ public class Player {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Specifies if the player is a spectator.
      * @return True if the player is a spectator, false if not.
