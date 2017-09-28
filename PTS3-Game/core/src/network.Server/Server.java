@@ -37,14 +37,14 @@ public class Server {
 
     public void sendMessageAll(ConnectionHandler from, String message){
         for (ConnectionHandler client:clients.values()) {
-            client.sendMessageA(message);
+            client.sendMessage(MessageType.ChatMessage, message);
         }
     }
 
     public void sendMessageWhisper(String from, String to, String message){
         for (ConnectionHandler client: clients.values()){
             if (client.player.getName().equals(to)){
-                client.sendMessageA(from + " whispers to you: " + message);
+                client.sendMessage(MessageType.ChatMessage,from + " whispers to you: " + message);
             }
         }
     }
@@ -119,10 +119,8 @@ public class Server {
                 System.out.println("Connection successful!");
 
                 while (!serviceSocket.isClosed() && receivingMessages){
-
-                    int messageType = in.readByte();
-
-                    handleMessage(messageType, in);
+                    MessageType type = MessageType.values()[in.readByte()];
+                    handleMessage(type, in);
                 }
             } catch (Exception e) {
                 System.out.println("Connection reset, closing connection with " + this.player.getName());
@@ -132,30 +130,27 @@ public class Server {
             }
         }
 
-        private void handleMessage(int messageType, DataInputStream in) throws IOException {
+        private void handleMessage(MessageType type, DataInputStream in) throws IOException {
 
             String message;
 
-            switch (messageType){
-                case 1: // SEND ALL
+            switch (type){
+                case ChatMessage: // SEND ALL
                     message = "Message A from: " + player.getName() + ": " + in.readUTF();
                     sendMessageAll(this, message);
                     break;
-                case 2: // SEND WHISPER
+                case WhisperMessage: // SEND WHISPER
                     String to = in.readUTF();
                     String whisper = in.readUTF();
 
                     sendMessageWhisper(player.getName(), to, whisper);
                     break;
-                case 3: // SET NAME
+                case SetNameMessage: // SET NAME
                     String previousName = player.getName();
                     player.setName(in.readUTF());
                     System.out.println("Name set to: " + player.getName() + ", was " + previousName);
                     break;
-                case 4: // START GAME
-                    //TODO
-                    break;
-                case 5: // END TURN
+                case TestMessage: // START GAME
                     //TODO
                     break;
                 default:
@@ -163,13 +158,13 @@ public class Server {
             }
         }
 
-        private void sendMessageA(String message){
+        private void sendMessage(MessageType type, String message){
             try {
-                out.writeByte(1);
+                out.writeByte(type.ordinal());
                 out.writeUTF(message);
                 out.flush();
             } catch (Exception e){
-                System.out.println("Error sending message A.");
+                System.out.println("Error sending message");
                 e.printStackTrace();
             }
         }

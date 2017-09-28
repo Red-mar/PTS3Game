@@ -1,6 +1,7 @@
 package network.Client;
 
 import com.game.classes.Game;
+import network.Server.MessageType;
 
 import javax.xml.crypto.Data;
 import java.io.*;
@@ -66,7 +67,7 @@ public class Client {
      * @param message The message to send.
      */
     public void sendMessageAll(String message){
-        connectionHandler.sendMessageAll(message);
+        connectionHandler.sendMessage(MessageType.ChatMessage, message);
     }
 
     /**
@@ -76,7 +77,7 @@ public class Client {
      * @param message The message to send.
      */
     public void sendMessageWhisper(String to, String message) {
-        connectionHandler.sendMessageWhisper(to, message);
+        connectionHandler.sendMessage(MessageType.WhisperMessage, to, message);
     }
 
     /**
@@ -85,7 +86,7 @@ public class Client {
      * @param name The name of the client.
      */
     public void sendMessageSetName(String name){
-        connectionHandler.sendMessageSetName(name);
+        connectionHandler.sendMessage(MessageType.SetNameMessage, name);
     }
 
     /**
@@ -117,18 +118,15 @@ public class Client {
         }
 
         /**
-         * Sends a 'All' message.
-         * This will send a message to everyone.
-         * @param message The message to send.
+         * Sends a 'SetName' message.
+         * This will set the name of the client on the server.
+         * @param name The name of the client.
          */
-        private void sendMessageAll(String message){
+        private void sendMessage(MessageType type, String name){
             try {
-                // Set the first byte
-                // 1 = Message A
-                out.writeByte(1);
-                out.writeUTF(message);
+                out.writeByte(type.ordinal());
+                out.writeUTF(name);
 
-                //Send the data
                 out.flush();
             } catch (IOException e){
                 e.printStackTrace();
@@ -138,35 +136,19 @@ public class Client {
         /**
          * Sends a 'Whisper' message.
          * This will send a message to a specific player.
-         * @param to The name of the client where the message should go to.
-         * @param message The message to send.
+         * @param firstMessage The name of the client where the message should go to.
+         * @param secondMessage The message to send.
          */
-        private void sendMessageWhisper(String to, String message){
+        private void sendMessage(MessageType type, String firstMessage, String secondMessage){
             try {
-                out.writeByte(2);
-                out.writeUTF(to);
-                out.writeUTF(message); //Split Message
+                out.writeByte(type.ordinal());
+                out.writeUTF(firstMessage);
+                out.writeUTF(secondMessage); //Split Message
 
                 out.flush();
 
             } catch (IOException e){
 
-            }
-        }
-
-        /**
-         * Sends a 'SetName' message.
-         * This will set the name of the client on the server.
-         * @param name The name of the client.
-         */
-        private void sendMessageSetName(String name){
-            try {
-                out.writeByte(3);
-                out.writeUTF(name);
-
-                out.flush();
-            } catch (IOException e){
-                e.printStackTrace();
             }
         }
 
