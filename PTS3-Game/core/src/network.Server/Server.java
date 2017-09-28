@@ -37,9 +37,7 @@ public class Server {
 
     public void sendMessageAll(ConnectionHandler from, String message){
         for (ConnectionHandler client:clients.values()) {
-            if (from != client){
-                client.sendMessageA(message);
-            }
+            client.sendMessageA(message);
         }
     }
 
