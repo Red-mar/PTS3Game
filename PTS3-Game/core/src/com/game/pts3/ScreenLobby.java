@@ -48,8 +48,18 @@ public class ScreenLobby implements Screen {
         chat.getTextField().setWidth(500);
         chat.getTextField().setHeight(50);
 
-        TextButton btnConnect = new TextButton("Connect with server!", skin);
+        TextButton btnReady = new TextButton("Start Game", skin);
+        btnReady.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new ScreenGame(game));
+                stage.clear();
+            }
+        });
+        btnReady.setPosition(510,10);
+        btnReady.setSize(120,20);
 
+        TextButton btnConnect = new TextButton("Connect with server!", skin);
         btnConnect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -92,6 +102,7 @@ public class ScreenLobby implements Screen {
         stage.addActor(lblMap);
         stage.addActor(lblPlayerName);
         stage.addActor(btnConnect);
+        stage.addActor(btnReady);
 
         stage.addActor(chat.scrollPane);
         stage.addActor(chat.textField);
