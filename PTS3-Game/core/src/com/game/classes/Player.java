@@ -95,4 +95,16 @@ public class Player implements Serializable {
     public void setLocalPlayer(boolean localPlayer) {
         isLocalPlayer = localPlayer;
     }
+
+    @Override
+    public String toString() {
+        if (isSpectator){
+            return getName() + "\t|\tSpectator.";
+        }
+
+        if (isReady){
+            return getName() + "\t|\tReady!";
+        }
+        return getName() + "\t|\tNot Ready.";
+    }
 }

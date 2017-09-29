@@ -13,12 +13,12 @@ import java.util.HashSet;
 public class Server {
 
     private ServerSocket serverSocket;
-    private HashMap<Player, ConnectionHandler> clients;
+    private HashMap<ConnectionHandler, Player> clients;
     private ServerManager serverManager;
 
     public Server(int port) throws IOException{
         serverSocket= new ServerSocket(port);
-        clients = new HashMap<Player, ConnectionHandler>();
+        clients = new HashMap<ConnectionHandler, Player>();
         serverManager = new ServerManager(this);
     }
 
@@ -28,19 +28,19 @@ public class Server {
 
     public void stop(){
         serverManager.acceptingClients = false;
-        for (ConnectionHandler client :clients.values()) {
+        for (ConnectionHandler client :clients.keySet()) {
             client.close();
         }
     }
 
     public void sendMessageAll(ConnectionHandler from, String message){
-        for (ConnectionHandler client:clients.values()) {
+        for (ConnectionHandler client:clients.keySet()) {
             client.sendMessage(MessageType.ChatMessage, message);
         }
     }
 
     public void sendMessageWhisper(String from, String to, String message){
-        for (ConnectionHandler client: clients.values()){
+        for (ConnectionHandler client: clients.keySet()){
             if (client.player.getName().equals(to)){
                 client.sendMessage(MessageType.ChatMessage,from + " whispers to you: " + message);
             }
@@ -48,7 +48,7 @@ public class Server {
     }
 
     public void sendGameMessagePlayers(){
-        for (ConnectionHandler client: clients.values()) {
+        for (ConnectionHandler client: clients.keySet()) {
             client.sendGameMessagePlayers(MessageType.GameSendPlayersMessage);
         }
     }
@@ -85,9 +85,12 @@ public class Server {
 
                     Player player = new Player("?");
                     System.out.println("Client found! Connecting...");
+                    if (game.getPlayers().size() >= 4){
+                        player.setSpectator(true);
+                    }
                     game.addPlayer(player);
                     ConnectionHandler handler = new ConnectionHandler(server, serviceSocket, player, game);
-                    server.clients.put(player, handler);
+                    server.clients.put(handler, player);
 
                     handler.start();
                 }
@@ -130,6 +133,8 @@ public class Server {
                     handleMessage(type, in);
                 }
             } catch (Exception e) {
+                server.serverManager.game.removePlayer(server.clients.get(this));
+                server.clients.remove(this);
                 System.out.println("Connection reset, closing connection with " + this.player.getName());
                 this.close();
             } finally {
@@ -146,7 +151,7 @@ public class Server {
                 case TestMessage:
                     break;
                 case ChatMessage: // SEND ALL
-                    message = "Message A from: " + player.getName() + ": " + in.readUTF();
+                    message = player.getName() + ": " + in.readUTF();
                     sendMessageAll(this, message);
                     break;
                 case WhisperMessage: // SEND WHISPER
@@ -160,6 +165,15 @@ public class Server {
                     System.out.println("Name set to: " + player.getName() + ", was " + previousName);
                     break;
                 case GameSendPlayersMessage: // START GAME
+                    Server.this.sendGameMessagePlayers();
+                    break;
+                case GameReadyMessage:
+                    Player thisPlayer = server.clients.get(this);
+                    if (!thisPlayer.isReady()){
+                        thisPlayer.setReady(true);
+                    }else {
+                        thisPlayer.setReady(false);
+                    }
                     Server.this.sendGameMessagePlayers();
                     break;
                 default:
@@ -197,6 +211,8 @@ public class Server {
                 this.receivingMessages = false;
                 this.serviceSocket.close();
                 server.clients.remove(this);
+                game.removePlayer(server.clients.get(this));
+                Server.this.sendGameMessagePlayers();
             } catch (Exception e){
                 System.out.println("Error closing connection with client.");
                 e.printStackTrace();

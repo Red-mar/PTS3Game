@@ -14,6 +14,7 @@ import com.game.classes.Player;
 import network.Client.Client;
 import network.Client.GameEvents;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ScreenLobby implements Screen, GameEvents {
@@ -21,9 +22,11 @@ public class ScreenLobby implements Screen, GameEvents {
     private com.game.classes.Game gameState;
     private Stage stage;
     private boolean isNameSet = false;
-    Skin skin;
-    Chat chat;
-    EventListener enterText;
+    private Skin skin;
+    private Chat chat;
+    private List playerList;
+
+    private EventListener enterText;
 
     float red = 0;
     float green = 0;
@@ -35,58 +38,22 @@ public class ScreenLobby implements Screen, GameEvents {
 
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
+        /**
+         * Chat
+         */
         TextArea t = new TextArea("Welcome to the game lobby!\nHere you can chat with fellow players.\n", skin);
         chat = new Chat(t,
                 new ScrollPane(t, skin),
                 new TextField("", skin),
                 new TextButton("Send Message", skin));
-
         chat.getTextArea().setDisabled(true);
-
         chat.getScrollPane().setForceScroll(false, true);
         chat.getScrollPane().setFlickScroll(false);
         chat.getScrollPane().setOverscroll(false,true);
         chat.getScrollPane().setBounds(10f, 100f, 500f, 200f);
-
         chat.getTextField().setPosition(10, 40);
         chat.getTextField().setWidth(500);
         chat.getTextField().setHeight(50);
-
-        TextButton btnReady = new TextButton("Start Game", skin);
-        btnReady.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new ScreenGame(game));
-                stage.clear();
-            }
-        });
-        btnReady.setPosition(510,10);
-        btnReady.setSize(120,20);
-
-        TextButton btnConnect = new TextButton("Connect with server!", skin);
-        btnConnect.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (gameState == null){
-                    gameState = new com.game.classes.Game(new Client("localhost"));
-                    gameState.getClient().start();
-                    while (!gameState.getClient().isConnected()){  } //TODO betere oplossing
-                    gameState.getClient().addListener(chat);
-                    addGameListener();
-                    gameState.getClient().sendMessageSetName(name);
-                    gameState.getClient().sendMessageGetPlayers();
-                }
-            }
-        });
-        btnConnect.setPosition(10,10);
-        btnConnect.setWidth(250);
-        btnConnect.setHeight(20);
-
-        Label lblPlayerName = new Label("Player name: " + name, skin);
-        lblPlayerName.setPosition(10,330);
-        Label lblMap = new Label("Selected map: N/A", skin);
-        lblMap.setPosition(10,310);
-
         enterText = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -108,9 +75,64 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getBtnSendMessage().setWidth(250);
         chat.getBtnSendMessage().setHeight(20);
 
+
+        /**
+         * Buttons
+         */
+        TextButton btnStart = new TextButton("Start Game", skin);
+        btnStart.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new ScreenGame(game));
+                stage.clear();
+            }
+        });
+        btnStart.setPosition(510,10);
+        btnStart.setSize(120,20);
+        btnStart.setDisabled(true);
+
+        TextButton btnReady = new TextButton("Ready", skin);
+        btnReady.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameState.getClient().sendMessageReady();
+            }
+        });
+        btnReady.setPosition(510,40);
+        btnReady.setSize(120,20);
+
+        TextButton btnConnect = new TextButton("Connect with server!", skin);
+        btnConnect.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                establishConnection(name);
+            }
+        });
+        btnConnect.setPosition(10,10);
+        btnConnect.setWidth(250);
+        btnConnect.setHeight(20);
+
+        /**
+         * Labels
+         */
+        Label lblPlayerName = new Label("Player name: " + name, skin);
+        lblPlayerName.setPosition(10,330);
+        Label lblMap = new Label("Selected map: N/A", skin);
+        lblMap.setPosition(10,310);
+
+        /**
+         * Player list
+         */
+        playerList = new List(skin);
+        playerList.setPosition(10,350);
+        playerList.setSize(250,100);
+
+
+        stage.addActor(playerList);
         stage.addActor(lblMap);
         stage.addActor(lblPlayerName);
         stage.addActor(btnConnect);
+        stage.addActor(btnStart);
         stage.addActor(btnReady);
 
         stage.addActor(chat.scrollPane);
@@ -178,13 +200,11 @@ public class ScreenLobby implements Screen, GameEvents {
 
     @Override
     public void onGetPlayers(ArrayList<Player> players) {
-        chat.getTextArea().appendText("There are " + players.size() + " player(s).\n");
-        for (Player player: players) {
-            if (gameState.getPlayers().contains(player)){
-                continue;
-            }
-            gameState.addPlayer(player);
-        }
+        chat.getTextArea().appendText("There are now " + players.size() + " player(s).\n");
+        gameState.setPlayers(players);
+        playerList.clearItems();
+        playerList.setItems(players.toArray());
+
     }
 
     /**
@@ -192,5 +212,18 @@ public class ScreenLobby implements Screen, GameEvents {
      */
     private void addGameListener(){
         gameState.getClient().addGameListener(this);
+    }
+
+    private void establishConnection(String name) {
+        if (gameState == null) {
+            gameState = new com.game.classes.Game(new Client("localhost"));
+            gameState.getClient().start();
+            while (!gameState.getClient().isConnected()) {
+            } //TODO betere oplossing
+            gameState.getClient().addListener(chat);
+            addGameListener();
+            gameState.getClient().sendMessageSetName(name);
+            gameState.getClient().sendMessageGetPlayers();
+        }
     }
 }

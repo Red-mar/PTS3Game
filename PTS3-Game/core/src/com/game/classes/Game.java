@@ -43,6 +43,10 @@ public class Game
         return this.players;
     }
 
+    public void setPlayers(ArrayList<Player> players){
+        this.players = players;
+    }
+
     /**
      * Add a player to the game.
      * @param Player The player to add to the game.

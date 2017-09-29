@@ -63,6 +63,9 @@ public class Client {
         }
         else if (userInput.startsWith("/players")){
             sendMessageGetPlayers();
+        }
+        else if (userInput.startsWith("/close")){
+            connectionHandler.close();
         } else {
             sendMessageAll(userInput.substring(userInput.indexOf(" ")+1));
         }
@@ -106,6 +109,8 @@ public class Client {
     public void sendMessageGetPlayers(){
         connectionHandler.sendMessage(MessageType.GameSendPlayersMessage);
     }
+
+    public void sendMessageReady() { connectionHandler.sendMessage(MessageType.GameReadyMessage);}
 
     /**
      * Stops the connection with the server.
