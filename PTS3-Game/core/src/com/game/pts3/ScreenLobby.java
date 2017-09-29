@@ -10,9 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.game.classes.Player;
 import network.Client.Client;
+import network.Client.GameEvents;
 
-public class ScreenLobby implements Screen {
+import java.util.ArrayList;
+
+public class ScreenLobby implements Screen, GameEvents {
     private Game game;
     private com.game.classes.Game gameState;
     private Stage stage;
@@ -66,6 +70,7 @@ public class ScreenLobby implements Screen {
                 if (gameState == null){
                     gameState = new com.game.classes.Game(new Client("localhost"));
                     gameState.getClient().addListener(chat);
+                    addGameListener();
                 }
             }
         });
@@ -165,5 +170,23 @@ public class ScreenLobby implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    @Override
+    public void onGetPlayers(ArrayList<Player> players) {
+        chat.getTextArea().appendText("There are " + players.size() + " player(s).\n");
+        for (Player player: players) {
+            if (gameState.getPlayers().contains(player)){
+                continue;
+            }
+            gameState.addPlayer(player);
+        }
+    }
+
+    /**
+     * hacky af
+     */
+    private void addGameListener(){
+        gameState.getClient().addGameListener(this);
     }
 }

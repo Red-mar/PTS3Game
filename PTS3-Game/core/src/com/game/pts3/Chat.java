@@ -5,11 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.game.classes.Player;
-import network.Client.IClientEvents;
+import network.Client.ChatEvents;
 
 import java.util.ArrayList;
 
-public class Chat implements IClientEvents {
+public class Chat implements ChatEvents {
     TextArea textArea;
     ScrollPane scrollPane;
     TextField textField;
@@ -55,12 +55,5 @@ public class Chat implements IClientEvents {
     @Override
     public void onMessaged(String message) {
         textArea.appendText(message + "\n");
-    }
-
-    @Override
-    public void onGetPlayers(ArrayList<Player> players) {
-        for (Player player: players) {
-            textArea.appendText(player.getName());
-        }
     }
 }

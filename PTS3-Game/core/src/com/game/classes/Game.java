@@ -1,6 +1,7 @@
 package com.game.classes;
 
 import network.Client.Client;
+import network.Client.GameEvents;
 import network.Server.Server;
 
 import java.util.ArrayList;

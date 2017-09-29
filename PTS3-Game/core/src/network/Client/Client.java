@@ -12,7 +12,8 @@ import java.util.ArrayList;
 public class Client {
 
     private ConnectionHandler connectionHandler;
-    private ArrayList<IClientEvents> listeners = new ArrayList<IClientEvents>();
+    private ArrayList<ChatEvents> listeners = new ArrayList<ChatEvents>();
+    private ArrayList<GameEvents> gameListeners = new ArrayList<GameEvents>();
 
     /**
      * Creates a client that will make a connection with a server.
@@ -22,8 +23,12 @@ public class Client {
         connectionHandler = new ConnectionHandler(this, serverIP);
     }
 
-    public void addListener(IClientEvents listener){
+    public void addListener(ChatEvents listener){
         listeners.add(listener);
+    }
+
+    public void addGameListener(GameEvents listener){
+        gameListeners.add(listener);
     }
 
     /**
@@ -246,7 +251,7 @@ public class Client {
                 in = new DataInputStream(socket.getInputStream());
                 out = new DataOutputStream(socket.getOutputStream());
 
-                for (IClientEvents ce: listeners) {
+                for (ChatEvents ce: listeners) {
                     ce.onConnect(serverIP);
                 }
 
@@ -260,14 +265,14 @@ public class Client {
                     switch (type) {
                         case ChatMessage: //Type A
                             message = in.readUTF();
-                            for (IClientEvents ce: listeners) {
+                            for (ChatEvents ce: listeners) {
                                 ce.onMessaged(message);
                             }
                             System.out.println(message);
                             break;
                         case WhisperMessage: //Type B
                             message = in.readUTF();
-                            for (IClientEvents ce: listeners) {
+                            for (ChatEvents ce: listeners) {
                                 ce.onMessaged(message);
                             }
                             System.out.println(message);
@@ -284,8 +289,8 @@ public class Client {
                                 ObjectInputStream is = new ObjectInputStream(bIn);
                                 ArrayList<Player> players = ((ArrayList<Player>) is.readObject());
 
-                                for (IClientEvents ce : listeners) {
-                                    ce.onGetPlayers(players);
+                                for (GameEvents ge : gameListeners) {
+                                    ge.onGetPlayers(players);
                                 }
                             } catch (Exception e){
                                 e.printStackTrace();
@@ -297,7 +302,7 @@ public class Client {
                 }
 
             } catch (Exception e){
-                for (IClientEvents ce: listeners) {
+                for (ChatEvents ce: listeners) {
                     ce.onDisconnect();
                 }
                 this.close();
