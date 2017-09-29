@@ -230,6 +230,8 @@ public class Client {
             try {
                 socket = new Socket(serverIP, 4321);
 
+                if (!socket.isConnected()) return;
+
                 in = new DataInputStream(socket.getInputStream());
                 out = new DataOutputStream(socket.getOutputStream());
 
@@ -290,7 +292,7 @@ public class Client {
                     ce.onDisconnect();
                 }
                 isConnected = false;
-                this.close();
+                //this.close();
             }
         }
 

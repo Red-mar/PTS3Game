@@ -80,6 +80,7 @@ public class ScreenLobby implements Screen, GameEvents {
         btnStart.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (gameState == null) return;
                 for (Player player:gameState.getPlayers()) {
                     if (!player.isReady()) {
                         chat.textArea.appendText("Niet iedereen is READY.\n");

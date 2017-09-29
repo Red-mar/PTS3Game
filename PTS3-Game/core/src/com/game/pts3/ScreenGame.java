@@ -4,9 +4,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.game.classes.Character;
 
 public class ScreenGame implements Screen {
 
@@ -14,11 +19,12 @@ public class ScreenGame implements Screen {
     private Skin skin;
     private Game game;
 
+
+
     public ScreenGame(Game game){
         stage = new Stage();
         this.game = game;
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-
 
         Label lblGame = new Label("Game start", skin);
         lblGame.setPosition(10,10);
