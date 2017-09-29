@@ -94,7 +94,7 @@ public class Client {
     }
 
     public void sendMessageGetPlayers(){
-        connectionHandler.sendMessage(MessageType.GameSendPlayersMessage, "?");
+        connectionHandler.sendMessage(MessageType.GameSendPlayersMessage);
     }
 
     /**
@@ -135,6 +135,15 @@ public class Client {
                 out.writeByte(type.ordinal());
                 out.writeUTF(name);
 
+                out.flush();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        private void sendMessage(MessageType type){
+            try {
+                out.writeByte(type.ordinal());
                 out.flush();
             } catch (IOException e){
                 e.printStackTrace();
