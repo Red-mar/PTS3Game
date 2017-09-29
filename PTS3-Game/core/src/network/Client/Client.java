@@ -64,7 +64,7 @@ public class Client {
         else if (userInput.startsWith("/players")){
             sendMessageGetPlayers();
         }
-        else if (userInput.startsWith("/close")){
+        else if (userInput.startsWith("/close")){ /* WARNING EXPERIMENTAL */
             connectionHandler.close();
         } else {
             sendMessageAll(userInput);

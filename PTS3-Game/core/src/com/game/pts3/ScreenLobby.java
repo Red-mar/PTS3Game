@@ -83,13 +83,19 @@ public class ScreenLobby implements Screen, GameEvents {
         btnStart.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                for (Player player:gameState.getPlayers()) {
+                    if (!player.isReady()) {
+                        chat.textArea.appendText("Niet iedereen is READY.\n");
+                        return;
+                    }
+                    System.out.println("Game Starting ...");
+                }
                 game.setScreen(new ScreenGame(game));
                 stage.clear();
             }
         });
         btnStart.setPosition(510,10);
         btnStart.setSize(120,20);
-        btnStart.setDisabled(true);
 
         TextButton btnReady = new TextButton("Ready", skin);
         btnReady.addListener(new ChangeListener() {
