@@ -25,7 +25,6 @@ public class Chat {
     }
 
     /**
-     * TODO is nooit needed??
      * Set the game that belongs to this chat
      * @param game Requires a game object.
      */

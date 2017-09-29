@@ -16,7 +16,6 @@ public class ScreenGame implements Screen {
 
     public ScreenGame(Game game){
         stage = new Stage();
-
         this.game = game;
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 

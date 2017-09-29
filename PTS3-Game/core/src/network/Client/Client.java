@@ -67,7 +67,7 @@ public class Client {
         else if (userInput.startsWith("/close")){
             connectionHandler.close();
         } else {
-            sendMessageAll(userInput.substring(userInput.indexOf(" ")+1));
+            sendMessageAll(userInput);
         }
     }
 
