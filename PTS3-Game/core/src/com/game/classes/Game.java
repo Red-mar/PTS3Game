@@ -23,7 +23,6 @@ public class Game
     public Game(Client client)
     {
         this.client = client;
-        this.client.start();
         players = new ArrayList<Player>();
         inGame = false;
     }

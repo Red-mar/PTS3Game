@@ -14,6 +14,11 @@ public class Client {
     private ConnectionHandler connectionHandler;
     private ArrayList<ChatEvents> listeners = new ArrayList<ChatEvents>();
     private ArrayList<GameEvents> gameListeners = new ArrayList<GameEvents>();
+    private boolean isConnected = false;
+
+    public boolean isConnected() {
+        return isConnected;
+    }
 
     /**
      * Creates a client that will make a connection with a server.
@@ -255,6 +260,8 @@ public class Client {
                     ce.onConnect(serverIP);
                 }
 
+                isConnected = true;
+
                 while (isReceivingMessages && !socket.isClosed()){
                     MessageType type = MessageType.values()[in.readByte()];
                     String message;
@@ -305,6 +312,7 @@ public class Client {
                 for (ChatEvents ce: listeners) {
                     ce.onDisconnect();
                 }
+                isConnected = false;
                 this.close();
             }
         }

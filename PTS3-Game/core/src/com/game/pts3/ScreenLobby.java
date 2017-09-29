@@ -69,8 +69,12 @@ public class ScreenLobby implements Screen, GameEvents {
             public void changed(ChangeEvent event, Actor actor) {
                 if (gameState == null){
                     gameState = new com.game.classes.Game(new Client("localhost"));
+                    gameState.getClient().start();
+                    while (!gameState.getClient().isConnected()){  } //TODO betere oplossing
                     gameState.getClient().addListener(chat);
                     addGameListener();
+                    gameState.getClient().sendMessageSetName(name);
+                    gameState.getClient().sendMessageGetPlayers();
                 }
             }
         });
