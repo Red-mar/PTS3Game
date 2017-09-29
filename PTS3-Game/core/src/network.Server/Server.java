@@ -33,12 +33,23 @@ public class Server {
         }
     }
 
+    /**
+     * Sends a chat message to all clients
+     * @param from Who the message is from
+     * @param message The message
+     */
     public void sendMessageAll(ConnectionHandler from, String message){
         for (ConnectionHandler client:clients.keySet()) {
             client.sendMessage(MessageType.ChatMessage, message);
         }
     }
 
+    /**
+     * Sends a message to a single player
+     * @param from Who the message is from
+     * @param to Who the message is for
+     * @param message The message
+     */
     public void sendMessageWhisper(String from, String to, String message){
         for (ConnectionHandler client: clients.keySet()){
             if (client.player.getName().equals(to)){
@@ -47,9 +58,12 @@ public class Server {
         }
     }
 
+    /**
+     * Updates the players for all clients
+     */
     public void sendGameMessagePlayers(){
         for (ConnectionHandler client: clients.keySet()) {
-            client.sendGameMessagePlayers(MessageType.GameSendPlayersMessage);
+            client.sendObjectMessage(MessageType.GameSendPlayersMessage, serverManager.game.getPlayers());
         }
     }
 
@@ -57,7 +71,7 @@ public class Server {
         //TODO
     }
 
-    /*
+    /**
  * The ServerManager waits for a client to connect and opens a connection
  * with that client on a separate thread. It does this by creating a
  * ConnectionHandler
@@ -150,38 +164,43 @@ public class Server {
             switch (type){
                 case TestMessage:
                     break;
-                case ChatMessage: // SEND ALL
+                case ChatMessage: /** Send a chat message to everyone **/
                     message = player.getName() + ": " + in.readUTF();
                     sendMessageAll(this, message);
                     break;
-                case WhisperMessage: // SEND WHISPER
+                case WhisperMessage: /** Send message to one person **/
                     String to = in.readUTF();
                     String whisper = in.readUTF();
                     sendMessageWhisper(player.getName(), to, whisper);
                     break;
-                case SetNameMessage: // SET NAME
+                case SetNameMessage: /** Sets name of player **/
                     String previousName = player.getName();
                     player.setName(in.readUTF());
                     System.out.println("Name set to: " + player.getName() + ", was " + previousName);
                     break;
-                case GameSendPlayersMessage: // START GAME
+                case GameSendPlayersMessage: /** Sends player list to all clients **/
                     Server.this.sendGameMessagePlayers();
                     break;
-                case GameReadyMessage:
+                case GameReadyMessage: /** Changes the ready state of the sender **/
                     Player thisPlayer = server.clients.get(this);
                     if (!thisPlayer.isReady()){
                         thisPlayer.setReady(true);
-                    }else {
+                    } else {
                         thisPlayer.setReady(false);
                     }
                     Server.this.sendGameMessagePlayers();
                     break;
-                default:
+                default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");
                     break;
             }
         }
 
+        /**
+         * Send a String
+         * @param type The type of message (see enum)
+         * @param message The message as string
+         */
         private void sendMessage(MessageType type, String message){
             try {
                 out.writeByte(type.ordinal());
@@ -193,12 +212,17 @@ public class Server {
             }
         }
 
-        private void sendGameMessagePlayers(MessageType type){
+        /**
+         * Sends an object to all clients
+         * @param type The type of message (make sure it supports the object)
+         * @param object The object to send
+         */
+        private void sendObjectMessage(MessageType type, Object object){
             try {
                 out.writeByte(type.ordinal());
                 ByteArrayOutputStream bOut = new ByteArrayOutputStream();
                 ObjectOutputStream os = new ObjectOutputStream(bOut);
-                os.writeObject(game.getPlayers());
+                os.writeObject(object);
                 out.write(bOut.toByteArray());
                 out.flush();
             } catch (Exception e){
@@ -206,6 +230,9 @@ public class Server {
             }
         }
 
+        /**
+         * Kills everything
+         */
         private void close(){
             try {
                 this.receivingMessages = false;

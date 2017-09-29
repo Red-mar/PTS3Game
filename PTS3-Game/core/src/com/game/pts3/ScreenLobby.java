@@ -33,9 +33,7 @@ public class ScreenLobby implements Screen, GameEvents {
 
     public ScreenLobby(final Game game, final String name){
         this.game = game;
-
         stage = new Stage();
-
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
         /**
@@ -74,7 +72,6 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getBtnSendMessage().setPosition(260, 10);
         chat.getBtnSendMessage().setWidth(250);
         chat.getBtnSendMessage().setHeight(20);
-
 
         /**
          * Buttons
@@ -133,7 +130,6 @@ public class ScreenLobby implements Screen, GameEvents {
         playerList.setPosition(10,350);
         playerList.setSize(250,100);
 
-
         stage.addActor(playerList);
         stage.addActor(lblMap);
         stage.addActor(lblPlayerName);
@@ -155,6 +151,9 @@ public class ScreenLobby implements Screen, GameEvents {
 
     @Override
     public void render(float delta) {
+        /**
+         * Clears the screen.
+         */
         Gdx.gl.glClearColor(red, green, 0.343f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

@@ -9,6 +9,9 @@ import network.Client.ChatEvents;
 
 import java.util.ArrayList;
 
+/**
+ * Collection of UI elements to form a chat box.
+ */
 public class Chat implements ChatEvents {
     TextArea textArea;
     ScrollPane scrollPane;

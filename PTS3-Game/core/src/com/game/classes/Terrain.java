@@ -5,6 +5,11 @@ public class Terrain {
     private TerrainProperties property;
     private int bonus;
 
+    /**
+     * a tile on a map
+     * @param visual
+     * @param property
+     */
     public Terrain(TerrainVisual visual, TerrainProperties property) {
         this.visual = visual;
         this.property = property;

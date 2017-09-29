@@ -16,6 +16,10 @@ public class Client {
     private ArrayList<GameEvents> gameListeners = new ArrayList<GameEvents>();
     private boolean isConnected = false;
 
+    /**
+     * Checks if the client has a connection with a server.
+     * @return
+     */
     public boolean isConnected() {
         return isConnected;
     }
@@ -28,17 +32,27 @@ public class Client {
         connectionHandler = new ConnectionHandler(this, serverIP);
     }
 
+    /**
+     * Adds an object that implements the ChatEvents interface.
+     * @param listener
+     */
     public void addListener(ChatEvents listener){
         listeners.add(listener);
     }
 
+    /**
+     * Adds an object that implements the GameEvents interface.
+     * By adding the class it will be notified and the
+     * implemented method will run.
+     * @param listener
+     */
     public void addGameListener(GameEvents listener){
         gameListeners.add(listener);
     }
 
     /**
-     * Reads text input from a console.
-     * @param userInput Input from a console.
+     * Processes a string for use in a console.
+     * @param userInput The input to be processed.
      */
     public void readInput(String userInput){
         if (userInput.startsWith("/whisper ")){
@@ -106,10 +120,16 @@ public class Client {
         connectionHandler.sendMessage(MessageType.SetNameMessage, name);
     }
 
+    /**
+     * Asks the server to update the players for all clients.
+     */
     public void sendMessageGetPlayers(){
         connectionHandler.sendMessage(MessageType.GameSendPlayersMessage);
     }
 
+    /**
+     * Asks the server to change the ready state for the sender.
+     */
     public void sendMessageReady() { connectionHandler.sendMessage(MessageType.GameReadyMessage);}
 
     /**
@@ -156,6 +176,10 @@ public class Client {
             }
         }
 
+        /**
+         * Send a message with no body
+         * @param type The message type (see enum)
+         */
         private void sendMessage(MessageType type){
             try {
                 out.writeByte(type.ordinal());
@@ -166,10 +190,10 @@ public class Client {
         }
 
         /**
-         * Sends a 'Whisper' message.
-         * This will send a message to a specific player.
-         * @param firstMessage The name of the client where the message should go to.
-         * @param secondMessage The message to send.
+         * Send a message with 2 strings (used for whispers)
+         * @param type The message type.
+         * @param firstMessage The first string
+         * @param secondMessage The second string
          */
         private void sendMessage(MessageType type, String firstMessage, String secondMessage){
             try {
@@ -177,58 +201,6 @@ public class Client {
                 out.writeUTF(firstMessage);
                 out.writeUTF(secondMessage); //Split Message
 
-                out.flush();
-
-            } catch (IOException e){
-
-            }
-        }
-
-        /**
-         * Send a 'StartGame' message.
-         * This will signal to the server that the game should begin.
-         * @param game The game that should start.
-         */
-        private void startGame(Game game){
-            try {
-                //out.writeByte(4);
-                //TODO - game object has to be serialized into a byte array
-                // http://www.java2s.com/Code/Java/File-Input-Output/Convertobjecttobytearrayandconvertbytearraytoobject.htm
-                out.flush();
-
-            } catch (IOException e){
-
-            }
-        }
-
-        /**
-         * Sends a 'endTurn' message.
-         * This will signal to the server that the turn of the current
-         * player has ended.
-         * @param game The game.
-         */
-        private void endTurn(Game game){
-            try {
-                //out.writeByte(5);
-                //TODO - Same as startGame
-                out.flush();
-
-            } catch (IOException e){
-
-            }
-        }
-
-        /**
-         * Sends a 'GameState' message.
-         * This will send the current game state to the server
-         * but will not end the turn. This way everyone can
-         * see what the current player is doing.
-         * @param game The current game.
-         */
-        private void sendGameState(Game game){
-            try {
-                //out.writeByte(5);
-                //TODO - Same as startGame
                 out.flush();
 
             } catch (IOException e){

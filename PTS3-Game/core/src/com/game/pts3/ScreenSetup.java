@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class ScreenSetup implements Screen {
-
     Stage stage;
     private Skin skin;
     private Game game;
@@ -25,14 +24,23 @@ public class ScreenSetup implements Screen {
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         Gdx.input.setInputProcessor(stage);
 
+        /**
+         * Labels
+         */
         Label lblWelcome = new Label("Welcome to game!\n Please enter your name!", skin);
         lblWelcome.setPosition(10, 80);
         lblWelcome.setSize(90,90);
 
+        /**
+         * TextField
+         */
         final TextField tfName = new TextField("", skin);
         tfName.setSize(250, 30);
         tfName.setPosition(10, 40);
 
+        /**
+         * TextButton
+         */
         TextButton btnStart = new TextButton("To game lobby", skin);
         btnStart.addListener(new ChangeListener() {
             @Override
@@ -57,6 +65,9 @@ public class ScreenSetup implements Screen {
 
     @Override
     public void render(float delta) {
+        /**
+         * Clear screen and set colour.
+         */
         Gdx.gl.glClearColor( 1, 0, 0, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
