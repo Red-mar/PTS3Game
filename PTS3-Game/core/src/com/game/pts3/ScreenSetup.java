@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import network.Client.Client;
 
 public class ScreenSetup implements Screen {
     Stage stage;
@@ -30,6 +31,9 @@ public class ScreenSetup implements Screen {
         Label lblWelcome = new Label("Welcome to game!\n Please enter your name!", skin);
         lblWelcome.setPosition(10, 80);
         lblWelcome.setSize(90,90);
+        Label lblIP = new Label("Enter IP address", skin);
+        lblIP.setPosition(270,40);
+        lblIP.setSize(90,90);
 
         /**
          * TextField
@@ -37,6 +41,9 @@ public class ScreenSetup implements Screen {
         final TextField tfName = new TextField("", skin);
         tfName.setSize(250, 30);
         tfName.setPosition(10, 40);
+        final TextField tfIP = new TextField("localhost", skin);
+        tfIP.setSize(250,30);
+        tfIP.setPosition(270,40);
 
         /**
          * TextButton
@@ -47,14 +54,17 @@ public class ScreenSetup implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 String string = "?";
                 string = tfName.getText();
-                game.setScreen(new ScreenLobby(game, string));
+                com.game.classes.Game gameState = new com.game.classes.Game(new Client(tfIP.getText()));
+                game.setScreen(new ScreenLobby(game, string, gameState));
             }
         });
         btnStart.setSize(250,20);
         btnStart.setPosition(10,10);
 
         stage.addActor(tfName);
+        stage.addActor(tfIP);
         stage.addActor(lblWelcome);
+        stage.addActor(lblIP);
         stage.addActor(btnStart);
     }
 

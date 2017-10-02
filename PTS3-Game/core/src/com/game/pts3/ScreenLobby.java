@@ -44,8 +44,9 @@ public class ScreenLobby implements Screen, GameEvents {
     float red = 0;
     float green = 0;
 
-    public ScreenLobby(final Game game, final String name){
+    public ScreenLobby(final Game game, final String name, final com.game.classes.Game gameState){
         this.game = game;
+        this.gameState = gameState;
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -68,7 +69,7 @@ public class ScreenLobby implements Screen, GameEvents {
         enterText = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (gameState == null || gameState.getClient() == null){
+                if (gameState == null || gameState.getClient().isConnected() == false){
                     chat.getTextArea().appendText("Geen connectie met een server.\n");
                     chat.getTextField().setText("");
                 } else {
@@ -249,8 +250,7 @@ public class ScreenLobby implements Screen, GameEvents {
     }
 
     private void establishConnection(String name) {
-        if (gameState == null) {
-            gameState = new com.game.classes.Game(new Client("localhost"));
+        if (!gameState.getClient().isConnected()){
             gameState.getClient().start();
             while (!gameState.getClient().isConnected()) {
             } //TODO betere oplossing
