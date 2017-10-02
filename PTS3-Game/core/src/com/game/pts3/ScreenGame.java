@@ -26,14 +26,14 @@ public class ScreenGame implements Screen, InputProcessor {
 
 
 
-    public ScreenGame(Game game){
+    public ScreenGame(Game game, TiledMap map){
         stage = new Stage();
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, width, height);
         camera.update();
-        tiledMap = new TmxMapLoader().load("map.tmx");
+        tiledMap = map;
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.game = game;
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -96,9 +96,9 @@ public class ScreenGame implements Screen, InputProcessor {
         if(keycode == Input.Keys.RIGHT)
             camera.translate(32,0);
         if(keycode == Input.Keys.UP)
-            camera.translate(0,-32);
-        if(keycode == Input.Keys.DOWN)
             camera.translate(0,32);
+        if(keycode == Input.Keys.DOWN)
+            camera.translate(0,-32);
         if(keycode == Input.Keys.NUM_1)
             tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
         if(keycode == Input.Keys.NUM_2)
@@ -118,6 +118,7 @@ public class ScreenGame implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        System.out.println("Clickered.");
         return false;
     }
 

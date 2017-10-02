@@ -5,15 +5,26 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.game.classes.Player;
+import javafx.stage.FileChooser;
 import network.Client.Client;
 import network.Client.GameEvents;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -25,6 +36,8 @@ public class ScreenLobby implements Screen, GameEvents {
     private Skin skin;
     private Chat chat;
     private List playerList;
+
+    private TiledMap tiledMap;
 
     private EventListener enterText;
 
@@ -74,6 +87,14 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getBtnSendMessage().setHeight(20);
 
         /**
+         * Labels
+         */
+        Label lblPlayerName = new Label("Player name: " + name, skin);
+        lblPlayerName.setPosition(10,330);
+        final Label lblMap = new Label("Selected map: N/A", skin);
+        lblMap.setPosition(10,310);
+
+        /**
          * Buttons
          */
         TextButton btnStart = new TextButton("Start Game", skin);
@@ -86,9 +107,12 @@ public class ScreenLobby implements Screen, GameEvents {
                         chat.textArea.appendText("Niet iedereen is READY.\n");
                         return;
                     }
+                    if (tiledMap == null){
+                        chat.textArea.appendText("Geen map geselecteerd.\n");
+                    }
                     System.out.println("Game Starting ...");
                 }
-                game.setScreen(new ScreenGame(game));
+                game.setScreen(new ScreenGame(game, tiledMap));
                 stage.clear();
             }
         });
@@ -116,13 +140,16 @@ public class ScreenLobby implements Screen, GameEvents {
         btnConnect.setWidth(250);
         btnConnect.setHeight(20);
 
-        /**
-         * Labels
-         */
-        Label lblPlayerName = new Label("Player name: " + name, skin);
-        lblPlayerName.setPosition(10,330);
-        Label lblMap = new Label("Selected map: N/A", skin);
-        lblMap.setPosition(10,310);
+        TextButton btnMap = new TextButton("Choose map", skin);
+        btnMap.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                tiledMap = new TmxMapLoader().load("map.tmx");
+                lblMap.setText("Selected map: " + "map.tmx");
+            }
+        });
+        btnMap.setPosition(510, 70);
+        btnMap.setSize(120, 20);
 
         /**
          * Player list
@@ -137,6 +164,7 @@ public class ScreenLobby implements Screen, GameEvents {
         stage.addActor(btnConnect);
         stage.addActor(btnStart);
         stage.addActor(btnReady);
+        stage.addActor(btnMap);
 
         stage.addActor(chat.scrollPane);
         stage.addActor(chat.textField);
