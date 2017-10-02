@@ -132,7 +132,7 @@ public class Game
      * Get the connection with the server.
      * @return Returns a client object.
      */
-    public Client getClient() {
+    public synchronized Client getClient() {
         return client;
     }
 }
