@@ -4,6 +4,9 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -24,7 +27,11 @@ public class ScreenGame implements Screen, InputProcessor {
     private OrthographicCamera camera;
     private TiledMapRenderer renderer;
 
-
+    private SpriteBatch batch;
+    private Sprite sprite;
+    private ShapeRenderer shapeRenderer;
+    private float selectedTileX = 0;
+    private float selectedTileY = 0;
 
     public ScreenGame(Game game, TiledMap map){
         stage = new Stage();
@@ -38,6 +45,12 @@ public class ScreenGame implements Screen, InputProcessor {
         this.game = game;
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
+        shapeRenderer = new ShapeRenderer();
+        batch = new SpriteBatch();
+
+        /**
+         * UI
+         */
         Label lblGame = new Label("Game start", skin);
         lblGame.setPosition(10,10);
         lblGame.setSize(100,100);
@@ -54,11 +67,30 @@ public class ScreenGame implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor( 0, 1, 0, 1 );
+        Gdx.gl.glClearColor( 0, 0, 0, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         camera.update();
+
+        /**
+         * Tilemap
+         */
         renderer.setView(camera);
         renderer.render();
+
+        /**
+         * other stuff
+         */
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        //batch.draw(sprite, 200,200,64,64);
+        /**
+         * Selection Rectangle
+         */
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 1, 1, 1);
+        shapeRenderer.rect(selectedTileX, selectedTileY, 15, 15); //x,y of specific tile
+        shapeRenderer.end();
+        batch.end();
 
         stage.act();
         stage.draw();
@@ -118,7 +150,9 @@ public class ScreenGame implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("Clickered.");
+        selectedTileX = screenX;
+        selectedTileY = 480 - screenY; // screen height - y
+        System.out.println("Clickered." + screenX + ":" + screenY);
         return false;
     }
 

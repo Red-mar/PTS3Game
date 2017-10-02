@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.game.classes.Map;
 import com.game.classes.Player;
 import javafx.stage.FileChooser;
 import network.Client.Client;
@@ -147,6 +149,10 @@ public class ScreenLobby implements Screen, GameEvents {
             public void changed(ChangeEvent event, Actor actor) {
                 tiledMap = new TmxMapLoader().load("map.tmx");
                 lblMap.setText("Selected map: " + "map.tmx");
+
+                TiledMapTileLayer tileLayer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
+                Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight());
+                gameState.setMap(gameMap);
             }
         });
         btnMap.setPosition(510, 70);
