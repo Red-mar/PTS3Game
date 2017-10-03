@@ -11,7 +11,7 @@ public class Map {
     private int sizeY;
     private int tileHeight;
     private int tileWidth;
-    private ArrayList<Terrain> terrain;
+    private Terrain[][] terrains;
 
     /**
      * A map
@@ -23,11 +23,11 @@ public class Map {
         this.sizeY = sizeY;
         this.tileHeight = tileHeight;
         this.tileWidth = tileWidth;
-        terrain = new ArrayList<Terrain>();
+
+        terrains = new Terrain[sizeX][sizeY];
         for (int i = 0; i < sizeX; i++){
             for (int j = 0; i < sizeY; i++){
-
-                terrain.add(new Terrain(TerrainProperties.Normal, i, j));
+                terrains[i][j] = new Terrain(TerrainProperties.Normal);
             }
         }
     }

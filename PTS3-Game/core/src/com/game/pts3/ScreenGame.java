@@ -24,6 +24,7 @@ public class ScreenGame implements Screen, InputProcessor {
     private Game game;
     private Texture texture;
     private TiledMap tiledMap;
+    private com.game.classes.Game gameState;
     private OrthographicCamera camera;
     private TiledMapRenderer renderer;
 
@@ -33,7 +34,7 @@ public class ScreenGame implements Screen, InputProcessor {
     private float selectedTileX = 0;
     private float selectedTileY = 0;
 
-    public ScreenGame(Game game, TiledMap map){
+    public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState){
         stage = new Stage();
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -41,6 +42,7 @@ public class ScreenGame implements Screen, InputProcessor {
         camera.setToOrtho(false, width, height);
         camera.update();
         tiledMap = map;
+        this.gameState = gameState;
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.game = game;
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -77,20 +79,33 @@ public class ScreenGame implements Screen, InputProcessor {
         renderer.setView(camera);
         renderer.render();
 
+        
         /**
          * other stuff
          */
         batch.setProjectionMatrix(camera.combined);
-        batch.begin();
+        //batch.begin();
         //batch.draw(sprite, 200,200,64,64);
+        /**
+         * Grid
+         */
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(0,0,0,1);
+        for (int i = 0; i < gameState.getMap().getSizeX(); i++){
+            for (int j = 0; j < gameState.getMap().getSizeY(); j++){
+                tiledMap.getLayers().get(1);
+                shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+            }
+        }
         /**
          * Selection Rectangle
          */
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(1, 1, 1, 1);
-        shapeRenderer.rect(selectedTileX, selectedTileY, 15, 15); //x,y of specific tile
+        //shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        //shapeRenderer.setColor(1, 1, 1, 1);
+        //shapeRenderer.rect(selectedTileX, selectedTileY, 15, 15); //x,y of specific tile
         shapeRenderer.end();
-        batch.end();
+        //batch.end();
 
         stage.act();
         stage.draw();

@@ -3,17 +3,13 @@ package com.game.classes;
 public class Terrain {
     private TerrainProperties property;
     private int bonus;
-    private int[] position;
 
     /**
      * a tile on a map
      * @param property
      */
-    public Terrain(TerrainProperties property, int x, int y) {
+    public Terrain(TerrainProperties property) {
         this.property = property;
-        position = new int[2];
-        position[0] = x;
-        position[1] = y;
     }
 
 

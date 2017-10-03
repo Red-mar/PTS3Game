@@ -120,7 +120,7 @@ public class ScreenLobby implements Screen, GameEvents {
                     System.out.println("Game Starting ...");
                     sound.play(1.0f);
                 }
-                game.setScreen(new ScreenGame(game, tiledMap));
+                game.setScreen(new ScreenGame(game, tiledMap, gameState));
                 stage.clear();
             }
         });
@@ -158,7 +158,7 @@ public class ScreenLobby implements Screen, GameEvents {
 
                 TiledMapTileLayer tileLayer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
                 int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
-                int tileHeight = tiledMap.getProperties().get("tileHeight", Integer.class);
+                int tileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
 
                 Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth);
                 gameState.setMap(gameMap);

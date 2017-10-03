@@ -19,7 +19,7 @@ public class TerrainTest {
         terrainVisual = TerrainVisual.Grass;
         terrainProperties = TerrainProperties.Normal;
 
-        terrain = new Terrain(terrainProperties, 0, 0);
+        terrain = new Terrain(terrainProperties);
     }
 
     @After
