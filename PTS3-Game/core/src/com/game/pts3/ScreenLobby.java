@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -38,6 +39,7 @@ public class ScreenLobby implements Screen, GameEvents {
     private Skin skin;
     private Chat chat;
     private List playerList;
+    private Sound sound;
 
     private TiledMap tiledMap;
 
@@ -51,6 +53,7 @@ public class ScreenLobby implements Screen, GameEvents {
         this.gameState = gameState;
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+        sound = Gdx.audio.newSound(Gdx.files.internal("sound/LobbyIn.wav"));
 
         /**
          * Chat
@@ -81,6 +84,7 @@ public class ScreenLobby implements Screen, GameEvents {
                     }
                     gameState.getClient().readInput(chat.getTextField().getText());
                     chat.getTextField().setText("");
+                    sound.play(1.0f);
                 }
             }
         };
@@ -114,6 +118,7 @@ public class ScreenLobby implements Screen, GameEvents {
                         chat.textArea.appendText("Geen map geselecteerd.\n");
                     }
                     System.out.println("Game Starting ...");
+                    sound.play(1.0f);
                 }
                 game.setScreen(new ScreenGame(game, tiledMap));
                 stage.clear();
@@ -127,6 +132,7 @@ public class ScreenLobby implements Screen, GameEvents {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 gameState.getClient().sendMessageReady();
+                sound.play(1.0f);
             }
         });
         btnReady.setPosition(510,40);
@@ -153,6 +159,7 @@ public class ScreenLobby implements Screen, GameEvents {
                 TiledMapTileLayer tileLayer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
                 Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight());
                 gameState.setMap(gameMap);
+                sound.play(1.0f);
             }
         });
         btnMap.setPosition(510, 70);
@@ -264,6 +271,7 @@ public class ScreenLobby implements Screen, GameEvents {
             addGameListener();
             gameState.getClient().sendMessageSetName(name);
             gameState.getClient().sendMessageGetPlayers();
+            sound.play(1.0f);
         }
     }
 }
