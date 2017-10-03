@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.game.classes.Character;
+import com.game.classes.Terrain;
 
 public class ScreenGame implements Screen, InputProcessor {
 
@@ -34,6 +35,7 @@ public class ScreenGame implements Screen, InputProcessor {
     private ShapeRenderer shapeRenderer;
     private float selectedTileX = 0;
     private float selectedTileY = 0;
+    private Terrain selectedTile;
 
     public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState){
         stage = new Stage();
@@ -177,6 +179,7 @@ public class ScreenGame implements Screen, InputProcessor {
         selectedTileY = worldCoordinates.y;
         System.out.println("Clickered." + screenX + ":" + screenY);
         System.out.println("WorldCoordinates : " + worldCoordinates.x +":"+ worldCoordinates.y);
+        selectedTile = gameState.getMap().getTerrains()[(int)Math.ceil((int)selectedTileX / 15)][(int)Math.ceil((int)selectedTileY /15)];
         return false;
     }
 

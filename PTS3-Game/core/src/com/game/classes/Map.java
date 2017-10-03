@@ -34,6 +34,10 @@ public class Map {
     ///ToDo constructor which loads the tmx
 
 
+    public Terrain[][] getTerrains() {
+        return terrains;
+    }
+
     public int getSizeX() {
         return sizeX;
     }
