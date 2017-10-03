@@ -13,7 +13,7 @@ public class TerrainTest {
     TerrainProperties terrainProperties;
 
     @Before
-    public void setUp() throws Exception {g
+    public void setUp() throws Exception {
         terrainProperties = TerrainProperties.Normal;
 
         terrain = new Terrain(terrainProperties, 0 , 0);
