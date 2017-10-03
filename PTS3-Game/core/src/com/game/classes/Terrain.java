@@ -1,23 +1,21 @@
 package com.game.classes;
 
 public class Terrain {
-    private TerrainVisual visual;
     private TerrainProperties property;
     private int bonus;
+    private int[] position;
 
     /**
      * a tile on a map
-     * @param visual
      * @param property
      */
-    public Terrain(TerrainVisual visual, TerrainProperties property) {
-        this.visual = visual;
+    public Terrain(TerrainProperties property, int x, int y) {
         this.property = property;
+        position = new int[2];
+        position[0] = x;
+        position[1] = y;
     }
 
-    public TerrainVisual getVisual() {
-        return visual;
-    }
 
     public TerrainProperties getProperty() {
         return property;

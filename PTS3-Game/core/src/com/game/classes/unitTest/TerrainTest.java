@@ -19,17 +19,13 @@ public class TerrainTest {
         terrainVisual = TerrainVisual.Grass;
         terrainProperties = TerrainProperties.Normal;
 
-        terrain = new Terrain(terrainVisual, terrainProperties);
+        terrain = new Terrain(terrainProperties, 0, 0);
     }
 
     @After
     public void tearDown() throws Exception {
     }
 
-    @Test
-    public void getVisual() throws Exception {
-        assertEquals(terrainVisual, terrain.getVisual());
-    }
 
     @Test
     public void getProperty() throws Exception {

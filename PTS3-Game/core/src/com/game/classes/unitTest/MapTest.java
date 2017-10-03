@@ -13,7 +13,7 @@ public class MapTest {
     @Before
     public void setUp() throws Exception
     {
-        map = new Map(10, 20);
+        map = new Map(10, 20, 0, 0);
     }
 
     @After

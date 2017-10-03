@@ -157,7 +157,10 @@ public class ScreenLobby implements Screen, GameEvents {
                 lblMap.setText("Selected map: " + "map.tmx");
 
                 TiledMapTileLayer tileLayer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
-                Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight());
+                int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
+                int tileHeight = tiledMap.getProperties().get("tileHeight", Integer.class);
+
+                Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth);
                 gameState.setMap(gameMap);
                 sound.play(1.0f);
             }
