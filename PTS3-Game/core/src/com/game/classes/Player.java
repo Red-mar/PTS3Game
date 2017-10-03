@@ -8,7 +8,7 @@ public class Player implements Serializable {
     private String name;
     private boolean isSpectator;
     private boolean isReady;
-    private List<Character> characters;
+    private ArrayList<Character> characters;
     private boolean isLocalPlayer;
 
     /**
@@ -68,7 +68,7 @@ public class Player implements Serializable {
      * Gets the list of characters that belong to this player.
      * @return Returns a list of characters.
      */
-    public List<Character> getCharacters() {
+    public ArrayList<Character> getCharacters() {
         return characters;
     }
 
@@ -76,8 +76,12 @@ public class Player implements Serializable {
      * Sets a whole list of characters.
      * @param characters Requires a list of characters.
      */
-    public void setCharacters(List<Character> characters) {
+    public void setCharacters(ArrayList<Character> characters) {
         this.characters = characters;
+    }
+
+    public void addCharacter(Character character){
+        characters.add(character);
     }
 
     /**

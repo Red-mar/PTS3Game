@@ -1,5 +1,8 @@
 package com.game.classes;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+
 public class Character {
     private String name;
     private int maxHealthPoints;
@@ -11,6 +14,7 @@ public class Character {
     private Terrain currentTerrain;
     private int[] position;
     private Player player;
+    private Sprite sprite;
 
     /**
      * A character that belongs to a player.
@@ -20,12 +24,15 @@ public class Character {
      * @param defensePoints The amount of damage that gets reduced per received attack.
      * @param movementPoints The amount of tiles a character can move.
      */
-    public Character(String name, int maxHealthPoints, int attackPoints, int defensePoints, int movementPoints) {
+    public Character(String name, int maxHealthPoints, int attackPoints, int defensePoints, int movementPoints, Sprite sprite, Terrain currentTerrain) {
         this.name = name;
         this.maxHealthPoints = maxHealthPoints;
         this.attackPoints = attackPoints;
         this.defensePoints = defensePoints;
         this.movementPoints = movementPoints;
+        this.sprite = sprite;
+        this.currentTerrain = currentTerrain;
+        currentTerrain.setCharacter(this);
     }
 
     /**
@@ -150,10 +157,19 @@ public class Character {
 
     /**
      * Set the current terrain a character is standing on.
-     * @param currentTerrain Requires a Terrain object.
+     * @param terrain Requires a Terrain object.
      */
-    public void setCurrentTerrain(Terrain currentTerrain) {
-        this.currentTerrain = currentTerrain;
+    public boolean setCurrentTerrain(Terrain terrain) {
+        int xMove = Math.abs(terrain.getX() - currentTerrain.getX());
+        int yMove = Math.abs(terrain.getY() - currentTerrain.getY());
+        int totalMovement = xMove + yMove;
+        //TODO gebruik len
+
+        if (totalMovement > movementPoints){
+            return false;
+        }
+        this.currentTerrain = terrain;
+        return true;
     }
 
     /**
@@ -187,5 +203,9 @@ public class Character {
      */
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
     }
 }

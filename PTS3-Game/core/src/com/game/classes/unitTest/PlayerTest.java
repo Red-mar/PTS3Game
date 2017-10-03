@@ -1,7 +1,10 @@
 package com.game.classes.unitTest;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.game.classes.Character;
 import com.game.classes.Player;
+import com.game.classes.Terrain;
+import com.game.classes.TerrainProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,8 +59,8 @@ public class PlayerTest {
 
     @Test
     public void setCharacters() throws Exception {
-        Character c = new Character("Hans", 10,10,10,10);
-        List<Character> list = new ArrayList<Character>();
+        Character c = new Character("Hans", 10,10,10,10, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1));
+        ArrayList<Character> list = new ArrayList<Character>();
         list.add(c);
         p.setCharacters(list);
         assertEquals("Hans", p.getCharacters().get(0).getName());

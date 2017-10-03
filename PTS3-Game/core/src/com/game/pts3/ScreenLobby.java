@@ -6,6 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -19,8 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.game.classes.Character;
 import com.game.classes.Map;
 import com.game.classes.Player;
+import com.game.classes.Terrain;
 import javafx.stage.FileChooser;
 import network.Client.Client;
 import network.Client.GameEvents;
@@ -30,6 +34,7 @@ import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ScreenLobby implements Screen, GameEvents {
     private Game game;
@@ -118,6 +123,7 @@ public class ScreenLobby implements Screen, GameEvents {
                         chat.textArea.appendText("Geen map geselecteerd.\n");
                     }
                     System.out.println("Game Starting ...");
+                    addCharacter();
                     sound.play(1.0f);
                 }
                 game.setScreen(new ScreenGame(game, tiledMap, gameState));
@@ -275,6 +281,17 @@ public class ScreenLobby implements Screen, GameEvents {
             gameState.getClient().sendMessageSetName(name);
             gameState.getClient().sendMessageGetPlayers();
             sound.play(1.0f);
+        }
+    }
+
+    private void addCharacter(){
+        Texture texture = new Texture(Gdx.files.internal("Sprites/swordsman-1.png"));
+        Sprite sprite = new Sprite(texture);
+        for (int i = 0; i < 5; i ++){
+            Random rnd = new Random();
+            Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(18)];
+            Character character = new Character("Pietje", 10, 1, 1, 3,sprite, terrain);
+            gameState.getPlayers().get(0).addCharacter(character);
         }
     }
 }

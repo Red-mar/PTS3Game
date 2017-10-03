@@ -17,14 +17,16 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.game.classes.Character;
+import com.game.classes.Player;
 import com.game.classes.Terrain;
+
+import java.util.ArrayList;
 
 public class ScreenGame implements Screen, InputProcessor {
 
     Stage stage;
     private Skin skin;
     private Game game;
-    private Texture texture;
     private TiledMap tiledMap;
     private com.game.classes.Game gameState;
     private OrthographicCamera camera;
@@ -32,10 +34,12 @@ public class ScreenGame implements Screen, InputProcessor {
 
     private SpriteBatch batch;
     private Sprite sprite;
+    private Texture texture;
     private ShapeRenderer shapeRenderer;
     private float selectedTileX = 0;
     private float selectedTileY = 0;
     private Terrain selectedTile;
+    private Character selectedCharacter;
 
     public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState){
         stage = new Stage();
@@ -46,9 +50,12 @@ public class ScreenGame implements Screen, InputProcessor {
         camera.update();
         tiledMap = map;
         this.gameState = gameState;
+        selectedTile = gameState.getMap().getTerrains()[0][0];
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.game = game;
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+        texture = new Texture(Gdx.files.internal("Sprites/swordsman-1.png"));
+        sprite = new Sprite(texture);
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
@@ -80,14 +87,8 @@ public class ScreenGame implements Screen, InputProcessor {
         /**
          * Tilemap
          */
-
         renderer.setView(camera);
-        //batch.setProjectionMatrix(camera.combined);
-
-        //batch.end();
-
         renderer.render();
-
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -104,15 +105,22 @@ public class ScreenGame implements Screen, InputProcessor {
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
-        //batch.begin();
-        //batch.draw(sprite, 200,200,64,64);
         /**
-         * Selection Rectangle
+         * Character
          */
-        //shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        //shapeRenderer.setColor(1, 1, 1, 1);
-        //shapeRenderer.rect(selectedTileX, selectedTileY, 15, 15); //x,y of specific tile
-        //batch.end();
+        batch.begin();
+        batch.setProjectionMatrix(camera.combined);
+        for (Player player: gameState.getPlayers()) {
+            ArrayList<Character> characters = player.getCharacters();
+            for (Character character:characters) {
+                character.getSprite().draw(batch);
+                character.getSprite().setPosition(
+                        character.getCurrentTerrain().getX() * gameState.getMap().getTileWidth(),
+                        character.getCurrentTerrain().getY() * gameState.getMap().getTileHeight()
+                );
+            }
+        }
+        batch.end();
 
         stage.act();
         stage.draw();
@@ -178,7 +186,6 @@ public class ScreenGame implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
         Vector3 worldCoordinates = new Vector3(screenX, screenY, 0);
         camera.unproject(worldCoordinates);
         selectedTileX = worldCoordinates.x;
@@ -189,6 +196,19 @@ public class ScreenGame implements Screen, InputProcessor {
         y = (int)Math.ceil((int)selectedTileY / 15);
         selectedTile = gameState.getMap().getTerrains()[x][y];
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
+
+        if (selectedTile.getCharacter() != null && selectedCharacter == null){
+            selectedCharacter = selectedTile.getCharacter();
+        }
+        if (selectedCharacter != null){
+            if (!selectedCharacter.setCurrentTerrain(selectedTile)){
+                selectedCharacter = null;
+            } else {
+                selectedTile.setCharacter(selectedCharacter);
+            }
+        }
+
+
         return false;
     }
 

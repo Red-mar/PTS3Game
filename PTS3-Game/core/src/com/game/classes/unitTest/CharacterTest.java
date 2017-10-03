@@ -1,13 +1,16 @@
 package com.game.classes.unitTest;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.game.classes.Character;
 import com.game.classes.Player;
+import com.game.classes.Terrain;
+import com.game.classes.TerrainProperties;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class CharacterTest {
-    Character c = new Character("", 10, 20, 30, 40);
+    Character c = new Character("", 10, 20, 30, 40, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1));
 
     @Test
     public void getName() throws Exception

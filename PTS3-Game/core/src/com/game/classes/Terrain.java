@@ -3,6 +3,7 @@ package com.game.classes;
 public class Terrain {
     private TerrainProperties property;
     private int bonus;
+    private Character character;
     private int x;
     private int y;
 
@@ -22,6 +23,14 @@ public class Terrain {
 
     public int getY() {
         return y;
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
     }
 
     public TerrainProperties getProperty() {
