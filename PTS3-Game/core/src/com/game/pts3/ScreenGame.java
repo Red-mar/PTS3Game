@@ -180,7 +180,7 @@ public class ScreenGame implements Screen, InputProcessor {
 
         int x, y;
         x = (int)Math.ceil((int)selectedTileX / 15);
-        y = (int)Math.ceil((int)selectedTileX / 15);
+        y = (int)Math.ceil((int)selectedTileY / 15);
         selectedTile = gameState.getMap().getTerrains()[x][y];
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
         return false;
