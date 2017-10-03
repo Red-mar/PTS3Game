@@ -116,6 +116,8 @@ public class ScreenGame implements Screen, InputProcessor {
 
         stage.act();
         stage.draw();
+
+        moveCamera();
     }
 
     @Override
@@ -145,19 +147,23 @@ public class ScreenGame implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if(keycode == Input.Keys.LEFT)
-            camera.translate(-32,0);
-        if(keycode == Input.Keys.RIGHT)
-            camera.translate(32,0);
-        if(keycode == Input.Keys.UP)
-            camera.translate(0,32);
-        if(keycode == Input.Keys.DOWN)
-            camera.translate(0,-32);
         if(keycode == Input.Keys.NUM_1)
             tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
         if(keycode == Input.Keys.NUM_2)
             tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
         return false;
+    }
+
+    public void moveCamera(){
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+            camera.translate(-5, 0);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            camera.translate(5, 0);
+        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+            camera.translate(0, 5);
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            camera.translate(0, -5);
+
     }
 
     @Override
