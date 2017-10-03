@@ -177,9 +177,9 @@ public class ScreenGame implements Screen, InputProcessor {
         camera.unproject(worldCoordinates);
         selectedTileX = worldCoordinates.x;
         selectedTileY = worldCoordinates.y;
-        System.out.println("Clickered." + screenX + ":" + screenY);
-        System.out.println("WorldCoordinates : " + worldCoordinates.x +":"+ worldCoordinates.y);
+        System.out.println((int)Math.ceil((int)selectedTileX / 15) + ":" + (int)Math.ceil((int)selectedTileY /15));
         selectedTile = gameState.getMap().getTerrains()[(int)Math.ceil((int)selectedTileX / 15)][(int)Math.ceil((int)selectedTileY /15)];
+        //System.out.println("Selected Tile: " + "x:" + selectedTile.getX());
         return false;
     }
 

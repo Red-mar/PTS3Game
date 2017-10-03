@@ -27,7 +27,7 @@ public class Map {
         terrains = new Terrain[sizeX][sizeY];
         for (int i = 0; i < sizeX; i++){
             for (int j = 0; i < sizeY; i++){
-                terrains[i][j] = new Terrain(TerrainProperties.Normal);
+                terrains[i][j] = new Terrain(TerrainProperties.Normal, i, j);
             }
         }
     }
