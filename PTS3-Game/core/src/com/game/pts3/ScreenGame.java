@@ -76,35 +76,33 @@ public class ScreenGame implements Screen, InputProcessor {
         /**
          * Tilemap
          */
+
         renderer.setView(camera);
+        //batch.setProjectionMatrix(camera.combined);
+
+        //batch.end();
+
         renderer.render();
 
-        
-        /**
-         * other stuff
-         */
-        batch.setProjectionMatrix(camera.combined);
-        //batch.begin();
-        //batch.draw(sprite, 200,200,64,64);
-        /**
-         * Grid
-         */
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.setColor(0,0,0,1);
         for (int i = 0; i < gameState.getMap().getSizeX(); i++){
             for (int j = 0; j < gameState.getMap().getSizeY(); j++){
-                tiledMap.getLayers().get(1);
                 shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
             }
         }
+        shapeRenderer.end();
+
+        //batch.begin();
+        //batch.draw(sprite, 200,200,64,64);
         /**
          * Selection Rectangle
          */
         //shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         //shapeRenderer.setColor(1, 1, 1, 1);
         //shapeRenderer.rect(selectedTileX, selectedTileY, 15, 15); //x,y of specific tile
-        shapeRenderer.end();
         //batch.end();
 
         stage.act();
