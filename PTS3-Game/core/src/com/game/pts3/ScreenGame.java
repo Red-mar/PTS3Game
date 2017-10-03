@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -90,9 +91,12 @@ public class ScreenGame implements Screen, InputProcessor {
         shapeRenderer.setColor(0,0,0,1);
         for (int i = 0; i < gameState.getMap().getSizeX(); i++){
             for (int j = 0; j < gameState.getMap().getSizeY(); j++){
+
                 shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
             }
         }
+        shapeRenderer.setColor(1, 0, 0, 1);
+        shapeRenderer.rect((float)Math.ceil((int)selectedTileX / 15) * 15, (float)Math.ceil((int)selectedTileY / 15) * 15, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
         shapeRenderer.end();
 
         //batch.begin();
@@ -163,9 +167,13 @@ public class ScreenGame implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        selectedTileX = screenX;
-        selectedTileY = 480 - screenY; // screen height - y
+
+        Vector3 worldCoordinates = new Vector3(screenX, screenY, 0);
+        camera.unproject(worldCoordinates);
+        selectedTileX = worldCoordinates.x;
+        selectedTileY = worldCoordinates.y;
         System.out.println("Clickered." + screenX + ":" + screenY);
+        System.out.println("WorldCoordinates : " + worldCoordinates.x +":"+ worldCoordinates.y);
         return false;
     }
 
