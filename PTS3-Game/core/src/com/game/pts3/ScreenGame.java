@@ -72,6 +72,7 @@ public class ScreenGame implements Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClearColor( 0, 0, 0, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
+
         camera.update();
 
         /**
@@ -87,17 +88,19 @@ public class ScreenGame implements Screen, InputProcessor {
 
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
         shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.setColor(0,0,0,1);
+        shapeRenderer.setColor(0, 0, 0, 0.2f);
         for (int i = 0; i < gameState.getMap().getSizeX(); i++){
             for (int j = 0; j < gameState.getMap().getSizeY(); j++){
-
                 shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
             }
         }
-        shapeRenderer.setColor(1, 0, 0, 1);
+        shapeRenderer.setColor(1, 0, 0, 1f);
         shapeRenderer.rect((float)Math.ceil((int)selectedTileX / 15) * 15, (float)Math.ceil((int)selectedTileY / 15) * 15, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
         shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
 
         //batch.begin();
         //batch.draw(sprite, 200,200,64,64);
