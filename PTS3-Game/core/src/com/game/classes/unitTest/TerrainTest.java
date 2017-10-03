@@ -2,7 +2,6 @@ package com.game.classes.unitTest;
 
 import com.game.classes.Terrain;
 import com.game.classes.TerrainProperties;
-import com.game.classes.TerrainVisual;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,12 +10,10 @@ import static org.junit.Assert.*;
 
 public class TerrainTest {
     Terrain terrain;
-    TerrainVisual terrainVisual;
     TerrainProperties terrainProperties;
 
     @Before
-    public void setUp() throws Exception {
-        terrainVisual = TerrainVisual.Grass;
+    public void setUp() throws Exception {g
         terrainProperties = TerrainProperties.Normal;
 
         terrain = new Terrain(terrainProperties, 0 , 0);
