@@ -85,8 +85,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         stage.addActor(lblGame);
         stage.addActor(btnEndTurn);
 
-        InputMultiplexer multiplexer = new InputMultiplexer();
+        updatePlayers();
 
+        InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(multiplexer);
