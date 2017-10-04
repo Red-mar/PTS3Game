@@ -219,6 +219,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         int x, y;
         x = (int)Math.ceil((int)selectedTileX / 15);
         y = (int)Math.ceil((int)selectedTileY / 15);
+        if (x < 0 || y < 0 || x > gameState.getMap().getSizeX() || y > gameState.getMap().getSizeY()){
+            return false;
+        }
         selectedTile = gameState.getMap().getTerrains()[x][y];
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
 
