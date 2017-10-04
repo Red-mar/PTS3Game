@@ -13,16 +13,20 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.game.classes.Character;
 import com.game.classes.Player;
 import com.game.classes.Terrain;
+import network.Client.GameEvents;
 
 import java.util.ArrayList;
 
-public class ScreenGame implements Screen, InputProcessor {
+public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     Stage stage;
     private Skin skin;
@@ -50,6 +54,7 @@ public class ScreenGame implements Screen, InputProcessor {
         camera.update();
         tiledMap = map;
         this.gameState = gameState;
+        addGameListener();
         selectedTile = gameState.getMap().getTerrains()[0][0];
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.game = game;
@@ -67,14 +72,28 @@ public class ScreenGame implements Screen, InputProcessor {
         lblGame.setPosition(10,10);
         lblGame.setSize(100,100);
 
-        stage.addActor(lblGame);
+        TextButton btnEndTurn = new TextButton("End Turn", skin);
+        btnEndTurn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                updatePlayers();
+            }
+        });
+        btnEndTurn.setPosition(10,10);
+        btnEndTurn.setSize(120,20);
 
-        Gdx.input.setInputProcessor(this);
+        stage.addActor(lblGame);
+        stage.addActor(btnEndTurn);
+
+        InputMultiplexer multiplexer = new InputMultiplexer();
+
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
     public void show() {
-        //Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -163,13 +182,13 @@ public class ScreenGame implements Screen, InputProcessor {
     }
 
     public void moveCamera(){
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
             camera.translate(-5, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
             camera.translate(5, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
             camera.translate(0, 5);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
             camera.translate(0, -5);
 
     }
@@ -230,5 +249,30 @@ public class ScreenGame implements Screen, InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    @Override
+    public void onGetPlayers(ArrayList<Player> players) {
+        for (Player player:players) {
+            for (Character character:player.getCharacters()) {
+                Sprite sprite = new Sprite(texture);
+                sprite.setPosition(character.getCurrentTerrain().getX()*15, character.getCurrentTerrain().getY()*15);
+                gameState.getMap().getTerrains()[character.getCurrentTerrain().getX()][character.getCurrentTerrain().getY()].setCharacter(character);
+                character.setSprite(sprite);
+            }
+        }
+        gameState.setPlayers(players);
+    }
+
+    /**
+     * hacky af
+     */
+    private void addGameListener(){
+        gameState.getClient().addGameListener(this);
+    }
+
+    private void updatePlayers(){
+        gameState.getClient().sendGameMessagePlayers(gameState.getPlayers());
+        gameState.getClient().sendMessageGetPlayers();
     }
 }

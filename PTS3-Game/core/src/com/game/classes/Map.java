@@ -1,12 +1,13 @@
 package com.game.classes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * https://github.com/libgdx/libgdx/wiki/Tile-maps
  * :thinking:
  */
-public class Map {
+public class Map implements Serializable {
     private int sizeX;
     private int sizeY;
     private int tileHeight;

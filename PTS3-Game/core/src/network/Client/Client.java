@@ -132,6 +132,10 @@ public class Client {
      */
     public void sendMessageReady() { connectionHandler.sendMessage(MessageType.GameReadyMessage);}
 
+    public void sendGameMessagePlayers(ArrayList<Player> players){
+        connectionHandler.sendObjectMessage(MessageType.ClientSendPlayersMessage, players);
+    }
+
     /**
      * Stops the connection with the server.
      */
@@ -209,6 +213,24 @@ public class Client {
         }
 
         /**
+         * Sends an object to all clients
+         * @param type The type of message (make sure it supports the object)
+         * @param object The object to send
+         */
+        private void sendObjectMessage(MessageType type, Object object){
+            try {
+                out.writeByte(type.ordinal());
+                ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+                ObjectOutputStream os = new ObjectOutputStream(bOut);
+                os.writeObject(object);
+                out.write(bOut.toByteArray());
+                out.flush();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        /**
          * Closes the connection with the server.
          */
         private void close(){
@@ -245,7 +267,7 @@ public class Client {
                     MessageType type = MessageType.values()[in.readByte()];
                     String message;
 
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[5000];
                     System.out.println("Received Message Type of:" + type.toString());
 
                     switch (type) {

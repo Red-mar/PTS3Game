@@ -59,7 +59,7 @@ public class PlayerTest {
 
     @Test
     public void setCharacters() throws Exception {
-        Character c = new Character("Hans", 10,10,10,10, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1));
+        Character c = new Character("Hans", 10,10,10,10, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1), "");
         ArrayList<Character> list = new ArrayList<Character>();
         list.add(c);
         p.setCharacters(list);

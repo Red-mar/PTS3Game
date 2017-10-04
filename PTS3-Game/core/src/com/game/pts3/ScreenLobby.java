@@ -123,7 +123,7 @@ public class ScreenLobby implements Screen, GameEvents {
                         chat.textArea.appendText("Geen map geselecteerd.\n");
                     }
                     System.out.println("Game Starting ...");
-                    addCharacter();
+                    addCharacter(name);
                     sound.play(1.0f);
                 }
                 game.setScreen(new ScreenGame(game, tiledMap, gameState));
@@ -258,6 +258,7 @@ public class ScreenLobby implements Screen, GameEvents {
     @Override
     public void onGetPlayers(ArrayList<Player> players) {
         chat.getTextArea().appendText("There are now " + players.size() + " player(s).\n");
+
         gameState.setPlayers(players);
         playerList.clearItems();
         playerList.setItems(players.toArray());
@@ -284,14 +285,21 @@ public class ScreenLobby implements Screen, GameEvents {
         }
     }
 
-    private void addCharacter(){
+    private void addCharacter(String name){
         Texture texture = new Texture(Gdx.files.internal("Sprites/swordsman-1.png"));
         Sprite sprite = new Sprite(texture);
         for (int i = 0; i < 5; i ++){
             Random rnd = new Random();
             Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(18)];
-            Character character = new Character("Pietje", 10, 1, 1, 3,sprite, terrain);
-            gameState.getPlayers().get(0).addCharacter(character);
+            Character character = new Character("Pietje", 10, 1, 1, 3,sprite, terrain,"Sprites/swordsman-1.png");
+            //gameState.getPlayers().get(0).addCharacter(character);
+            for (Player player: gameState.getPlayers()) {
+                if (player.getName().equals(name)){
+                    player.addCharacter(character);
+                }
+            }
+
         }
+        gameState.getClient().sendGameMessagePlayers(gameState.getPlayers());
     }
 }

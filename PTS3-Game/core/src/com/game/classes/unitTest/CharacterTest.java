@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class CharacterTest {
-    Character c = new Character("", 10, 20, 30, 40, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1));
+    Character c = new Character("", 10, 20, 30, 40, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1), "");
 
     @Test
     public void getName() throws Exception

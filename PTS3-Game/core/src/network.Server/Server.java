@@ -161,6 +161,8 @@ public class Server {
             String message;
             System.out.println("Received Message Type of:" + type.toString());
 
+            byte[] buffer = new byte[5000];
+
             switch (type){
                 case TestMessage:
                     break;
@@ -177,6 +179,11 @@ public class Server {
                     String previousName = player.getName();
                     player.setName(in.readUTF());
                     System.out.println("Name set to: " + player.getName() + ", was " + previousName);
+                    for (Player player:game.getPlayers()) {
+                        if (player == this.player){
+                            player.setName(this.player.getName());
+                        }
+                    }
                     break;
                 case GameSendPlayersMessage: /** Sends player list to all clients **/
                     Server.this.sendGameMessagePlayers();
@@ -189,6 +196,19 @@ public class Server {
                         thisPlayer.setReady(false);
                     }
                     Server.this.sendGameMessagePlayers();
+                    break;
+                case ClientSendPlayersMessage: /** Receives an updated player list from the client **/
+                    try {
+                        in.read(buffer);
+                        System.out.println(buffer.length);
+                        ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
+                        ObjectInputStream is = new ObjectInputStream(bIn);
+                        ArrayList<Player> players = ((ArrayList<Player>) is.readObject());
+                        game.setPlayers(players);
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
                     break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");

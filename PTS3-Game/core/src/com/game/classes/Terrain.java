@@ -1,6 +1,8 @@
 package com.game.classes;
 
-public class Terrain {
+import java.io.Serializable;
+
+public class Terrain implements Serializable {
     private TerrainProperties property;
     private int bonus;
     private Character character;

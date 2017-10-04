@@ -11,5 +11,6 @@ public enum MessageType {
     WhisperMessage,
     SetNameMessage,
     GameSendPlayersMessage,
-    GameReadyMessage
+    GameReadyMessage,
+    ClientSendPlayersMessage
 }
