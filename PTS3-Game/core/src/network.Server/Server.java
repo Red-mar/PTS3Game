@@ -147,7 +147,8 @@ public class Server {
                     handleMessage(type, in);
                 }
             } catch (Exception e) {
-                server.serverManager.game.removePlayer(server.clients.get(this));
+
+                server.serverManager.game.removePlayer(player.getName());
                 server.clients.remove(this);
                 System.out.println("Connection reset, closing connection with " + this.player.getName());
                 this.close();
@@ -179,7 +180,7 @@ public class Server {
                     String previousName = player.getName();
                     player.setName(in.readUTF());
                     System.out.println("Name set to: " + player.getName() + ", was " + previousName);
-                    for (Player player:game.getPlayers()) {
+                    for (Player player:server.serverManager.game.getPlayers()) {
                         if (player == this.player){
                             player.setName(this.player.getName());
                         }
@@ -204,7 +205,7 @@ public class Server {
                         ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
                         ObjectInputStream is = new ObjectInputStream(bIn);
                         ArrayList<Player> players = ((ArrayList<Player>) is.readObject());
-                        game.setPlayers(players);
+                        server.serverManager.game.setPlayers(players);
 
                     } catch (Exception e){
                         e.printStackTrace();

@@ -73,6 +73,22 @@ public class Game
         players.remove(temp);
     }
 
+    public void removePlayer(String name){
+        Player temp = null;
+        for (Player current:players)
+        {
+            if(current.getName().equals(name))
+            {
+                temp = current;
+            }
+        }
+
+        if (temp == null){
+            return;
+        }
+        players.remove(temp);
+    }
+
     /**
      * Gets the current map that the game is using.
      * @return A map object.
