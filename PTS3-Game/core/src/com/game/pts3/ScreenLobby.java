@@ -124,9 +124,9 @@ public class ScreenLobby implements Screen, GameEvents {
                         chat.textArea.appendText("Geen map geselecteerd.\n");
                     }
                     System.out.println("Game Starting ...");
-                    addCharacter(name);
                     sound.play(1.0f);
                 }
+                addCharacter(name);
                 game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer));
                 stage.clear();
             }
@@ -299,7 +299,7 @@ public class ScreenLobby implements Screen, GameEvents {
         }
         Texture texture = new Texture(Gdx.files.internal(textureFile));
         Sprite sprite = new Sprite(texture);
-        for (int i = 0; i < 5; i ++){
+        for (int i = 0; i < 1; i ++){
             Random rnd = new Random();
             Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(18)];
             Character character = new Character("Pietje", 10, 1, 1, 3,sprite, terrain,textureFile,clientPlayer);
