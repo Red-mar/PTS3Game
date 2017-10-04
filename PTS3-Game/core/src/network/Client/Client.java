@@ -132,8 +132,8 @@ public class Client {
      */
     public void sendMessageReady() { connectionHandler.sendMessage(MessageType.GameReadyMessage);}
 
-    public void sendGameMessagePlayers(ArrayList<Player> players){
-        connectionHandler.sendObjectMessage(MessageType.ClientSendPlayersMessage, players);
+    public void sendGameMessagePlayer(Player player){
+        connectionHandler.sendObjectMessage(MessageType.ClientSendPlayerMessage, player);
     }
 
     /**

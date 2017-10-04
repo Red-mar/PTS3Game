@@ -39,6 +39,7 @@ import java.util.Random;
 public class ScreenLobby implements Screen, GameEvents {
     private Game game;
     private com.game.classes.Game gameState;
+    private Player clientPlayer;
     private Stage stage;
     private boolean isNameSet = false;
     private Skin skin;
@@ -126,7 +127,7 @@ public class ScreenLobby implements Screen, GameEvents {
                     addCharacter(name);
                     sound.play(1.0f);
                 }
-                game.setScreen(new ScreenGame(game, tiledMap, gameState));
+                game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer));
                 stage.clear();
             }
         });
@@ -260,6 +261,7 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getTextArea().appendText("There are now " + players.size() + " player(s).\n");
 
         gameState.setPlayers(players);
+
         playerList.clearItems();
         playerList.setItems(players.toArray());
 
@@ -286,20 +288,23 @@ public class ScreenLobby implements Screen, GameEvents {
     }
 
     private void addCharacter(String name){
-        Texture texture = new Texture(Gdx.files.internal("Sprites/swordsman-1.png"));
+        for (Player player: gameState.getPlayers()) {
+            if (player.getName().equals(name)){
+                clientPlayer = player;
+            }
+        }
+        String textureFile = "Sprites/swordsman-1.png";
+        if (clientPlayer.getName().equals("Red")){
+            textureFile = "Sprites/swordsman-2.png";
+        }
+        Texture texture = new Texture(Gdx.files.internal(textureFile));
         Sprite sprite = new Sprite(texture);
         for (int i = 0; i < 5; i ++){
             Random rnd = new Random();
             Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(18)];
-            Character character = new Character("Pietje", 10, 1, 1, 3,sprite, terrain,"Sprites/swordsman-1.png");
-            //gameState.getPlayers().get(0).addCharacter(character);
-            for (Player player: gameState.getPlayers()) {
-                if (player.getName().equals(name)){
-                    player.addCharacter(character);
-                }
-            }
-
+            Character character = new Character("Pietje", 10, 1, 1, 3,sprite, terrain,textureFile,clientPlayer);
+            clientPlayer.addCharacter(character);
         }
-        gameState.getClient().sendGameMessagePlayers(gameState.getPlayers());
+        gameState.getClient().sendGameMessagePlayer(clientPlayer);
     }
 }

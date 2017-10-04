@@ -1,6 +1,7 @@
 package com.game.pts3;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,6 +32,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     Stage stage;
     private Skin skin;
     private Game game;
+    private Player clientPlayer;
     private TiledMap tiledMap;
     private com.game.classes.Game gameState;
     private OrthographicCamera camera;
@@ -39,13 +41,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private SpriteBatch batch;
     private Sprite sprite;
     private Texture texture;
+    private Texture textureRed;
     private ShapeRenderer shapeRenderer;
     private float selectedTileX = 0;
     private float selectedTileY = 0;
     private Terrain selectedTile;
     private Character selectedCharacter;
 
-    public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState){
+    public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer){
         stage = new Stage();
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -55,11 +58,13 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         tiledMap = map;
         this.gameState = gameState;
         addGameListener();
+        this.clientPlayer = clientPlayer;
         selectedTile = gameState.getMap().getTerrains()[0][0];
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.game = game;
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         texture = new Texture(Gdx.files.internal("Sprites/swordsman-1.png"));
+        textureRed = new Texture(Gdx.files.internal("Sprites/swordsman-2.png"));
         sprite = new Sprite(texture);
 
         shapeRenderer = new ShapeRenderer();
@@ -228,7 +233,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
         }
 
-
         return false;
     }
 
@@ -253,10 +257,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     @Override
-    public void onGetPlayers(ArrayList<Player> players) {
+    public void onGetPlayers(final ArrayList<Player> players) {
         for (Player player:players) {
-            for (Character character:player.getCharacters()) {
-                Sprite sprite = new Sprite(texture);
+            for (final Character character:player.getCharacters()) {
+                Sprite sprite = null;
+                if (character.getSpriteTexture().equals("Sprites/swordsman-2.png")){
+                    sprite = new Sprite(textureRed);
+                }else {
+                    sprite = new Sprite(texture);
+                }
                 sprite.setPosition(character.getCurrentTerrain().getX()*15, character.getCurrentTerrain().getY()*15);
                 gameState.getMap().getTerrains()[character.getCurrentTerrain().getX()][character.getCurrentTerrain().getY()].setCharacter(character);
                 character.setSprite(sprite);
@@ -273,7 +282,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     private void updatePlayers(){
-        gameState.getClient().sendGameMessagePlayers(gameState.getPlayers());
+        for (Player player:gameState.getPlayers()) {
+            if (clientPlayer.getName().equals(player.getName())){
+                clientPlayer = player;
+            }
+        }
+        gameState.getClient().sendGameMessagePlayer(clientPlayer);
         gameState.getClient().sendMessageGetPlayers();
     }
 }

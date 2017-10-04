@@ -27,7 +27,7 @@ public class Character implements Serializable {
      * @param defensePoints The amount of damage that gets reduced per received attack.
      * @param movementPoints The amount of tiles a character can move.
      */
-    public Character(String name, int maxHealthPoints, int attackPoints, int defensePoints, int movementPoints, Sprite sprite, Terrain currentTerrain, String spriteTexture) {
+    public Character(String name, int maxHealthPoints, int attackPoints, int defensePoints, int movementPoints, Sprite sprite, Terrain currentTerrain, String spriteTexture, Player player) {
         this.name = name;
         this.maxHealthPoints = maxHealthPoints;
         this.attackPoints = attackPoints;
@@ -37,6 +37,7 @@ public class Character implements Serializable {
         this.spriteTexture = spriteTexture;
         this.currentTerrain = currentTerrain;
         currentTerrain.setCharacter(this);
+        this.player = player;
     }
 
     /**

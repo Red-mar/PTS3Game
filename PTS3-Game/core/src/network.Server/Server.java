@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class Server {
 
@@ -198,14 +199,21 @@ public class Server {
                     }
                     Server.this.sendGameMessagePlayers();
                     break;
-                case ClientSendPlayersMessage: /** Receives an updated player list from the client **/
+                case ClientSendPlayerMessage: /** Receives an updated player from the client **/
                     try {
                         in.read(buffer);
                         System.out.println(buffer.length);
                         ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
                         ObjectInputStream is = new ObjectInputStream(bIn);
-                        ArrayList<Player> players = ((ArrayList<Player>) is.readObject());
-                        server.serverManager.game.setPlayers(players);
+                        Player newPlayer = (Player) is.readObject();
+
+                        Iterator<Player> iterator = game.getPlayers().iterator();
+                        while (iterator.hasNext()){
+                            Player oldPlayer= iterator.next();
+                            if (oldPlayer.getName().equals(newPlayer.getName())){
+                                game.getPlayers().set(game.getPlayers().indexOf(oldPlayer), newPlayer);
+                            }
+                        }
 
                     } catch (Exception e){
                         e.printStackTrace();
