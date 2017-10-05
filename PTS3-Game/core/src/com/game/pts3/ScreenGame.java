@@ -50,6 +50,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Terrain selectedTile;
     private Character selectedCharacter;
 
+    private boolean showMovementOptions = false;
+
     public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer, Chat chat){
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -140,6 +142,24 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }
         shapeRenderer.setColor(1, 0, 0, 1f);
         shapeRenderer.rect((float)Math.ceil((int)selectedTileX / 15) * 15, (float)Math.ceil((int)selectedTileY / 15) * 15, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+
+        if (showMovementOptions){
+            shapeRenderer.end();
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(1,0,0,0.5f);
+
+            for (int i = 0; i < gameState.getMap().getSizeX(); i++){
+                for (int j = 0; j < gameState.getMap().getSizeY(); j++){
+                    if (selectedCharacter.canMove(gameState.getMap().getTerrains()[i][j])){
+
+                    }else{
+                        shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+
+                    }
+                }
+            }
+        }
+
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
@@ -243,10 +263,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if (selectedTile.getCharacter() != null && selectedCharacter == null){
             selectedCharacter = selectedTile.getCharacter();
+            showMovementOptions = true;
         }
         if (selectedCharacter != null){
             if (!selectedCharacter.setCurrentTerrain(selectedTile)){
                 selectedCharacter = null;
+                showMovementOptions = false;
             } else {
                 selectedTile.setCharacter(selectedCharacter);
             }

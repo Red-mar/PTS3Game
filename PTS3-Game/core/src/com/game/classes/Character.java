@@ -165,6 +165,14 @@ public class Character implements Serializable {
      * @param terrain Requires a Terrain object.
      */
     public boolean setCurrentTerrain(Terrain terrain) {
+        if (!canMove(terrain)){
+            return false;
+        }
+        this.currentTerrain = terrain;
+        return true;
+    }
+
+    public boolean canMove(Terrain terrain){
         int xMove = Math.abs(terrain.getX() - currentTerrain.getX());
         int yMove = Math.abs(terrain.getY() - currentTerrain.getY());
         int totalMovement = xMove + yMove;
@@ -173,7 +181,6 @@ public class Character implements Serializable {
         if (totalMovement > movementPoints){
             return false;
         }
-        this.currentTerrain = terrain;
         return true;
     }
 
