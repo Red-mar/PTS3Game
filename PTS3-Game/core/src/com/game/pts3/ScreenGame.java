@@ -51,6 +51,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Character selectedCharacter;
 
     private boolean showMovementOptions = false;
+
+    //Debug options
     private boolean showCharacter = true;
 
     public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer, Chat chat){
@@ -279,6 +281,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             showMovementOptions = true;
         }
         if (selectedCharacter != null){
+            selectedCharacter.getCurrentTerrain().setCharacter(null);
             if (!selectedCharacter.setCurrentTerrain(selectedTile)){
                 selectedCharacter = null;
                 showMovementOptions = false;
