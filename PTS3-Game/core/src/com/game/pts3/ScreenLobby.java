@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -74,6 +75,8 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getScrollPane().setFlickScroll(false);
         chat.getScrollPane().setOverscroll(false,true);
         chat.getScrollPane().setBounds(10f, 100f, 500f, 200f);
+        chat.getScrollPane().setTouchable(Touchable.disabled);
+        chat.getTextArea().setTouchable(Touchable.disabled);
         chat.getTextField().setPosition(10, 40);
         chat.getTextField().setWidth(500);
         chat.getTextField().setHeight(50);

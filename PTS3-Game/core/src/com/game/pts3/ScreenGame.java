@@ -15,10 +15,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.game.classes.Character;
 import com.game.classes.Player;
@@ -70,6 +70,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         this.gameState = gameState;
         addGameListener();
         this.chat = chat;
+        stage.getRoot().addCaptureListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if (!(event.getTarget() instanceof TextField)) stage.setKeyboardFocus(null);
+                return false;
+            }});
         this.clientPlayer = clientPlayer;
         this.game = game;
 
@@ -312,6 +317,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public boolean scrolled(int amount) {
+        if (amount > 0){
+            camera.zoom += 0.05f;
+        } else {
+            camera.zoom -= 0.05f;
+        }
         return false;
     }
 
