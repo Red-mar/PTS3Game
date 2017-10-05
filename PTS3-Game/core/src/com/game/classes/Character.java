@@ -30,6 +30,7 @@ public class Character implements Serializable {
     public Character(String name, int maxHealthPoints, int attackPoints, int defensePoints, int movementPoints, Sprite sprite, Terrain currentTerrain, String spriteTexture, Player player) {
         this.name = name;
         this.maxHealthPoints = maxHealthPoints;
+        this.currentHealthPoints = maxHealthPoints;
         this.attackPoints = attackPoints;
         this.defensePoints = defensePoints;
         this.movementPoints = movementPoints;
@@ -82,10 +83,14 @@ public class Character implements Serializable {
 
     /**
      * Set the current amount of health points.
-     * @param currentHealthPoints Requires the current amount of health points as int.
+     * @param attackPoints Requires the current amount of health points as int.
      */
-    public void setCurrentHealthPoints(int currentHealthPoints) {
-        this.currentHealthPoints = currentHealthPoints;
+    public void takeDamage(int attackPoints) {
+        int currentHealth = currentHealthPoints - (attackPoints - defensePoints);
+        this.currentHealthPoints = currentHealth;
+        if (this.currentHealthPoints < 0){
+            isDead = true;
+        }
     }
 
     /**
@@ -192,7 +197,7 @@ public class Character implements Serializable {
         int totalMovement = xMove + yMove;
         //TODO gebruik len
 
-        if (totalMovement > movementPoints + 1){
+        if (totalMovement > 1){
             return false;
         }
         if (terrain.getCharacter() == null && terrain.getCharacter() != this){

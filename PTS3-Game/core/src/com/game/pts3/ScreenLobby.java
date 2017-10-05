@@ -302,8 +302,8 @@ public class ScreenLobby implements Screen, GameEvents {
         Sprite sprite = new Sprite(texture);
         for (int i = 0; i < 3; i ++){
             Random rnd = new Random();
-            Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(18)];
-            Character character = new Character("Pietje", 10, 1, 1, 3,sprite, terrain,textureFile,clientPlayer);
+            Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(40)];
+            Character character = new Character("Pietje", 10, 4, 1, 3,sprite, terrain,textureFile,clientPlayer);
             clientPlayer.addCharacter(character);
         }
         gameState.getClient().sendGameMessagePlayer(clientPlayer);

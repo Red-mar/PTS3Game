@@ -195,6 +195,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         for (Player player: gameState.getPlayers()) {
             ArrayList<Character> characters = player.getCharacters();
             for (Character character:characters) {
+                if (character.isDead()) continue;
                 character.getSprite().draw(batch);
                 character.getSprite().setPosition(
                         character.getCurrentTerrain().getX() * gameState.getMap().getTileWidth(),
@@ -290,9 +291,20 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         selectedTile = gameState.getMap().getTerrains()[x][y];
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
 
-        if (selectedCharacter != null){
+        if (selectedCharacter != null){ //Do something with currently selected character
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!selectedCharacter.setCurrentTerrain(selectedTile)){
+                if (selectedCharacter.canAttack(selectedTile)){
+                    selectedTile.getCharacter().takeDamage(selectedCharacter.getAttackPoints());
+                    System.out.println("Remaining health: "
+                            + selectedTile.getCharacter().getCurrentHealthPoints());
+                    if (selectedTile.getCharacter().isDead()){
+                        selectedTile.setCharacter(null);
+                    }
+                    selectedCharacter = null;
+                    showMovementOptions = false;
+                    return false;
+                }
                 selectedCharacter = null;
                 showMovementOptions = false;
             } else {
@@ -301,7 +313,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
         }
 
-        if (selectedTile.getCharacter() != null && selectedCharacter == null){
+        if (selectedTile.getCharacter() != null && selectedCharacter == null){ // Select a character if nothing is selected.
             selectedCharacter = selectedTile.getCharacter();
             showMovementOptions = true;
         }

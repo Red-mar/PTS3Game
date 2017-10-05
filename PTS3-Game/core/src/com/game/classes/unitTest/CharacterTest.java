@@ -41,7 +41,7 @@ public class CharacterTest {
     @Test
     public void setCurrentHealthPoints() throws Exception
     {
-        c.setCurrentHealthPoints(5);
+        c.takeDamage(5);
         assertEquals(5, c.getCurrentHealthPoints());
     }
 
