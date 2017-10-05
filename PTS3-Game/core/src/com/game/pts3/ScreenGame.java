@@ -196,11 +196,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             ArrayList<Character> characters = player.getCharacters();
             for (Character character:characters) {
                 if (character.isDead()) continue;
-                character.getSprite().draw(batch);
-                character.getSprite().setPosition(
-                        character.getCurrentTerrain().getX() * gameState.getMap().getTileWidth(),
-                        character.getCurrentTerrain().getY() * gameState.getMap().getTileHeight()
-                );
+                if (character.getSprite()!=null){
+                    character.getSprite().draw(batch);
+                    character.getSprite().setPosition(
+                            character.getCurrentTerrain().getX() * gameState.getMap().getTileWidth(),
+                            character.getCurrentTerrain().getY() * gameState.getMap().getTileHeight()
+                    );
+                } else {
+                    updatePlayers(); // Sometimes needed to prevent invisible characters ...
+                }
             }
         }
         batch.end();
