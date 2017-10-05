@@ -281,11 +281,13 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             showMovementOptions = true;
         }
         if (selectedCharacter != null){
-            selectedCharacter.getCurrentTerrain().setCharacter(null);
+            Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
+            //selectedCharacter.getCurrentTerrain().setCharacter(null);
             if (!selectedCharacter.setCurrentTerrain(selectedTile)){
                 selectedCharacter = null;
                 showMovementOptions = false;
             } else {
+                oldTerrain.setCharacter(null);
                 selectedTile.setCharacter(selectedCharacter);
             }
         }
@@ -315,8 +317,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void onGetPlayers(final ArrayList<Player> players) {
+        for (Terrain[] terrains : gameState.getMap().getTerrains()) {
+            for (Terrain terrain : terrains) {
+                terrain.setCharacter(null); //Clear terrain of fake characters
+            }
+        }
+
         for (Player player:players) {
-            for (final Character character:player.getCharacters()) {
+            for (Character character:player.getCharacters()) {
                 Sprite sprite = null;
                 if (character.getSpriteTexture().equals("Sprites/swordsman-2.png")){
                     sprite = new Sprite(textureRed);
