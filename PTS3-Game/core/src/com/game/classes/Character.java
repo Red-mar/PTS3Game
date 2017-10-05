@@ -184,6 +184,18 @@ public class Character implements Serializable {
         return true;
     }
 
+    public boolean canAttack(Terrain terrain){
+        int xMove = Math.abs(terrain.getX() - currentTerrain.getX());
+        int yMove = Math.abs(terrain.getY() - currentTerrain.getY());
+        int totalMovement = xMove + yMove;
+        //TODO gebruik len
+
+        if (totalMovement > movementPoints + 1 && terrain.getCharacter() == null){
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Get the current position of the character on the map.
      * @return Returns an int array

@@ -51,6 +51,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Character selectedCharacter;
 
     private boolean showMovementOptions = false;
+    private boolean showCharacter = true;
 
     public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer, Chat chat){
         float width = Gdx.graphics.getWidth();
@@ -150,11 +151,23 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
             for (int i = 0; i < gameState.getMap().getSizeX(); i++){
                 for (int j = 0; j < gameState.getMap().getSizeY(); j++){
-                    if (selectedCharacter.canMove(gameState.getMap().getTerrains()[i][j])){
-
-                    }else{
+                    if (!selectedCharacter.canMove(gameState.getMap().getTerrains()[i][j])){
                         shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+                    }
 
+                }
+            }
+        }
+
+        if (showCharacter){
+            shapeRenderer.end();
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0,1,0,0.5f);
+
+            for (int i = 0; i < gameState.getMap().getSizeX(); i++){
+                for (int j = 0; j < gameState.getMap().getSizeY(); j++){
+                    if (gameState.getMap().getTerrains()[i][j].getCharacter() != null){
+                        shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
                     }
                 }
             }
