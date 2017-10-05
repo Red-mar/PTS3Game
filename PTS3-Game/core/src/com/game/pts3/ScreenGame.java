@@ -377,6 +377,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
         }
         gameState.setPlayers(players);
+        for (Player player:gameState.getPlayers()) {
+            if (clientPlayer.getName().equals(player.getName())){
+                clientPlayer = player;
+            }
+        }
     }
 
     /**
@@ -397,7 +402,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     private void endTurn(){
-        updatePlayers();
+        for (Player player:gameState.getPlayers()) {
+            if (clientPlayer.getName().equals(player.getName())){
+                clientPlayer = player;
+            }
+        }
+        gameState.getClient().sendGameMessagePlayer(clientPlayer);
         gameState.getClient().sendGameEndTurn();
     }
 }
