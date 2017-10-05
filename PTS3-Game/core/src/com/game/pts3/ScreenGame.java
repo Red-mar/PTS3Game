@@ -51,25 +51,28 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Character selectedCharacter;
 
     public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer, Chat chat){
-        stage = new Stage();
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
+
+        stage = new Stage();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, width, height);
         camera.update();
+
         tiledMap = map;
+        selectedTile = gameState.getMap().getTerrains()[0][0];
+
         this.gameState = gameState;
         addGameListener();
         this.chat = chat;
         this.clientPlayer = clientPlayer;
-        selectedTile = gameState.getMap().getTerrains()[0][0];
-        renderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.game = game;
+
+        renderer = new OrthogonalTiledMapRenderer(tiledMap);
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         texture = new Texture(Gdx.files.internal("Sprites/swordsman-1.png"));
         textureRed = new Texture(Gdx.files.internal("Sprites/swordsman-2.png"));
         sprite = new Sprite(texture);
-
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
 
@@ -122,6 +125,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         renderer.setView(camera);
         renderer.render();
 
+        /**
+         * Grid
+         */
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -154,6 +160,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }
         batch.end();
 
+        /**
+         * UI
+         */
         stage.act();
         stage.draw();
 
