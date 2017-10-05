@@ -192,7 +192,10 @@ public class Character implements Serializable {
         int totalMovement = xMove + yMove;
         //TODO gebruik len
 
-        if (totalMovement > movementPoints + 1 && terrain.getCharacter() == null){
+        if (totalMovement > movementPoints + 1){
+            return false;
+        }
+        if (terrain.getCharacter() == null && terrain.getCharacter() != this){
             return false;
         }
         return true;

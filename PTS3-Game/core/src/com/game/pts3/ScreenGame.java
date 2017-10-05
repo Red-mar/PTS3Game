@@ -53,7 +53,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private boolean showMovementOptions = false;
 
     //Debug options
-    private boolean showCharacter = true;
+    private boolean showCharacter = false;
 
     public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer, Chat chat){
         float width = Gdx.graphics.getWidth();
@@ -154,11 +154,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         if (showMovementOptions){
             shapeRenderer.end();
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(1,0,0,0.5f);
 
             for (int i = 0; i < gameState.getMap().getSizeX(); i++){
                 for (int j = 0; j < gameState.getMap().getSizeY(); j++){
                     if (!selectedCharacter.canMove(gameState.getMap().getTerrains()[i][j])){
+                        shapeRenderer.setColor(1,0,0,0.5f);
+                        shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+                    }
+                    if (selectedCharacter.canAttack(gameState.getMap().getTerrains()[i][j])){
+                        shapeRenderer.setColor(0,0,1,0.5f);
                         shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
                     }
 
@@ -252,7 +256,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             camera.translate(0, 5);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
             camera.translate(0, -5);
-
+        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
+            camera.zoom += 0.005f;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
+            camera.zoom += -0.005f;
+        }
     }
 
     @Override
