@@ -136,6 +136,10 @@ public class Client {
         connectionHandler.sendObjectMessage(MessageType.ClientSendPlayerMessage, player);
     }
 
+    public void sendGameEndTurn(){
+        connectionHandler.sendMessage(MessageType.GameSendEndTurnMessage);
+    }
+
     /**
      * Stops the connection with the server.
      */

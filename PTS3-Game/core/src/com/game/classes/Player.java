@@ -10,6 +10,7 @@ public class Player implements Serializable {
     private boolean isReady;
     private ArrayList<Character> characters;
     private boolean isLocalPlayer;
+    private boolean hasTurn = false;
 
     /**
      * Creates a new player
@@ -98,6 +99,14 @@ public class Player implements Serializable {
      */
     public void setLocalPlayer(boolean localPlayer) {
         isLocalPlayer = localPlayer;
+    }
+
+    public void setHasTurn(boolean hasTurn) {
+        this.hasTurn = hasTurn;
+    }
+
+    public boolean hasTurn() {
+        return hasTurn;
     }
 
     @Override

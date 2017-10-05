@@ -12,12 +12,15 @@ public class Character implements Serializable {
     private int attackPoints;
     private int defensePoints;
     private int movementPoints;
+    private int currentMovementPoints;
     private boolean isDead;
     private Terrain currentTerrain;
     private int[] position;
     private Player player;
     private transient Sprite sprite;
     private String spriteTexture;
+
+    private boolean hasAttacked = false;
 
     /**
      * A character that belongs to a player.
@@ -34,6 +37,7 @@ public class Character implements Serializable {
         this.attackPoints = attackPoints;
         this.defensePoints = defensePoints;
         this.movementPoints = movementPoints;
+        this.currentMovementPoints = movementPoints;
         this.sprite = sprite;
         this.spriteTexture = spriteTexture;
         this.currentTerrain = currentTerrain;
@@ -173,17 +177,16 @@ public class Character implements Serializable {
         if (!canMove(terrain)){
             return false;
         }
+        currentMovementPoints -= calculateTotalMovement(terrain);
         this.currentTerrain = terrain;
+
         return true;
     }
 
     public boolean canMove(Terrain terrain){
-        int xMove = Math.abs(terrain.getX() - currentTerrain.getX());
-        int yMove = Math.abs(terrain.getY() - currentTerrain.getY());
-        int totalMovement = xMove + yMove;
-        //TODO gebruik len
+        int totalMovement = calculateTotalMovement(terrain);
 
-        if (totalMovement > movementPoints){
+        if (totalMovement > currentMovementPoints){
             return false;
         } else if (terrain.getCharacter() != null){
             return false;
@@ -192,12 +195,9 @@ public class Character implements Serializable {
     }
 
     public boolean canAttack(Terrain terrain){
-        int xMove = Math.abs(terrain.getX() - currentTerrain.getX());
-        int yMove = Math.abs(terrain.getY() - currentTerrain.getY());
-        int totalMovement = xMove + yMove;
-        //TODO gebruik len
+        int totalMovement = calculateTotalMovement(terrain);
 
-        if (totalMovement > 1){
+        if (totalMovement > 1){ // Attack range?
             return false;
         }
         if (terrain.getCharacter() == null && terrain.getCharacter() != this){
@@ -249,5 +249,15 @@ public class Character implements Serializable {
 
     public String getSpriteTexture() {
         return spriteTexture;
+    }
+
+    public void setCurrentMovementPoints(int currentMovementPoints) {
+        this.currentMovementPoints = currentMovementPoints;
+    }
+
+    private int calculateTotalMovement(Terrain terrain){
+        int xMove = Math.abs(terrain.getX() - currentTerrain.getX());
+        int yMove = Math.abs(terrain.getY() - currentTerrain.getY());
+        return xMove + yMove;
     }
 }

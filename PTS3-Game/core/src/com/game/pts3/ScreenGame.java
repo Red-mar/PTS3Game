@@ -55,7 +55,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     //Debug options
     private boolean showCharacter = false;
 
-    public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer, Chat chat){
+    public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Player clientPlayer, Chat chat){
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
 
@@ -97,7 +97,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         btnEndTurn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                updatePlayers();
+                endTurn();
             }
         });
         btnEndTurn.setPosition(10,10);
@@ -170,7 +170,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
         }
 
-        if (showCharacter){
+        if (showCharacter){ //Debug
             shapeRenderer.end();
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(0,1,0,0.5f);
@@ -295,6 +295,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         selectedTile = gameState.getMap().getTerrains()[x][y];
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
 
+        if (!clientPlayer.hasTurn()) {
+            System.out.println("It is not your turn at the moment.");
+            return false;
+        }
+
         if (selectedCharacter != null){ //Do something with currently selected character
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!selectedCharacter.setCurrentTerrain(selectedTile)){
@@ -389,5 +394,10 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }
         gameState.getClient().sendGameMessagePlayer(clientPlayer);
         gameState.getClient().sendMessageGetPlayers();
+    }
+
+    private void endTurn(){
+        updatePlayers();
+        gameState.getClient().sendGameEndTurn();
     }
 }

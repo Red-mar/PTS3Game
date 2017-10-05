@@ -1,5 +1,6 @@
 package network.Server;
 
+import com.game.classes.Character;
 import com.game.classes.Game;
 import com.game.classes.Player;
 
@@ -148,7 +149,7 @@ public class Server {
                     handleMessage(type, in);
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
                 server.serverManager.game.removePlayer(player.getName());
                 server.clients.remove(this);
                 System.out.println("Connection reset, closing connection with " + this.player.getName());
@@ -161,6 +162,7 @@ public class Server {
         private void handleMessage(MessageType type, DataInputStream in) throws IOException {
 
             String message;
+            Player thisPlayer;
             System.out.println("Received Message Type of:" + type.toString());
 
             byte[] buffer = new byte[5000];
@@ -191,7 +193,7 @@ public class Server {
                     Server.this.sendGameMessagePlayers();
                     break;
                 case GameReadyMessage: /** Changes the ready state of the sender **/
-                    Player thisPlayer = server.clients.get(this);
+                    thisPlayer = server.clients.get(this);
                     if (!thisPlayer.isReady()){
                         thisPlayer.setReady(true);
                     } else {
@@ -218,6 +220,30 @@ public class Server {
                     } catch (Exception e){
                         e.printStackTrace();
                     }
+                    break;
+                case GameSendEndTurnMessage:
+                    thisPlayer = server.clients.get(this);
+                    for (Player player : game.getPlayers()) {
+                        if (player.getName().equals(thisPlayer.getName())){
+                            thisPlayer = player;
+                            continue;
+                        }
+                    }
+
+                    thisPlayer.setHasTurn(false);
+                    for (Character character : thisPlayer.getCharacters()) {
+                        character.setCurrentMovementPoints(character.getMovementPoints());
+                    }
+
+                    int position = game.getPlayers().indexOf(thisPlayer);
+
+                    if (position+1 >= game.getPlayers().size()){
+                        game.getPlayers().get(0).setHasTurn(true);
+                    } else {
+                        game.getPlayers().get(position+1).setHasTurn(true);
+                    }
+
+                    Server.this.sendGameMessagePlayers();
                     break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");
