@@ -297,7 +297,7 @@ public class ScreenLobby implements Screen, GameEvents {
         }
         Texture texture = new Texture(Gdx.files.internal(textureFile));
         Sprite sprite = new Sprite(texture);
-        for (int i = 0; i < 1; i ++){
+        for (int i = 0; i < 3; i ++){
             Random rnd = new Random();
             Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(18)];
             Character character = new Character("Pietje", 10, 1, 1, 3,sprite, terrain,textureFile,clientPlayer);

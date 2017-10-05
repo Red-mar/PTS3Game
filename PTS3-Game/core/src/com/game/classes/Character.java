@@ -180,6 +180,8 @@ public class Character implements Serializable {
 
         if (totalMovement > movementPoints){
             return false;
+        } else if (terrain.getCharacter() != null){
+            return false;
         }
         return true;
     }

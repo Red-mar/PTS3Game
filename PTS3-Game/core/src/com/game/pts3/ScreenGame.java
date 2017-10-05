@@ -276,13 +276,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         selectedTile = gameState.getMap().getTerrains()[x][y];
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
 
-        if (selectedTile.getCharacter() != null && selectedCharacter == null){
-            selectedCharacter = selectedTile.getCharacter();
-            showMovementOptions = true;
-        }
         if (selectedCharacter != null){
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
-            //selectedCharacter.getCurrentTerrain().setCharacter(null);
             if (!selectedCharacter.setCurrentTerrain(selectedTile)){
                 selectedCharacter = null;
                 showMovementOptions = false;
@@ -290,6 +285,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 oldTerrain.setCharacter(null);
                 selectedTile.setCharacter(selectedCharacter);
             }
+        }
+
+        if (selectedTile.getCharacter() != null && selectedCharacter == null){
+            selectedCharacter = selectedTile.getCharacter();
+            showMovementOptions = true;
         }
 
         return false;
