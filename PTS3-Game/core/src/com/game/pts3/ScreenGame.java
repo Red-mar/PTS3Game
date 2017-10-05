@@ -303,7 +303,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         if (selectedCharacter != null){ //Do something with currently selected character
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!selectedCharacter.setCurrentTerrain(selectedTile)){
-                if (!selectedCharacter.hasAttacked() && selectedCharacter.canAttack(selectedTile)){
+                if (!selectedCharacter.hasAttacked()
+                        && selectedCharacter.canAttack(selectedTile)){
+
                     selectedTile.getCharacter().takeDamage(selectedCharacter.getAttackPoints());
                     selectedCharacter.setHasAttacked(true);
                     System.out.println("Remaining health: "
@@ -317,13 +319,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 }
                 selectedCharacter = null;
                 showMovementOptions = false;
-            } else {
+            } else if (selectedCharacter.getPlayer() == clientPlayer){
                 oldTerrain.setCharacter(null);
                 selectedTile.setCharacter(selectedCharacter);
             }
         }
 
-        if (selectedTile.getCharacter() != null && selectedCharacter == null){ // Select a character if nothing is selected.
+        if (selectedTile.getCharacter() != null
+                && selectedCharacter == null
+                && selectedTile.getCharacter().getPlayer() == clientPlayer){ // Select a character if nothing is selected.
             selectedCharacter = selectedTile.getCharacter();
             showMovementOptions = true;
         }
@@ -384,8 +388,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
             if (player.hasTurn()){
                 chat.textArea.appendText("It's " + player.getName() + "'s turn!\n");
-            } else {
-                chat.textArea.appendText("Whose turn is it? I don't know!\n");
             }
         }
     }
@@ -407,13 +409,21 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         gameState.getClient().sendMessageGetPlayers();
     }
 
-    private void endTurn(){
+    private synchronized void endTurn(){
         for (Player player:gameState.getPlayers()) {
             if (clientPlayer.getName().equals(player.getName())){
                 clientPlayer = player;
             }
         }
-        gameState.getClient().sendGameMessagePlayer(clientPlayer);
+        for (Player player : gameState.getPlayers()){
+            gameState.getClient().sendGameMessagePlayer(player);
+
+            try {
+                wait(100); // Server crashes if it gets too many messages...
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         gameState.getClient().sendGameEndTurn();
     }
 }
