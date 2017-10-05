@@ -38,6 +38,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private OrthographicCamera camera;
     private TiledMapRenderer renderer;
 
+    private Chat chat;
+
     private SpriteBatch batch;
     private Sprite sprite;
     private Texture texture;
@@ -48,7 +50,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Terrain selectedTile;
     private Character selectedCharacter;
 
-    public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer){
+    public ScreenGame(Game game, TiledMap map, com.game.classes.Game gameState, Player clientPlayer, Chat chat){
         stage = new Stage();
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -58,6 +60,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         tiledMap = map;
         this.gameState = gameState;
         addGameListener();
+        this.chat = chat;
         this.clientPlayer = clientPlayer;
         selectedTile = gameState.getMap().getTerrains()[0][0];
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -89,6 +92,10 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         stage.addActor(lblGame);
         stage.addActor(btnEndTurn);
+
+        stage.addActor(chat.getScrollPane());
+        stage.addActor(chat.getTextField());
+        stage.addActor(chat.getBtnSendMessage());
 
         updatePlayers();
 

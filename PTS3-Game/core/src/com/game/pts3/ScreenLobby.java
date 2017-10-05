@@ -127,7 +127,7 @@ public class ScreenLobby implements Screen, GameEvents {
                     sound.play(1.0f);
                 }
                 addCharacter(name);
-                game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer));
+                game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer, chat));
                 stage.clear();
             }
         });
@@ -258,8 +258,6 @@ public class ScreenLobby implements Screen, GameEvents {
 
     @Override
     public void onGetPlayers(ArrayList<Player> players) {
-        chat.getTextArea().appendText("There are now " + players.size() + " player(s).\n");
-
         gameState.setPlayers(players);
 
         playerList.clearItems();
