@@ -303,8 +303,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         if (selectedCharacter != null){ //Do something with currently selected character
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!selectedCharacter.setCurrentTerrain(selectedTile)){
-                if (selectedCharacter.canAttack(selectedTile)){
+                if (!selectedCharacter.hasAttacked() && selectedCharacter.canAttack(selectedTile)){
                     selectedTile.getCharacter().takeDamage(selectedCharacter.getAttackPoints());
+                    selectedCharacter.setHasAttacked(true);
                     System.out.println("Remaining health: "
                             + selectedTile.getCharacter().getCurrentHealthPoints());
                     if (selectedTile.getCharacter().isDead()){
@@ -380,6 +381,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         for (Player player:gameState.getPlayers()) {
             if (clientPlayer.getName().equals(player.getName())){
                 clientPlayer = player;
+            }
+            if (player.hasTurn()){
+                chat.textArea.appendText("It's " + player.getName() + "'s turn!\n");
+            } else {
+                chat.textArea.appendText("Whose turn is it? I don't know!\n");
             }
         }
     }

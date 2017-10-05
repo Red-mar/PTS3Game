@@ -239,6 +239,7 @@ public class Server {
                     thisPlayer.setHasTurn(false);
                     for (Character character : thisPlayer.getCharacters()) {
                         character.setCurrentMovementPoints(character.getMovementPoints());
+                        character.setHasAttacked(false);
                     }
 
                     int position = game.getPlayers().indexOf(thisPlayer);

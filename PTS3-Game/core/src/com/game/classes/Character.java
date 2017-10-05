@@ -251,6 +251,14 @@ public class Character implements Serializable {
         return spriteTexture;
     }
 
+    public void setHasAttacked(boolean hasAttacked) {
+        this.hasAttacked = hasAttacked;
+    }
+
+    public boolean hasAttacked() {
+        return hasAttacked;
+    }
+
     public void setCurrentMovementPoints(int currentMovementPoints) {
         this.currentMovementPoints = currentMovementPoints;
     }
