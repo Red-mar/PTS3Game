@@ -181,13 +181,19 @@ public class Server {
                     break;
                 case SetNameMessage: /** Sets name of player **/
                     String previousName = player.getName();
-                    player.setName(in.readUTF());
-                    System.out.println("Name set to: " + player.getName() + ", was " + previousName);
+                    String newName = in.readUTF();
+                    for (Player player:server.serverManager.game.getPlayers()) {
+                        if (newName.equals(player.getName())){
+                            newName += "nooblord";
+                        }
+                    }
                     for (Player player:server.serverManager.game.getPlayers()) {
                         if (player == this.player){
                             player.setName(this.player.getName());
+                            player.setName(newName);
                         }
                     }
+                    System.out.println("Name set to: " + player.getName() + ", was " + previousName);
                     break;
                 case GameSendPlayersMessage: /** Sends player list to all clients **/
                     Server.this.sendGameMessagePlayers();
