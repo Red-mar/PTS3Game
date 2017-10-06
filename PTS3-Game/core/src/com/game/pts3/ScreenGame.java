@@ -53,7 +53,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private boolean showMovementOptions = false;
 
     //Debug options
-    private boolean showCharacter = false;
+    private boolean showCharacter = true;
 
     public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Player clientPlayer, Chat chat){
         float width = Gdx.graphics.getWidth();
@@ -308,8 +308,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
                     selectedTile.getCharacter().takeDamage(selectedCharacter.getAttackPoints());
                     selectedCharacter.setHasAttacked(true);
-                    System.out.println("Remaining health: "
-                            + selectedTile.getCharacter().getCurrentHealthPoints());
+                    chat.getTextArea().appendText("Attacked character " + selectedTile.getCharacter().getName() +
+                            " for " + (selectedCharacter.getAttackPoints() - selectedTile.getCharacter().getDefensePoints()) +
+                            " damage. HP " + selectedTile.getCharacter().getCurrentHealthPoints() + "/" + selectedTile.getCharacter().getMaxHealthPoints() + "\n");
                     if (selectedTile.getCharacter().isDead()){
                         selectedTile.setCharacter(null);
                     }

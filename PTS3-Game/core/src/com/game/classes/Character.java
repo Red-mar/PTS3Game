@@ -203,6 +203,9 @@ public class Character implements Serializable {
         if (terrain.getCharacter() == null && terrain.getCharacter() != this){
             return false;
         }
+        if (hasAttacked){
+            return false;
+        }
         return true;
     }
 
