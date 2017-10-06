@@ -41,6 +41,8 @@ public class ScreenLobby implements Screen, GameEvents {
     private Sound sound;
     private Music music;
     private AssetManager manager;
+    private Preferences prefs;
+    private float volume;
 
     private TiledMap tiledMap;
 
@@ -54,11 +56,14 @@ public class ScreenLobby implements Screen, GameEvents {
         this.manager = assetManager;
         this.gameState = gameState;
         this.clientPlayer = new Player(name);
+        this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
+        volume = prefs.getFloat("volume");
         stage = new Stage();
         skin = manager.get("data/uiskin.json", Skin.class);
         sound = manager.get("sound/LobbyIn.wav", Sound.class);
         music = manager.get("bgm/bgmbase1.mp3", Music.class);
         music.setLooping(true);
+        music.setVolume(volume);
         music.play();
 
         /**
@@ -88,7 +93,7 @@ public class ScreenLobby implements Screen, GameEvents {
                 } else {
                     gameState.getClient().readInput(chat.getTextField().getText());
                     chat.getTextField().setText("");
-                    sound.play(1.0f);
+                    sound.play(volume);
                 }
             }
         };
@@ -119,7 +124,7 @@ public class ScreenLobby implements Screen, GameEvents {
                         return;
                     }
                     System.out.println("Game Starting ...");
-                    sound.play(1.0f);
+                    sound.play(volume);
                 }
                 gameState.getClient().sendGameStart();
             }
@@ -136,7 +141,7 @@ public class ScreenLobby implements Screen, GameEvents {
                     return;
                 }
                 gameState.getClient().sendMessageReady();
-                sound.play(1.0f);
+                sound.play(volume);
             }
         });
         btnReady.setPosition(510,40);
@@ -166,7 +171,7 @@ public class ScreenLobby implements Screen, GameEvents {
 
                 Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth);
                 gameState.setMap(gameMap);
-                sound.play(1.0f);
+                sound.play(volume);
             }
         });
         btnMap.setPosition(510, 70);
@@ -296,7 +301,7 @@ public class ScreenLobby implements Screen, GameEvents {
             addGameListener();
             gameState.getClient().sendMessageSetName(name);
             gameState.getClient().sendMessageGetPlayers();
-            sound.play(1.0f);
+            sound.play(volume);
         }
     }
 

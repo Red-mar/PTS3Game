@@ -35,6 +35,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Skin skin;
     private Game game;
     private AssetManager manager;
+    private Preferences prefs;
     private Player clientPlayer;
     private TiledMap tiledMap;
     private com.game.classes.Game gameState;
@@ -51,6 +52,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Sound damageSound;
     private Sound errorSound;
     private Sound alarmSound;
+    private float volume;
 
     private ShapeRenderer shapeRenderer;
     private float selectedTileX = 0;
@@ -77,6 +79,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         tiledMap = map;
         selectedTile = gameState.getMap().getTerrains()[0][0];
 
+        this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
+        volume = prefs.getFloat("volume");
         this.gameState = gameState;
         addGameListener();
         this.chat = chat;
@@ -312,7 +316,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if (!clientPlayer.hasTurn()) {
             System.out.println("It is not your turn at the moment.");
-            errorSound.play();
+            errorSound.play(volume);
             return false;
         }
 
@@ -324,7 +328,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
                     selectedTile.getCharacter().takeDamage(selectedCharacter.getAttackPoints());
                     selectedCharacter.setHasAttacked(true);
-                    damageSound.play();
+                    damageSound.play(volume);
                     chat.getTextArea().appendText("Attacked character " + selectedTile.getCharacter().getName() +
                             " for " + (selectedCharacter.getAttackPoints() - selectedTile.getCharacter().getDefensePoints()) +
                             " damage. HP " + selectedTile.getCharacter().getCurrentHealthPoints() + "/" + selectedTile.getCharacter().getMaxHealthPoints() + "\n");
@@ -407,7 +411,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             if (player.hasTurn()){
                 chat.textArea.appendText("It's " + player.getName() + "'s turn!\n");
                 if (player == clientPlayer){
-                    alarmSound.play();
+                    alarmSound.play(volume);
                 }
             }
         }

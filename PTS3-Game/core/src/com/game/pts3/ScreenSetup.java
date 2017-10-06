@@ -2,15 +2,14 @@ package com.game.pts3;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import network.Client.Client;
@@ -19,24 +18,33 @@ public class ScreenSetup implements Screen {
     Stage stage;
     private Skin skin;
     private Game game;
+    private Preferences prefs;
+    private Sound testSound;
     final private AssetManager manager;
+
+    Slider sliderVolume;
 
     public ScreenSetup(final Game game, AssetManager assetManager){
         stage = new Stage();
         this.game = game;
-        this. manager = assetManager;
+        this.manager = assetManager;
+        this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
+        testSound = manager.get("sound/LobbyIn.wav", Sound.class);
         skin = manager.get("data/uiskin.json", Skin.class);
         Gdx.input.setInputProcessor(stage);
 
         /**
          * Labels
          */
-        Label lblWelcome = new Label("Welcome to game!\n Please enter your name!", skin);
+        Label lblWelcome = new Label("Welcome to game!\nPlease enter your name!", skin);
         lblWelcome.setPosition(10, 80);
-        lblWelcome.setSize(90,90);
+        lblWelcome.setSize(90,30);
         Label lblIP = new Label("Enter IP address", skin);
         lblIP.setPosition(270,40);
         lblIP.setSize(90,90);
+        Label lblVolumeSlider = new Label("Set volume",skin);
+        lblVolumeSlider.setPosition(10,160);
+        lblVolumeSlider.setSize(90,30);
 
         /**
          * TextField
@@ -57,6 +65,7 @@ public class ScreenSetup implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 String string = "?";
                 string = tfName.getText();
+                prefs.putFloat("volume", sliderVolume.getValue());
                 com.game.classes.Game gameState = new com.game.classes.Game(new Client(tfIP.getText()));
                 game.setScreen(new ScreenLobby(game, string, gameState, manager));
             }
@@ -64,11 +73,29 @@ public class ScreenSetup implements Screen {
         btnStart.setSize(250,20);
         btnStart.setPosition(10,10);
 
+        /**
+         * Slider
+         */
+        sliderVolume = new Slider(0f,1f,0.01f,false,skin);
+        sliderVolume.setPosition(10,150);
+        sliderVolume.setSize(250f, 20f);
+        sliderVolume.setValue(1.0f);
+        sliderVolume.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (!sliderVolume.isDragging()){
+                    testSound.play(sliderVolume.getValue());
+                }
+            }
+        });
+
         stage.addActor(tfName);
         stage.addActor(tfIP);
         stage.addActor(lblWelcome);
         stage.addActor(lblIP);
+        stage.addActor(lblVolumeSlider);
         stage.addActor(btnStart);
+        stage.addActor(sliderVolume);
     }
 
     @Override
@@ -81,7 +108,7 @@ public class ScreenSetup implements Screen {
         /**
          * Clear screen and set colour.
          */
-        Gdx.gl.glClearColor( 1, 0, 0, 1 );
+        Gdx.gl.glClearColor( 0, 0.1f, 0.1f, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
         stage.act();
