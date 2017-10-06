@@ -1,9 +1,6 @@
 package com.game.pts3;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -31,7 +28,6 @@ public class ScreenSetup implements Screen {
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
         testSound = manager.get("sound/LobbyIn.wav", Sound.class);
         skin = manager.get("data/uiskin.json", Skin.class);
-        Gdx.input.setInputProcessor(stage);
 
         /**
          * Labels
@@ -72,6 +68,19 @@ public class ScreenSetup implements Screen {
         });
         btnStart.setSize(250,20);
         btnStart.setPosition(10,10);
+        TextButton btnFullscreen = new TextButton("Set Fullscreen", skin);
+        btnFullscreen.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Graphics.Monitor currMonitor = Gdx.graphics.getMonitor();
+                Graphics.DisplayMode displayMode = Gdx.graphics.getDisplayMode(currMonitor);
+                if (!Gdx.graphics.setFullscreenMode(displayMode)){
+                    System.out.println("Could not enter fullscreen mode.");
+                }
+            }
+        });
+        btnFullscreen.setSize(250,20);
+        btnFullscreen.setPosition(270,10);
 
         /**
          * Slider
@@ -95,12 +104,13 @@ public class ScreenSetup implements Screen {
         stage.addActor(lblIP);
         stage.addActor(lblVolumeSlider);
         stage.addActor(btnStart);
+        stage.addActor(btnFullscreen);
         stage.addActor(sliderVolume);
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -117,7 +127,7 @@ public class ScreenSetup implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width,height,true);
     }
 
     @Override
