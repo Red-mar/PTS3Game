@@ -2,6 +2,7 @@ package com.game.pts3;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -46,6 +47,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Sprite sprite;
     private Texture texture;
     private Texture textureRed;
+
+    private Sound damageSound;
+    private Sound errorSound;
+    private Sound alarmSound;
+
     private ShapeRenderer shapeRenderer;
     private float selectedTileX = 0;
     private float selectedTileY = 0;
@@ -83,9 +89,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         this.game = game;
 
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
-        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-        texture = new Texture(Gdx.files.internal("Sprites/swordsman-1.png"));
-        textureRed = new Texture(Gdx.files.internal("Sprites/swordsman-2.png"));
+        skin = manager.get("data/uiskin.json", Skin.class);
+        texture = manager.get("Sprites/swordsman-1.png", Texture.class);
+        textureRed = manager.get("Sprites/swordsman-2.png", Texture.class);
+
+        damageSound = manager.get("sound/Damage.wav", Sound.class);
+        errorSound = manager.get("sound/Error.wav", Sound.class);
+        alarmSound = manager.get("sound/Alarm.wav", Sound.class);
+
         sprite = new Sprite(texture);
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
@@ -301,6 +312,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if (!clientPlayer.hasTurn()) {
             System.out.println("It is not your turn at the moment.");
+            errorSound.play();
             return false;
         }
 
@@ -312,6 +324,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
                     selectedTile.getCharacter().takeDamage(selectedCharacter.getAttackPoints());
                     selectedCharacter.setHasAttacked(true);
+                    damageSound.play();
                     chat.getTextArea().appendText("Attacked character " + selectedTile.getCharacter().getName() +
                             " for " + (selectedCharacter.getAttackPoints() - selectedTile.getCharacter().getDefensePoints()) +
                             " damage. HP " + selectedTile.getCharacter().getCurrentHealthPoints() + "/" + selectedTile.getCharacter().getMaxHealthPoints() + "\n");
@@ -393,6 +406,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
             if (player.hasTurn()){
                 chat.textArea.appendText("It's " + player.getName() + "'s turn!\n");
+                if (player == clientPlayer){
+                    alarmSound.play();
+                }
             }
         }
     }
