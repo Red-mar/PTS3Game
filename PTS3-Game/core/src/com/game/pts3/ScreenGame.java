@@ -413,6 +413,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }
     }
 
+    @Override
+    public void onStartGame() {
+        chat.getTextArea().appendText("Someone tried to start the game?\n");
+        errorSound.play();
+    }
+
     /**
      * hacky af
      */

@@ -69,6 +69,12 @@ public class Server {
         }
     }
 
+    public void sendGameStart(){
+        for (ConnectionHandler client : clients.keySet()) {
+            client.sendMessage(MessageType.GameStartMessage);
+        }
+    }
+
     public void sendGameState(Game game){
         //TODO
     }
@@ -252,6 +258,9 @@ public class Server {
 
                     Server.this.sendGameMessagePlayers();
                     break;
+                case GameStartMessage:
+                    Server.this.sendGameStart();
+                    break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");
                     break;
@@ -270,6 +279,15 @@ public class Server {
                 out.flush();
             } catch (Exception e){
                 System.out.println("Error sending message");
+                e.printStackTrace();
+            }
+        }
+
+        private void sendMessage(MessageType type){
+            try {
+                out.writeByte(type.ordinal());
+                out.flush();
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }

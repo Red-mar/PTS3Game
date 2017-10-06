@@ -140,6 +140,10 @@ public class Client {
         connectionHandler.sendMessage(MessageType.GameSendEndTurnMessage);
     }
 
+    public void sendGameStart(){
+        connectionHandler.sendMessage(MessageType.GameStartMessage);
+    }
+
     /**
      * Stops the connection with the server.
      */
@@ -308,12 +312,18 @@ public class Client {
                                 e.printStackTrace();
                             }
                             break;
+                        case GameStartMessage:
+                            for (GameEvents gameListener : gameListeners) {
+                                gameListener.onStartGame();
+                            }
+                            break;
                         default:
                             System.out.println("no know?");
                     }
                 }
 
             } catch (Exception e){
+                e.printStackTrace();
                 for (ChatEvents ce: listeners) {
                     ce.onDisconnect();
                 }

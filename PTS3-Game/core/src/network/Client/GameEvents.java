@@ -6,4 +6,5 @@ import java.util.ArrayList;
 
 public interface GameEvents {
     void onGetPlayers(ArrayList<Player> players);
+    void onStartGame();
 }

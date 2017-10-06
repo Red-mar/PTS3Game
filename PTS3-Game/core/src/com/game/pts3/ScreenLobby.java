@@ -1,9 +1,6 @@
 package com.game.pts3;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -56,6 +53,7 @@ public class ScreenLobby implements Screen, GameEvents {
         this.game = game;
         this.manager = assetManager;
         this.gameState = gameState;
+        this.clientPlayer = new Player(name);
         stage = new Stage();
         skin = manager.get("data/uiskin.json", Skin.class);
         sound = manager.get("sound/LobbyIn.wav", Sound.class);
@@ -120,15 +118,10 @@ public class ScreenLobby implements Screen, GameEvents {
                         chat.textArea.appendText("Niet iedereen is READY.\n");
                         return;
                     }
-                    if (tiledMap == null){
-                        chat.textArea.appendText("Geen map geselecteerd.\n");
-                    }
                     System.out.println("Game Starting ...");
                     sound.play(1.0f);
                 }
-                addCharacter(name);
-                game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer, chat, manager));
-                stage.clear();
+                gameState.getClient().sendGameStart();
             }
         });
         btnStart.setPosition(510,10);
@@ -138,6 +131,10 @@ public class ScreenLobby implements Screen, GameEvents {
         btnReady.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (tiledMap == null){
+                    chat.getTextArea().appendText("Geen map geselecteerd.\n");
+                    return;
+                }
                 gameState.getClient().sendMessageReady();
                 sound.play(1.0f);
             }
@@ -263,6 +260,24 @@ public class ScreenLobby implements Screen, GameEvents {
         playerList.clearItems();
         playerList.setItems(players.toArray());
 
+    }
+
+    @Override
+    public void onStartGame() {
+        addCharacter(clientPlayer.getName());
+
+        new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
+            @Override
+            public void run() {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer, chat, manager));
+                        stage.clear();
+                    }
+                });
+            }
+        }).start();
     }
 
     /**
