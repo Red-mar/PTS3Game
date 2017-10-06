@@ -63,7 +63,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private boolean showMovementOptions = false;
 
     //Debug options
-    private boolean showCharacter = true;
+    private boolean showCharacter = false;
 
     public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Player clientPlayer, Chat chat, AssetManager assetManager){
         float width = Gdx.graphics.getWidth();
@@ -291,6 +291,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.E)){
             camera.rotate(-2);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)){
+            if (showCharacter){
+                showCharacter = false;
+            }else
+                showCharacter = true;
         }
     }
 
