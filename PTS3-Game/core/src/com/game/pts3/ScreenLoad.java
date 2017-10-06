@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
@@ -19,10 +20,8 @@ public class ScreenLoad implements Screen {
     private Game game;
     private AssetManager manager;
 
-    private float red = 0;
-    private float green = 0;
-
     private Label lblProgress;
+    private ProgressBar progressBar;
 
     public ScreenLoad(final Game game){
         stage = new Stage();
@@ -51,10 +50,14 @@ public class ScreenLoad implements Screen {
 
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         lblProgress = new Label("0/100", skin);
-        lblProgress.setPosition(10, 10);
-        lblProgress.setSize(640,480);
-        lblProgress.setFontScale(5);
+        lblProgress.setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        lblProgress.setSize(100,100);
 
+        progressBar = new ProgressBar(0,1,0.01f,false,skin);
+        progressBar.setPosition(Gdx.graphics.getHeight()/2,Gdx.graphics.getHeight()/2);
+        progressBar.setSize(Gdx.graphics.getWidth()/2,100);
+
+        stage.addActor(progressBar);
         stage.addActor(lblProgress);
     }
 
@@ -68,7 +71,7 @@ public class ScreenLoad implements Screen {
         /**
          * Clear screen and set colour.
          */
-        Gdx.gl.glClearColor( 0, 0, red, 1 );
+        Gdx.gl.glClearColor( 0, 0, 0, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
         if (manager.update()){
@@ -76,13 +79,9 @@ public class ScreenLoad implements Screen {
         }
 
         float progress = manager.getProgress();
+        progressBar.setValue(progress);
+
         progress = (float)Math.round(progress * 100) / 100;
-
-        if (red > 0.9f) {
-            red = 0.1f;
-        } else
-            red += 0.01f;
-
         lblProgress.setText("Loading... " + (progress * 100) + "/100");
 
         stage.act();
