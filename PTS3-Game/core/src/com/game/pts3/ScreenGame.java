@@ -286,6 +286,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         if (Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
             camera.zoom += -0.005f;
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)){
+            camera.rotate(2);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.E)){
+            camera.rotate(-2);
+        }
     }
 
     @Override
