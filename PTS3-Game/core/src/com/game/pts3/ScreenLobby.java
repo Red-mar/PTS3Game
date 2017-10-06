@@ -38,7 +38,6 @@ public class ScreenLobby implements Screen, GameEvents {
     private com.game.classes.Game gameState;
     private Player clientPlayer;
     private Stage stage;
-    private boolean isNameSet = false;
     private Skin skin;
     private Chat chat;
     private List playerList;
@@ -89,10 +88,6 @@ public class ScreenLobby implements Screen, GameEvents {
                     chat.getTextArea().appendText("Geen connectie met een server.\n");
                     chat.getTextField().setText("");
                 } else {
-                    if (!isNameSet){
-                        gameState.getClient().sendMessageSetName(name);
-                        isNameSet = true;
-                    }
                     gameState.getClient().readInput(chat.getTextField().getText());
                     chat.getTextField().setText("");
                     sound.play(1.0f);
