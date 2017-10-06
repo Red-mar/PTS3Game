@@ -3,6 +3,7 @@ package com.game.pts3;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,11 +19,13 @@ public class ScreenSetup implements Screen {
     Stage stage;
     private Skin skin;
     private Game game;
+    final private AssetManager manager;
 
-    public ScreenSetup(final Game game){
+    public ScreenSetup(final Game game, AssetManager assetManager){
         stage = new Stage();
         this.game = game;
-        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+        this. manager = assetManager;
+        skin = manager.get("data/uiskin.json", Skin.class);
         Gdx.input.setInputProcessor(stage);
 
         /**
@@ -55,7 +58,7 @@ public class ScreenSetup implements Screen {
                 String string = "?";
                 string = tfName.getText();
                 com.game.classes.Game gameState = new com.game.classes.Game(new Client(tfIP.getText()));
-                game.setScreen(new ScreenLobby(game, string, gameState));
+                game.setScreen(new ScreenLobby(game, string, gameState, manager));
             }
         });
         btnStart.setSize(250,20);

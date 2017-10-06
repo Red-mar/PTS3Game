@@ -1,6 +1,7 @@
 package com.game.pts3;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -32,6 +33,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     Stage stage;
     private Skin skin;
     private Game game;
+    private AssetManager manager;
     private Player clientPlayer;
     private TiledMap tiledMap;
     private com.game.classes.Game gameState;
@@ -55,9 +57,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     //Debug options
     private boolean showCharacter = true;
 
-    public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Player clientPlayer, Chat chat){
+    public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Player clientPlayer, Chat chat, AssetManager assetManager){
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
+
+        manager = assetManager;
 
         stage = new Stage();
         camera = new OrthographicCamera();
@@ -314,16 +318,16 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                     if (selectedTile.getCharacter().isDead()){
                         selectedTile.setCharacter(null);
                     }
-                    selectedCharacter = null;
-                    showMovementOptions = false;
                     return false;
                 }
-                selectedCharacter = null;
-                showMovementOptions = false;
             } else if (selectedCharacter.getPlayer() == clientPlayer){
                 oldTerrain.setCharacter(null);
                 selectedTile.setCharacter(selectedCharacter);
             }
+
+            selectedCharacter = null;
+            showMovementOptions = false;
+            return false;
         }
 
         if (selectedTile.getCharacter() != null

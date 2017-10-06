@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,18 +24,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
 import com.game.classes.Character;
 import com.game.classes.Map;
 import com.game.classes.Player;
 import com.game.classes.Terrain;
-import javafx.stage.FileChooser;
-import network.Client.Client;
 import network.Client.GameEvents;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -47,6 +43,8 @@ public class ScreenLobby implements Screen, GameEvents {
     private Chat chat;
     private List playerList;
     private Sound sound;
+    private Music music;
+    private AssetManager manager;
 
     private TiledMap tiledMap;
 
@@ -55,12 +53,16 @@ public class ScreenLobby implements Screen, GameEvents {
     float red = 0;
     float green = 0;
 
-    public ScreenLobby(final Game game, final String name, final com.game.classes.Game gameState){
+    public ScreenLobby(final Game game, final String name, final com.game.classes.Game gameState, AssetManager assetManager){
         this.game = game;
+        this.manager = assetManager;
         this.gameState = gameState;
         stage = new Stage();
-        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-        sound = Gdx.audio.newSound(Gdx.files.internal("sound/LobbyIn.wav"));
+        skin = manager.get("data/uiskin.json", Skin.class);
+        sound = manager.get("sound/LobbyIn.wav", Sound.class);
+        music = manager.get("bgm/bgmbase1.mp3", Music.class);
+        music.setLooping(true);
+        music.play();
 
         /**
          * Chat
@@ -130,7 +132,7 @@ public class ScreenLobby implements Screen, GameEvents {
                     sound.play(1.0f);
                 }
                 addCharacter(name);
-                game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer, chat));
+                game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer, chat, manager));
                 stage.clear();
             }
         });
@@ -298,7 +300,7 @@ public class ScreenLobby implements Screen, GameEvents {
         if (clientPlayer.getName().equals("Red")){
             textureFile = "Sprites/swordsman-2.png";
         }
-        Texture texture = new Texture(Gdx.files.internal(textureFile));
+        Texture texture = manager.get(textureFile, Texture.class);
         Sprite sprite = new Sprite(texture);
         for (int i = 0; i < 2; i ++){
             Random rnd = new Random();

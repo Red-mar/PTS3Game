@@ -35,7 +35,7 @@ public class StageStart extends Game {
         camera.setToOrtho(false, 40, 30);
         camera.update();
 
-        this.setScreen(new ScreenSetup(this));
+        this.setScreen(new ScreenLoad(this));
     }
 
     @Override
