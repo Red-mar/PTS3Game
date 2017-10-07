@@ -13,6 +13,7 @@ public class Character implements Serializable {
     private int defensePoints;
     private int movementPoints;
     private int currentMovementPoints;
+    private int attackRange;
     private boolean isDead;
     private Terrain currentTerrain;
     private int[] position;
@@ -30,13 +31,14 @@ public class Character implements Serializable {
      * @param defensePoints The amount of damage that gets reduced per received attack.
      * @param movementPoints The amount of tiles a character can move.
      */
-    public Character(String name, int maxHealthPoints, int attackPoints, int defensePoints, int movementPoints, Sprite sprite, Terrain currentTerrain, String spriteTexture, Player player) {
+    public Character(String name, int maxHealthPoints, int attackPoints, int defensePoints, int movementPoints, int attackRange, Sprite sprite, Terrain currentTerrain, String spriteTexture, Player player) {
         this.name = name;
         this.maxHealthPoints = maxHealthPoints;
         this.currentHealthPoints = maxHealthPoints;
         this.attackPoints = attackPoints;
         this.defensePoints = defensePoints;
         this.movementPoints = movementPoints;
+        this.attackRange = attackRange;
         this.currentMovementPoints = movementPoints;
         this.sprite = sprite;
         this.spriteTexture = spriteTexture;
@@ -92,7 +94,7 @@ public class Character implements Serializable {
     public void takeDamage(int attackPoints) {
         int currentHealth = currentHealthPoints - (attackPoints - defensePoints);
         this.currentHealthPoints = currentHealth;
-        if (this.currentHealthPoints < 0){
+        if (this.currentHealthPoints <= 0){
             isDead = true;
         }
     }
@@ -197,7 +199,7 @@ public class Character implements Serializable {
     public boolean canAttack(Terrain terrain){
         int totalMovement = calculateTotalMovement(terrain);
 
-        if (totalMovement > 1){ // Attack range?
+        if (totalMovement > attackRange){
             return false;
         }
         if (terrain.getCharacter() == null && terrain.getCharacter() != this){

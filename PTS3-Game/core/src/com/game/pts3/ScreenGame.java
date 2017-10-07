@@ -48,8 +48,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     private SpriteBatch batch;
     private Sprite sprite;
-    private Texture texture;
-    private Texture textureRed;
 
     private Sound damageSound;
     private Sound errorSound;
@@ -71,41 +69,29 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
 
-        manager = assetManager;
-
         stage = new Stage();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, width, height);
         camera.update();
 
-        tiledMap = map;
-        mapObjects = map.getLayers().get("Decoration").getObjects();
-        System.out.println(mapObjects.getCount());
-        selectedTile = gameState.getMap().getTerrains()[0][0];
-
+        this.manager = assetManager;
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
-        volume = prefs.getFloat("volume");
+        this.volume = prefs.getFloat("volume");
         this.gameState = gameState;
         addGameListener();
         this.chat = chat;
-        stage.getRoot().addCaptureListener(new InputListener() {
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if (!(event.getTarget() instanceof TextField)) stage.setKeyboardFocus(null);
-                return false;
-            }});
         this.clientPlayer = clientPlayer;
         this.game = game;
 
+        tiledMap = map;
+        selectedTile = gameState.getMap().getTerrains()[0][0];
         renderer = new OrthogonalTiledMapRenderer(tiledMap);
-        skin = manager.get("data/uiskin.json", Skin.class);
-        texture = manager.get("Sprites/swordsman-1.png", Texture.class);
-        textureRed = manager.get("Sprites/swordsman-2.png", Texture.class);
 
+        skin = manager.get("data/uiskin.json", Skin.class);
         damageSound = manager.get("sound/Damage.wav", Sound.class);
         errorSound = manager.get("sound/Error.wav", Sound.class);
         alarmSound = manager.get("sound/Alarm.wav", Sound.class);
 
-        sprite = new Sprite(texture);
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
 
@@ -124,14 +110,18 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
         });
         btnEndTurn.setPosition(10,10);
-        btnEndTurn.setSize(120,20);
+        btnEndTurn.setSize(250,20);
 
         stage.addActor(lblGame);
         stage.addActor(btnEndTurn);
-
         stage.addActor(chat.getScrollPane());
         stage.addActor(chat.getTextField());
         stage.addActor(chat.getBtnSendMessage());
+        stage.getRoot().addCaptureListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if (!(event.getTarget() instanceof TextField)) stage.setKeyboardFocus(null);
+                return false;
+            }});
 
         updatePlayers();
 
@@ -408,12 +398,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         for (Player player:players) {
             for (Character character:player.getCharacters()) {
                 if (character.isDead()) continue;
-                Sprite sprite = null;
-                if (character.getSpriteTexture().equals("Sprites/swordsman-2.png")){
-                    sprite = new Sprite(textureRed);
-                }else {
-                    sprite = new Sprite(texture);
-                }
+                Sprite sprite = new Sprite(manager.get(character.getSpriteTexture(), Texture.class));
+
                 sprite.setPosition(character.getCurrentTerrain().getX()*15, character.getCurrentTerrain().getY()*15);
                 gameState.getMap().getTerrains()[character.getCurrentTerrain().getX()][character.getCurrentTerrain().getY()].setCharacter(character);
                 character.setSprite(sprite);

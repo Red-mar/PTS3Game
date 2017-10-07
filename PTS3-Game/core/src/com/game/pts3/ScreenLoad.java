@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 
 public class ScreenLoad implements Screen {
@@ -39,6 +40,8 @@ public class ScreenLoad implements Screen {
         manager.load("Sprites/swordsman-2.png", Texture.class);
         manager.load("Sprites/wizard-1.png", Texture.class);
         manager.load("Sprites/wizard-2.png", Texture.class);
+        manager.load("maan.png", Texture.class);
+        manager.load("badlogic.jpg", Texture.class);
 
         manager.load("sound/Alarm.wav", Sound.class);
         manager.load("sound/Damage.wav", Sound.class);

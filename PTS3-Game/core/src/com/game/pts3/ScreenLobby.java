@@ -316,16 +316,51 @@ public class ScreenLobby implements Screen, GameEvents {
                 clientPlayer = player;
             }
         }
-        String textureFile = "Sprites/swordsman-1.png";
+        short enemy = 1;
         if (clientPlayer.getName().equals("Red")){
-            textureFile = "Sprites/swordsman-2.png";
+            enemy = 2;
         }
-        Texture texture = manager.get(textureFile, Texture.class);
-        Sprite sprite = new Sprite(texture);
-        for (int i = 0; i < 2; i ++){
+        String textureFile;
+        Character character;
+        Texture texture;
+        Sprite sprite;
+        for (int i = 0; i < 5; i ++){
             Random rnd = new Random();
             Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(40)];
-            Character character = new Character("Pietje", 10, 4, 1, 3,sprite, terrain,textureFile,clientPlayer);
+            switch (i){
+
+                case 1:
+                    textureFile = "Sprites/bowman-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Bowman", 8, 4, 0, 6, 3, sprite, terrain,textureFile,clientPlayer);
+                    break;
+                case 2:
+                    textureFile = "Sprites/heavy-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Heavy Dude", 15, 2, 2, 4, 1, sprite, terrain,textureFile,clientPlayer);
+                    break;
+                case 3:
+                    textureFile = "Sprites/horseman-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Man with donkey", 8, 2, 0, 10, 1, sprite, terrain,textureFile,clientPlayer);
+                    break;
+                case 4:
+                    textureFile = "Sprites/wizard-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Merrrlijn", 7, 5, 0, 5, 2, sprite, terrain,textureFile,clientPlayer);
+                    break;
+                default:
+                    textureFile = "Sprites/swordsman-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Zwaardvechter", 10, 4, 1, 6, 1, sprite, terrain,textureFile,clientPlayer);
+                    break;
+            }
+
             clientPlayer.addCharacter(character);
         }
         gameState.getClient().sendGameMessagePlayer(clientPlayer);
