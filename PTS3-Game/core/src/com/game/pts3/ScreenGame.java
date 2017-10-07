@@ -474,6 +474,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     private synchronized void endTurn(){
+        showMovementOptions = false;
+
         for (Player player:gameState.getPlayers()) {
             if (clientPlayer.getName().equals(player.getName())){
                 clientPlayer = player;
