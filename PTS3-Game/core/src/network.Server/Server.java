@@ -75,8 +75,10 @@ public class Server {
         }
     }
 
-    public void sendGameState(Game game){
-        //TODO
+    public void sendGameEnd(){
+        for (ConnectionHandler client : clients.keySet()) {
+            client.sendMessage(MessageType.GameEndMessage);
+        }
     }
 
     /**
@@ -246,6 +248,18 @@ public class Server {
                     for (Character character : thisPlayer.getCharacters()) {
                         character.setCurrentMovementPoints(character.getMovementPoints());
                         character.setHasAttacked(false);
+                    }
+
+                    for (Player player : game.getPlayers()) {
+                        int deadCharacters = 0;
+                        for (Character character : player.getCharacters()) {
+                            if (character.isDead()){
+                                deadCharacters++;
+                            }
+                        }
+                        if (deadCharacters == player.getCharacters().size()){
+                            sendGameEnd();
+                        }
                     }
 
                     int position = game.getPlayers().indexOf(thisPlayer);

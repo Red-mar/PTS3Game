@@ -439,6 +439,23 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         errorSound.play();
     }
 
+    @Override
+    public void onEndGame() {
+        new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
+            @Override
+            public void run() {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        game.dispose();
+                        stage.clear();
+                        Gdx.app.exit();
+                    }
+                });
+            }
+        }).start();
+    }
+
     /**
      * hacky af
      */

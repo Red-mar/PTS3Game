@@ -317,6 +317,11 @@ public class Client {
                                 gameListener.onStartGame();
                             }
                             break;
+                        case GameEndMessage:
+                            for (GameEvents gameListener : gameListeners) {
+                                gameListener.onEndGame();
+                            }
+                            break;
                         default:
                             System.out.println("no know?");
                     }

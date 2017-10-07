@@ -285,6 +285,11 @@ public class ScreenLobby implements Screen, GameEvents {
         }).start();
     }
 
+    @Override
+    public void onEndGame() {
+
+    }
+
     /**
      * hacky af
      */
