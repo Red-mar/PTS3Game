@@ -404,6 +404,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         for (Player player:players) {
             for (Character character:player.getCharacters()) {
+                if (character.isDead()) continue;
                 Sprite sprite = null;
                 if (character.getSpriteTexture().equals("Sprites/swordsman-2.png")){
                     sprite = new Sprite(textureRed);
