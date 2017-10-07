@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -38,6 +39,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Preferences prefs;
     private Player clientPlayer;
     private TiledMap tiledMap;
+    private MapObjects mapObjects;
     private com.game.classes.Game gameState;
     private OrthographicCamera camera;
     private TiledMapRenderer renderer;
@@ -77,6 +79,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         camera.update();
 
         tiledMap = map;
+        mapObjects = map.getLayers().get("Decoration").getObjects();
+        System.out.println(mapObjects.getCount());
         selectedTile = gameState.getMap().getTerrains()[0][0];
 
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
@@ -347,10 +351,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                     if (selectedTile.getCharacter().isDead()){
                         selectedTile.setCharacter(null);
                     }
-                    return false;
                 }
             } else if (selectedCharacter.getPlayer() == clientPlayer){
-                oldTerrain.setCharacter(null);
+                gameState.getMap().getTerrains()[oldTerrain.getX()][oldTerrain.getY()].setCharacter(null);
                 selectedTile.setCharacter(selectedCharacter);
             }
 
