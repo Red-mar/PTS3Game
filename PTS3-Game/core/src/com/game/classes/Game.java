@@ -281,6 +281,7 @@ public class Game
     }
 
     public boolean characterAttack(Character attacker, Character defender){
+        if (defender == null) return false;
         if (!attacker.hasAttacked() && attacker.canAttack(defender.getCurrentTerrain())){
             defender.takeDamage(attacker.getAttackPoints());
             attacker.setHasAttacked(true);
