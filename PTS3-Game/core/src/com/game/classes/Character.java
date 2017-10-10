@@ -20,6 +20,7 @@ public class Character implements Serializable {
     private Player player;
     private transient Sprite sprite;
     private String spriteTexture;
+    private Pathfinder pathfinder;
 
     private boolean hasAttacked = false;
 
@@ -45,6 +46,7 @@ public class Character implements Serializable {
         this.currentTerrain = currentTerrain;
         currentTerrain.setCharacter(this);
         this.player = player;
+        this.pathfinder = new Pathfinder(this);
     }
 
     /**
@@ -181,7 +183,7 @@ public class Character implements Serializable {
         }
         currentMovementPoints -= calculateTotalMovement(terrain);
         this.currentTerrain = terrain;
-
+        //TODO: reset pathfinder here
         return true;
     }
 
@@ -193,6 +195,8 @@ public class Character implements Serializable {
         } else if (terrain.getCharacter() != null){
             return false;
         } else if (terrain.getProperty() == TerrainProperties.Impassable){
+            return false;
+        } else if (terrain.getProperty() != TerrainProperties.Impassable && !pathfinder.canFindPath(terrain)){
             return false;
         }
         return true;
@@ -260,6 +264,10 @@ public class Character implements Serializable {
 
     public void setHasAttacked(boolean hasAttacked) {
         this.hasAttacked = hasAttacked;
+    }
+
+    public void setPathfinderMap(Map map){
+        pathfinder.setMap(map);
     }
 
     public boolean hasAttacked() {

@@ -193,6 +193,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             shapeRenderer.end();
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+            selectedCharacter.setPathfinderMap(gameState.getMap());
+
             for (int i = 0; i < gameState.getMap().getSizeX(); i++){
                 for (int j = 0; j < gameState.getMap().getSizeY(); j++){
                     if (!selectedCharacter.canMove(gameState.getMap().getTerrains()[i][j])){
