@@ -8,6 +8,7 @@ import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Client {
 
@@ -302,8 +303,11 @@ public class Client {
                                 in.read(buffer);
                                 System.out.println(buffer.length);
                                 ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
+                                System.out.println(bIn);
                                 ObjectInputStream is = new ObjectInputStream(bIn);
+                                System.out.println(is.toString());
                                 ArrayList<Player> players = ((ArrayList<Player>) is.readObject());
+                                System.out.println(Arrays.toString(players.toArray()) + ' ' + players.size());
 
                                 for (GameEvents ge : gameListeners) {
                                     ge.onGetPlayers(players);
