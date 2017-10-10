@@ -15,5 +15,6 @@ public enum MessageType {
     ClientSendPlayerMessage,
     GameSendEndTurnMessage,
     GameStartMessage,
-    GameEndMessage
+    GameEndMessage,
+    GameCharacterMoveMessage
 }

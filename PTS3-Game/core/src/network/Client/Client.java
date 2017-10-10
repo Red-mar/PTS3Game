@@ -3,6 +3,7 @@ package network.Client;
 import com.game.classes.Game;
 import com.game.classes.Player;
 import network.Server.MessageType;
+import sun.plugin2.message.Message;
 
 import javax.xml.crypto.Data;
 import java.io.*;
@@ -144,6 +145,11 @@ public class Client {
         connectionHandler.sendMessage(MessageType.GameStartMessage);
     }
 
+    public void sendCharacterMove(int x, int y, String charName, String playerName) {
+        connectionHandler.sendCharacterMove(MessageType.GameCharacterMoveMessage,
+            x, y, charName, playerName);
+    }
+
     /**
      * Stops the connection with the server.
      */
@@ -238,6 +244,20 @@ public class Client {
                 out.write(bOut.toByteArray());
                 out.flush();
             } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        private void sendCharacterMove(MessageType type, int x, int y, String charName, String playerName){
+            try {
+                out.writeByte(type.ordinal()); // Message Type
+                out.writeInt(1); // Message length
+                out.writeInt(x); // x Cord
+                out.writeInt(y); // y Cord
+                out.writeUTF(charName); // character name
+                out.writeUTF(playerName); // player name
+                out.flush();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

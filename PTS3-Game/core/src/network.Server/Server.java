@@ -278,6 +278,23 @@ public class Server {
                 case GameStartMessage:
                     Server.this.sendGameStart();
                     break;
+                case GameCharacterMoveMessage:
+                    int x = in.readInt();
+                    int y = in.readInt();
+                    String charName = in.readUTF();
+                    String playerName = in.readUTF();
+
+                    for (Player player : game.getPlayers()) {
+                        if (player.getName().equals(playerName)){
+                            for (Character character : player.getCharacters()) {
+                                if (character.getName().equals(charName)){
+                                    character.setCurrentTerrain(game.getMap().getTerrains()[x][y]);
+                                }
+                            }
+                        }
+                    }
+                    Server.this.sendGameMessagePlayers();
+                    break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");
                     break;
