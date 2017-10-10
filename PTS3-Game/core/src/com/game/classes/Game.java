@@ -166,12 +166,20 @@ public class Game
     }
 
     public void establishConnection(String name, com.game.pts3.Chat chat){
-        if (!getClient().isConnected()){
-            getClient().start();
-            while (!getClient().isConnected()) {} //TODO betere oplossing
-            getClient().addListener(chat);
-            getClient().sendMessageSetName(name);
-            getClient().sendMessageGetPlayers();
+        try {
+
+
+            if (!getClient().isConnected()) {
+                getClient().start();
+                while (!getClient().isConnected()) {
+                } //TODO betere oplossing
+                getClient().addListener(chat);
+                getClient().sendMessageSetName(name);
+                Thread.sleep(100);
+                getClient().sendMessageGetPlayers();
+            }
+        } catch (InterruptedException e){
+            e.printStackTrace();
         }
     }
 
@@ -181,6 +189,7 @@ public class Game
      * @param manager
      */
     public void generateCharacters(String name, AssetManager manager){
+        updateClientPlayer();
         short enemy = 1;
         if (clientPlayer.getName().equals("Red")){
             enemy = 2;
@@ -290,5 +299,9 @@ public class Game
             return true;
         }
         return false;
+    }
+
+    public void addGameListener(GameEvents listener){
+        client.addGameListener(listener);
     }
 }

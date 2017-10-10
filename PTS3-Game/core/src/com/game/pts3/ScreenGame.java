@@ -84,7 +84,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
         this.volume = prefs.getFloat("volume");
         this.gameState = gameState;
-        addGameListener();
+        gameState.addGameListener(this);
         this.chat = chat;
         //this.clientPlayer = clientPlayer;
         this.game = game;
@@ -455,13 +455,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 });
             }
         }).start();
-    }
-
-    /**
-     * hacky af
-     */
-    private void addGameListener(){
-        gameState.getClient().addGameListener(this);
     }
 
     private void updatePlayers(){

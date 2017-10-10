@@ -305,7 +305,6 @@ public class ScreenLobby implements Screen, GameEvents {
     }
 
     private void addCharacter(String name) {
-        gameState.updateClientPlayer();
         gameState.generateCharacters(name, manager);
     }
 }
