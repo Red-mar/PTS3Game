@@ -247,7 +247,7 @@ public class Game
             getClient().sendGameMessagePlayer(player);
 
             try {
-                wait(100); // Server crashes if it gets too many messages...
+                Thread.sleep(100); // Server crashes if it gets too many messages...
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
