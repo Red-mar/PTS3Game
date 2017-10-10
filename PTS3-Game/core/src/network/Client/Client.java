@@ -272,8 +272,8 @@ public class Client {
                 isConnected = true;
 
                 while (isReceivingMessages && !socket.isClosed()){
+                    Thread.sleep(100);
                     MessageType type = MessageType.values()[in.readByte()];
-                    Client.this.wait(100);
                     String message;
 
                     byte[] buffer = new byte[5000];
