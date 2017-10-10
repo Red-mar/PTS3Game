@@ -204,13 +204,13 @@ public class Game
                     textureFile = "Sprites/heavy-" + enemy + ".png";
                     texture = manager.get(textureFile, Texture.class);
                     sprite = new Sprite(texture);
-                    character = new Character("Heavy Dude", 15, 2, 2, 4, 1, sprite, terrain,textureFile,clientPlayer);
+                    character = new Character("Heavy Dude", 10, 3, 2, 4, 1, sprite, terrain,textureFile,clientPlayer);
                     break;
                 case 3:
                     textureFile = "Sprites/horseman-" + enemy + ".png";
                     texture = manager.get(textureFile, Texture.class);
                     sprite = new Sprite(texture);
-                    character = new Character("Man with donkey", 8, 2, 0, 10, 1, sprite, terrain,textureFile,clientPlayer);
+                    character = new Character("Man with donkey", 8, 4, 0, 10, 1, sprite, terrain,textureFile,clientPlayer);
                     break;
                 case 4:
                     textureFile = "Sprites/wizard-" + enemy + ".png";
