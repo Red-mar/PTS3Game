@@ -3,7 +3,6 @@ package network.Client;
 import com.game.classes.Game;
 import com.game.classes.Player;
 import network.Server.MessageType;
-import sun.plugin2.message.Message;
 
 import javax.xml.crypto.Data;
 import java.io.*;
