@@ -180,6 +180,7 @@ public class Client {
         private void sendMessage(MessageType type, String name){
             try {
                 out.writeByte(type.ordinal());
+                out.writeInt(name.length()); //mLength
                 out.writeUTF(name);
 
                 out.flush();
@@ -195,6 +196,7 @@ public class Client {
         private void sendMessage(MessageType type){
             try {
                 out.writeByte(type.ordinal());
+                out.writeInt(1); //mLength
                 out.flush();
             } catch (IOException e){
                 e.printStackTrace();
@@ -210,6 +212,7 @@ public class Client {
         private void sendMessage(MessageType type, String firstMessage, String secondMessage){
             try {
                 out.writeByte(type.ordinal());
+                out.writeInt(firstMessage.length() + secondMessage.length()); //mLength
                 out.writeUTF(firstMessage);
                 out.writeUTF(secondMessage); //Split Message
 
@@ -231,6 +234,7 @@ public class Client {
                 ByteArrayOutputStream bOut = new ByteArrayOutputStream();
                 ObjectOutputStream os = new ObjectOutputStream(bOut);
                 os.writeObject(object);
+                out.writeInt(bOut.size()); //mLength
                 out.write(bOut.toByteArray());
                 out.flush();
             } catch (Exception e){
@@ -273,10 +277,12 @@ public class Client {
 
                 while (isReceivingMessages && !socket.isClosed()){
                     MessageType type = MessageType.values()[in.readByte()];
+                    int messageLength = in.readInt();
                     String message;
 
-                    byte[] buffer = new byte[10000];
+                    byte[] buffer = new byte[messageLength];
                     System.out.println("Received Message Type of:" + type.toString());
+                    System.out.println("Message length " + messageLength);
 
                     switch (type) {
                         case ChatMessage: //Type A
@@ -299,11 +305,12 @@ public class Client {
                             break;
                         case GameSendPlayersMessage:
                             try {
-                                in.read(buffer);
+                                in.readFully(buffer);
+
                                 System.out.println(buffer.length);
                                 ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
                                 ObjectInputStream is = new ObjectInputStream(bIn);
-                                ArrayList<Player> players = ((ArrayList<Player>) is.readObject());
+                                ArrayList<Player> players = (ArrayList<Player>) is.readObject();
 
                                 for (GameEvents ge : gameListeners) {
                                     ge.onGetPlayers(players);
