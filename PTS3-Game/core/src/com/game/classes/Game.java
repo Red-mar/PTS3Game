@@ -235,7 +235,13 @@ public class Game
      * Sends a message to the server to send everyone new players
      */
     public void updatePlayers(){
+        updateClientPlayer();
         getClient().sendGameMessagePlayer(clientPlayer);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         getClient().sendMessageGetPlayers();
     }
 
@@ -243,6 +249,8 @@ public class Game
      * Sends an end turn message to the server
      */
     public void endTurn(){
+        updateClientPlayer();
+
         for (Player player : getPlayers()){
             getClient().sendGameMessagePlayer(player);
 
@@ -255,7 +263,7 @@ public class Game
         getClient().sendGameEndTurn();
     }
 
-    public void updateClientPlayer(){
+    private void updateClientPlayer(){
         for (Player player:getPlayers()) {
             if (clientPlayer.getName().equals(player.getName())){
                 clientPlayer = player;

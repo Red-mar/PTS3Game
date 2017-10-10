@@ -465,13 +465,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     private void updatePlayers(){
-        gameState.updateClientPlayer();
         gameState.updatePlayers();
     }
 
     private synchronized void endTurn(){
         showMovementOptions = false;
-        gameState.updateClientPlayer();
         gameState.endTurn();
     }
 }
