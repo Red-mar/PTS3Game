@@ -81,6 +81,8 @@ public class Client {
         }
         else if (userInput.startsWith("/close")){ /* WARNING EXPERIMENTAL */
             connectionHandler.close();
+        }else if (userInput.startsWith("/endturn")){
+            sendGameEndTurn();
         } else {
             sendMessageAll(userInput);
         }
