@@ -173,8 +173,7 @@ public class Server {
 
             String message;
             Player thisPlayer;
-            System.out.println("Received Message Type of:" + type.toString());
-            System.out.println("Message length " + messageLength);
+            System.out.println("Received type: " + type.toString() + " length: " + messageLength);
 
             byte[] buffer = new byte[messageLength];
 
@@ -221,7 +220,7 @@ public class Server {
                 case ClientSendPlayerMessage: /** Receives an updated player from the client **/
                     try {
                         in.readFully(buffer);
-                        System.out.println(buffer.length);
+
                         ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
                         ObjectInputStream is = new ObjectInputStream(bIn);
                         Player newPlayer = (Player) is.readObject();
@@ -277,6 +276,23 @@ public class Server {
                     break;
                 case GameStartMessage:
                     Server.this.sendGameStart();
+                    break;
+                case GameCharacterMoveMessage:
+                    int x = in.readInt();
+                    int y = in.readInt();
+                    String charName = in.readUTF();
+                    String playerName = in.readUTF();
+
+                    for (Player player : game.getPlayers()) {
+                        if (player.getName().equals(playerName)){
+                            for (Character character : player.getCharacters()) {
+                                if (character.getName().equals(charName)){
+                                    character.setCurrentTerrain(game.getMap().getTerrains()[x][y]);
+                                }
+                            }
+                        }
+                    }
+                    Server.this.sendGameMessagePlayers();
                     break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");

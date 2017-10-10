@@ -8,6 +8,7 @@ import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Client {
 
@@ -80,6 +81,8 @@ public class Client {
         }
         else if (userInput.startsWith("/close")){ /* WARNING EXPERIMENTAL */
             connectionHandler.close();
+        }else if (userInput.startsWith("/endturn")){
+            sendGameEndTurn();
         } else {
             sendMessageAll(userInput);
         }
@@ -142,6 +145,11 @@ public class Client {
 
     public void sendGameStart(){
         connectionHandler.sendMessage(MessageType.GameStartMessage);
+    }
+
+    public void sendCharacterMove(int x, int y, String charName, String playerName) {
+        connectionHandler.sendCharacterMove(MessageType.GameCharacterMoveMessage,
+            x, y, charName, playerName);
     }
 
     /**
@@ -242,6 +250,20 @@ public class Client {
             }
         }
 
+        private void sendCharacterMove(MessageType type, int x, int y, String charName, String playerName){
+            try {
+                out.writeByte(type.ordinal()); // Message Type
+                out.writeInt(1); // Message length
+                out.writeInt(x); // x Cord
+                out.writeInt(y); // y Cord
+                out.writeUTF(charName); // character name
+                out.writeUTF(playerName); // player name
+                out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         /**
          * Closes the connection with the server.
          */
@@ -281,8 +303,7 @@ public class Client {
                     String message;
 
                     byte[] buffer = new byte[messageLength];
-                    System.out.println("Received Message Type of:" + type.toString());
-                    System.out.println("Message length " + messageLength);
+                    System.out.println("Received type: " + type.toString() + " length: " + messageLength);
 
                     switch (type) {
                         case ChatMessage: //Type A
@@ -307,7 +328,6 @@ public class Client {
                             try {
                                 in.readFully(buffer);
 
-                                System.out.println(buffer.length);
                                 ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
                                 ObjectInputStream is = new ObjectInputStream(bIn);
                                 ArrayList<Player> players = (ArrayList<Player>) is.readObject();

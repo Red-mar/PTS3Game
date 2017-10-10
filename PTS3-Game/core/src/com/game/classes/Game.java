@@ -190,17 +190,22 @@ public class Game
      */
     public void generateCharacters(String name, AssetManager manager){
         updateClientPlayer();
-        short enemy = 1;
-        if (clientPlayer.getName().equals("Red")){
-            enemy = 2;
+        int enemy = 1;
+        for (int i = 0; i < players.size(); i++){
+            if (players.get(i).getName() == clientPlayer.getName()){
+                enemy = i + 1;
+            }
         }
         String textureFile;
         Character character;
         Texture texture;
         Sprite sprite;
-        for (int i = 0; i < 5; i ++){
-            Random rnd = new Random();
-            Terrain terrain = getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(40)];
+        int[] ints = new Random().ints(0,60).distinct().limit(15).toArray();
+        for (int i = 0; i < 15; i ++){
+            int x = ints[i] % 20 + 10;
+            int y = enemy == 1 ? ints[i] / 20 : ints[i] / 20 + 37;
+            System.out.println(x + " "+ y);
+            Terrain terrain = getMap().getTerrains()[x][y];
             switch (i){
 
                 case 1:
@@ -297,6 +302,7 @@ public class Game
         if (character.setCurrentTerrain(tile)){
             map.getTerrains()[oldTile.getX()][oldTile.getY()].setCharacter(null);
             tile.setCharacter(character);
+
             return true;
         }
         return false;
