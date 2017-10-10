@@ -37,7 +37,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Game game;
     private AssetManager manager;
     private Preferences prefs;
-    private Player clientPlayer;
+    //private Player clientPlayer;
     private TiledMap tiledMap;
     private MapObjects mapObjects;
     private com.game.classes.Game gameState;
@@ -62,25 +62,31 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     private boolean showMovementOptions = false;
 
+    private float cameraZoomMin = 0.400f;
+    private float cameraZoomMax = 0.125f;
+    private Vector3 cameraBoundsMax;
+    private Vector3 cameraBoundsMin;
+
     //Debug options
     private boolean showCharacter = false;
 
-    public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Player clientPlayer, Chat chat, AssetManager assetManager){
+    public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Chat chat, AssetManager assetManager){
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
 
         stage = new Stage();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, width, height);
+        camera.zoom = cameraZoomMin;
         camera.update();
 
         this.manager = assetManager;
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
         this.volume = prefs.getFloat("volume");
         this.gameState = gameState;
-        addGameListener();
+        gameState.addGameListener(this);
         this.chat = chat;
-        this.clientPlayer = clientPlayer;
+        //this.clientPlayer = clientPlayer;
         this.game = game;
 
         tiledMap = map;
@@ -129,6 +135,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(multiplexer);
+
+        /**
+         * Set Camera Start
+         */
+        camera.position.set(gameState.getMap().getSizeX() * gameState.getMap().getTileWidth() / 2,
+                gameState.getMap().getSizeY() * gameState.getMap().getTileHeight() / 2,
+                0);
+
     }
 
     @Override
@@ -141,6 +155,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
         camera.update();
+
+        /**
+         * Camera Bounds
+         */
+        cameraBoundsMin = new Vector3(100 * camera.zoom, 100 * camera.zoom, 0);
+        cameraBoundsMax = new Vector3(gameState.getMap().getSizeX() * gameState.getMap().getTileWidth() - 100 * camera.zoom,
+                gameState.getMap().getSizeY() * gameState.getMap().getTileHeight() - 100 * camera.zoom,
+                0);
 
         /**
          * Tilemap
@@ -267,17 +289,17 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     public void moveCamera(){
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
-            camera.translate(-5, 0);
+            if (camera.position.x - 5 >= cameraBoundsMin.x){camera.translate(-5, 0);}
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
-            camera.translate(5, 0);
+            if (camera.position.x + 5 <= cameraBoundsMax.x){camera.translate(5, 0);}
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
-            camera.translate(0, 5);
+            if (camera.position.y + 5 <= cameraBoundsMax.y) {camera.translate(0, 5);}
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
-            camera.translate(0, -5);
-        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
+            if (camera.position.y - 5 >= cameraBoundsMin.y) {camera.translate(0, -5);}
+        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_UP) && camera.zoom + 0.005f <= cameraZoomMin){
             camera.zoom += 0.005f;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
+        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN) && camera.zoom - 0.005f >= cameraZoomMax){
             camera.zoom += -0.005f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.Q)){
@@ -320,7 +342,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         selectedTile = gameState.getMap().getTerrains()[x][y];
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
 
-        if (!clientPlayer.hasTurn()) {
+        if (!gameState.getClientPlayer().hasTurn()) {
             System.out.println("It is not your turn at the moment.");
             errorSound.play(volume);
             return false;
@@ -328,21 +350,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if (selectedCharacter != null){ //Do something with currently selected character
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
-            if (!selectedCharacter.setCurrentTerrain(selectedTile)){
-                if (!selectedCharacter.hasAttacked()
-                        && selectedCharacter.canAttack(selectedTile)){
-
-                    selectedTile.getCharacter().takeDamage(selectedCharacter.getAttackPoints());
-                    selectedCharacter.setHasAttacked(true);
+            if (!gameState.moveCharacter(selectedCharacter, selectedTile, oldTerrain)){
+                if (gameState.characterAttack(selectedCharacter, selectedTile.getCharacter())){
                     damageSound.play(volume);
                     chat.getTextArea().appendText("Attacked character " + selectedTile.getCharacter().getName() +
                             " for " + (selectedCharacter.getAttackPoints() - selectedTile.getCharacter().getDefensePoints()) +
                             " damage. HP " + selectedTile.getCharacter().getCurrentHealthPoints() + "/" + selectedTile.getCharacter().getMaxHealthPoints() + "\n");
-                    if (selectedTile.getCharacter().isDead()){
-                        selectedTile.setCharacter(null);
-                    }
                 }
-            } else if (selectedCharacter.getPlayer() == clientPlayer){
+            } else if (selectedCharacter.getPlayer() == gameState.getClientPlayer()){
                 gameState.getMap().getTerrains()[oldTerrain.getX()][oldTerrain.getY()].setCharacter(null);
                 selectedTile.setCharacter(selectedCharacter);
             }
@@ -354,7 +369,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if (selectedTile.getCharacter() != null
                 && selectedCharacter == null
-                && selectedTile.getCharacter().getPlayer() == clientPlayer){ // Select a character if nothing is selected.
+                && selectedTile.getCharacter().getPlayer() == gameState.getClientPlayer()){ // Select a character if nothing is selected.
             selectedCharacter = selectedTile.getCharacter();
             showMovementOptions = true;
         }
@@ -380,8 +395,10 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     @Override
     public boolean scrolled(int amount) {
         if (amount > 0){
+            if (camera.zoom + 0.05f <= cameraZoomMin)
             camera.zoom += 0.05f;
         } else {
+            if (camera.zoom - 0.05f >= cameraZoomMax)
             camera.zoom -= 0.05f;
         }
         return false;
@@ -389,11 +406,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void onGetPlayers(final ArrayList<Player> players) {
-        for (Terrain[] terrains : gameState.getMap().getTerrains()) {
-            for (Terrain terrain : terrains) {
-                terrain.setCharacter(null); //Clear terrain of fake characters
-            }
-        }
+        gameState.getMap().clearTerrain();
 
         for (Player player:players) {
             for (Character character:player.getCharacters()) {
@@ -406,13 +419,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
         }
         gameState.setPlayers(players);
+
+        /** Checks who has the turn **/
         for (Player player:gameState.getPlayers()) {
-            if (clientPlayer.getName().equals(player.getName())){
-                clientPlayer = player;
+            if (gameState.getClientPlayer().getName().equals(player.getName())){
+                gameState.setClientPlayer(player);
             }
             if (player.hasTurn()){
                 chat.textArea.appendText("It's " + player.getName() + "'s turn!\n");
-                if (player == clientPlayer){
+                if (player == gameState.getClientPlayer()){
                     alarmSound.play(volume);
                 }
             }
@@ -442,40 +457,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }).start();
     }
 
-    /**
-     * hacky af
-     */
-    private void addGameListener(){
-        gameState.getClient().addGameListener(this);
-    }
-
     private void updatePlayers(){
-        for (Player player:gameState.getPlayers()) {
-            if (clientPlayer.getName().equals(player.getName())){
-                clientPlayer = player;
-            }
-        }
-        gameState.getClient().sendGameMessagePlayer(clientPlayer);
-        gameState.getClient().sendMessageGetPlayers();
+        gameState.updatePlayers();
     }
 
     private synchronized void endTurn(){
         showMovementOptions = false;
-
-        for (Player player:gameState.getPlayers()) {
-            if (clientPlayer.getName().equals(player.getName())){
-                clientPlayer = player;
-            }
-        }
-        for (Player player : gameState.getPlayers()){
-            gameState.getClient().sendGameMessagePlayer(player);
-
-            try {
-                wait(100); // Server crashes if it gets too many messages...
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        gameState.getClient().sendGameEndTurn();
+        gameState.endTurn();
     }
 }

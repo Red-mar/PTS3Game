@@ -1,10 +1,14 @@
 package com.game.classes;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import network.Client.Client;
 import network.Client.GameEvents;
 import network.Server.Server;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Game
 {
@@ -14,6 +18,7 @@ public class Game
     private Boolean inGame;
     private Client client;
     private Server server;
+    private Player clientPlayer;
 
     /**
      * The game.
@@ -150,5 +155,153 @@ public class Game
      */
     public synchronized Client getClient() {
         return client;
+    }
+
+    public Player getClientPlayer() {
+        return clientPlayer;
+    }
+
+    public void setClientPlayer(Player clientPlayer) {
+        this.clientPlayer = clientPlayer;
+    }
+
+    public void establishConnection(String name, com.game.pts3.Chat chat){
+        try {
+
+
+            if (!getClient().isConnected()) {
+                getClient().start();
+                while (!getClient().isConnected()) {
+                } //TODO betere oplossing
+                getClient().addListener(chat);
+                getClient().sendMessageSetName(name);
+                Thread.sleep(100);
+                getClient().sendMessageGetPlayers();
+            }
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Generates characters for the clientplayer
+     * @param name
+     * @param manager
+     */
+    public void generateCharacters(String name, AssetManager manager){
+        updateClientPlayer();
+        short enemy = 1;
+        if (clientPlayer.getName().equals("Red")){
+            enemy = 2;
+        }
+        String textureFile;
+        Character character;
+        Texture texture;
+        Sprite sprite;
+        for (int i = 0; i < 5; i ++){
+            Random rnd = new Random();
+            Terrain terrain = getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(40)];
+            switch (i){
+
+                case 1:
+                    textureFile = "Sprites/bowman-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Bowman", 8, 4, 0, 6, 3, sprite, terrain,textureFile,clientPlayer);
+                    break;
+                case 2:
+                    textureFile = "Sprites/heavy-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Heavy Dude", 10, 3, 2, 4, 1, sprite, terrain,textureFile,clientPlayer);
+                    break;
+                case 3:
+                    textureFile = "Sprites/horseman-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Man with donkey", 8, 4, 0, 10, 1, sprite, terrain,textureFile,clientPlayer);
+                    break;
+                case 4:
+                    textureFile = "Sprites/wizard-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Merrrlijn", 7, 5, 0, 5, 2, sprite, terrain,textureFile,clientPlayer);
+                    break;
+                default:
+                    textureFile = "Sprites/swordsman-" + enemy + ".png";
+                    texture = manager.get(textureFile, Texture.class);
+                    sprite = new Sprite(texture);
+                    character = new Character("Zwaardvechter", 10, 4, 1, 6, 1, sprite, terrain,textureFile,clientPlayer);
+                    break;
+            }
+
+            clientPlayer.addCharacter(character);
+        }
+        getClient().sendGameMessagePlayer(clientPlayer);
+    }
+
+    /**
+     * Sends a message to the server to send everyone new players
+     */
+    public void updatePlayers(){
+        updateClientPlayer();
+        getClient().sendGameMessagePlayer(clientPlayer);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        getClient().sendMessageGetPlayers();
+    }
+
+    /**
+     * Sends an end turn message to the server
+     */
+    public void endTurn(){
+        updateClientPlayer();
+
+        for (Player player : getPlayers()){
+            getClient().sendGameMessagePlayer(player);
+
+            try {
+                Thread.sleep(100); // Server crashes if it gets too many messages...
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        getClient().sendGameEndTurn();
+    }
+
+    private void updateClientPlayer(){
+        for (Player player:getPlayers()) {
+            if (clientPlayer.getName().equals(player.getName())){
+                clientPlayer = player;
+            }
+        }
+    }
+
+    public boolean characterAttack(Character attacker, Character defender){
+        if (!attacker.hasAttacked() && attacker.canAttack(defender.getCurrentTerrain())){
+            defender.takeDamage(attacker.getAttackPoints());
+            attacker.setHasAttacked(true);
+            if (defender.isDead()){
+                defender.getCurrentTerrain().setCharacter(null);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean moveCharacter(Character character, Terrain tile, Terrain oldTile){
+        if (character.setCurrentTerrain(tile)){
+            map.getTerrains()[oldTile.getX()][oldTile.getY()].setCharacter(null);
+            tile.setCharacter(character);
+            return true;
+        }
+        return false;
+    }
+
+    public void addGameListener(GameEvents listener){
+        client.addGameListener(listener);
     }
 }
