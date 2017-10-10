@@ -303,8 +303,7 @@ public class Client {
                     String message;
 
                     byte[] buffer = new byte[messageLength];
-                    System.out.println("Received Message Type of:" + type.toString());
-                    System.out.println("Message length " + messageLength);
+                    System.out.println("Received type: " + type.toString() + " length: " + messageLength);
 
                     switch (type) {
                         case ChatMessage: //Type A
@@ -329,7 +328,6 @@ public class Client {
                             try {
                                 in.readFully(buffer);
 
-                                System.out.println(buffer.length);
                                 ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
                                 ObjectInputStream is = new ObjectInputStream(bIn);
                                 ArrayList<Player> players = (ArrayList<Player>) is.readObject();

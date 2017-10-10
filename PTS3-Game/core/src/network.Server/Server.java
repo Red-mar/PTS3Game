@@ -173,8 +173,7 @@ public class Server {
 
             String message;
             Player thisPlayer;
-            System.out.println("Received Message Type of:" + type.toString());
-            System.out.println("Message length " + messageLength);
+            System.out.println("Received type: " + type.toString() + " length: " + messageLength);
 
             byte[] buffer = new byte[messageLength];
 
@@ -221,7 +220,7 @@ public class Server {
                 case ClientSendPlayerMessage: /** Receives an updated player from the client **/
                     try {
                         in.readFully(buffer);
-                        System.out.println(buffer.length);
+
                         ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
                         ObjectInputStream is = new ObjectInputStream(bIn);
                         Player newPlayer = (Player) is.readObject();

@@ -302,6 +302,7 @@ public class Game
         if (character.setCurrentTerrain(tile)){
             map.getTerrains()[oldTile.getX()][oldTile.getY()].setCharacter(null);
             tile.setCharacter(character);
+
             return true;
         }
         return false;
