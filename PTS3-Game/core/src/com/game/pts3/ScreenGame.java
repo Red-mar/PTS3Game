@@ -136,6 +136,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         multiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(multiplexer);
 
+        /**
+         * Set Camera Start
+         */
+        camera.position.set(gameState.getMap().getSizeX() * gameState.getMap().getTileWidth() / 2,
+                gameState.getMap().getSizeY() * gameState.getMap().getTileHeight() / 2,
+                0);
 
     }
 
