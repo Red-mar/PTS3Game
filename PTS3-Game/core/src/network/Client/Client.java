@@ -272,6 +272,7 @@ public class Client {
                 isConnected = true;
 
                 while (isReceivingMessages && !socket.isClosed()){
+                    Client.this.wait(100);
                     MessageType type = MessageType.values()[in.readByte()];
                     String message;
 
