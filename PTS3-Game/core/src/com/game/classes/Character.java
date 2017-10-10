@@ -192,6 +192,8 @@ public class Character implements Serializable {
             return false;
         } else if (terrain.getCharacter() != null){
             return false;
+        } else if (terrain.getProperty() == TerrainProperties.Impassable){
+            return false;
         }
         return true;
     }

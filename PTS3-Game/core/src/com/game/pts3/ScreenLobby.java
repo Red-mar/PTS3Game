@@ -7,6 +7,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -162,14 +165,24 @@ public class ScreenLobby implements Screen, GameEvents {
         btnMap.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                tiledMap = new TmxMapLoader().load("map.tmx");
-                lblMap.setText("Selected map: " + "map.tmx");
+                tiledMap = new TmxMapLoader().load("map_2.tmx");
+                lblMap.setText("Selected map: " + "map_2.tmx");
 
                 TiledMapTileLayer tileLayer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
                 int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
                 int tileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
 
-                Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth);
+                MapLayer mapLayer = tiledMap.getLayers().get("Impassable Terrain");
+                MapObjects mapObjects = mapLayer.getObjects();
+                ArrayList<RectangleMapObject> mapObjectList = new ArrayList<RectangleMapObject>();
+                for (int i = 0; i < mapObjects.getCount(); i++){
+                    RectangleMapObject rmo = (RectangleMapObject) mapObjects.get(i);
+                    rmo.getRectangle().setX((rmo.getRectangle().x ) / tileWidth );
+                    rmo.getRectangle().setY((rmo.getRectangle().y ) / tileHeight);
+                    mapObjectList.add(rmo);
+                }
+
+                Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, mapObjectList);
                 gameState.setMap(gameMap);
                 sound.play(volume);
             }

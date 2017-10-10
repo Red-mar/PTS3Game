@@ -35,9 +35,9 @@ public class Terrain implements Serializable {
         this.character = character;
     }
 
-    public TerrainProperties getProperty() {
-        return property;
-    }
+    public TerrainProperties getProperty() { return property; }
+
+    public void setProperty(TerrainProperties property) { this.property = property; }
 
     public int getBonus() {
         return bonus;

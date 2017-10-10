@@ -1,5 +1,7 @@
 package com.game.classes;
 
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -19,7 +21,7 @@ public class Map implements Serializable {
      * @param sizeX
      * @param sizeY
      */
-    public Map(int sizeX, int sizeY, int tileHeight, int tileWidth) {
+    public Map(int sizeX, int sizeY, int tileHeight, int tileWidth, ArrayList<RectangleMapObject> mapObjects) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.tileHeight = tileHeight;
@@ -29,6 +31,15 @@ public class Map implements Serializable {
         for (int i = 0; i < sizeX; i++){
             for (int j = 0; j < sizeY; j++){
                 terrains[i][j] = new Terrain(TerrainProperties.Normal, i, j);
+            }
+        }
+
+        for (int i = 0; i < mapObjects.size(); i++){
+            for (int h = 0; h < sizeX; h++){
+                for (int j = 0; j < sizeY; j++){
+                    if (terrains[h][j].getX() == mapObjects.get(i).getRectangle().x && terrains[h][j].getY() == mapObjects.get(i).getRectangle().y)
+                        terrains[h][j].setProperty(TerrainProperties.Impassable);
+                }
             }
         }
     }

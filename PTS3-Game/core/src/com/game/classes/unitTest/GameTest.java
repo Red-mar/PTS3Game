@@ -57,7 +57,7 @@ public class GameTest {
     @Test
     public void getMap() throws Exception
     {
-        Map expected = new Map(10,10, 0, 0);
+        Map expected = new Map(10,10, 0, 0, null);
         instance.setMap(expected);
         Map result = instance.getMap();
         assertEquals(expected, result);
@@ -67,7 +67,7 @@ public class GameTest {
     public void setMap() throws Exception
     {
         assertEquals(null, instance.getMap());
-        Map toAdd = new Map(10,10, 0, 0);
+        Map toAdd = new Map(10,10, 0, 0, null);
         instance.setMap(toAdd);
         assertNotNull(instance.getMap());
     }
