@@ -339,7 +339,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         if (x < 0 || y < 0 || x > gameState.getMap().getSizeX() || y > gameState.getMap().getSizeY()){
             return false;
         }
-        selectedTile = gameState.getMap().getTerrains()[x][y];
+        try {
+            selectedTile = gameState.getMap().getTerrains()[x][y];
+        }
+        catch (ArrayIndexOutOfBoundsException ex){
+            selectedTile = gameState.getMap().getTerrains()[x - 1][y];
+        }
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
 
         if (!gameState.getClientPlayer().hasTurn()) {
