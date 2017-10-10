@@ -37,7 +37,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Game game;
     private AssetManager manager;
     private Preferences prefs;
-    private Player clientPlayer;
+    //private Player clientPlayer;
     private TiledMap tiledMap;
     private MapObjects mapObjects;
     private com.game.classes.Game gameState;
@@ -70,7 +70,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     //Debug options
     private boolean showCharacter = false;
 
-    public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Player clientPlayer, Chat chat, AssetManager assetManager){
+    public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Chat chat, AssetManager assetManager){
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
 
@@ -86,7 +86,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         this.gameState = gameState;
         addGameListener();
         this.chat = chat;
-        this.clientPlayer = clientPlayer;
+        //this.clientPlayer = clientPlayer;
         this.game = game;
 
         tiledMap = map;
@@ -336,7 +336,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         selectedTile = gameState.getMap().getTerrains()[x][y];
         System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
 
-        if (!clientPlayer.hasTurn()) {
+        if (!gameState.getClientPlayer().hasTurn()) {
             System.out.println("It is not your turn at the moment.");
             errorSound.play(volume);
             return false;
@@ -344,21 +344,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if (selectedCharacter != null){ //Do something with currently selected character
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
-            if (!selectedCharacter.setCurrentTerrain(selectedTile)){
-                if (!selectedCharacter.hasAttacked()
-                        && selectedCharacter.canAttack(selectedTile)){
-
-                    selectedTile.getCharacter().takeDamage(selectedCharacter.getAttackPoints());
-                    selectedCharacter.setHasAttacked(true);
+            if (!gameState.moveCharacter(selectedCharacter, selectedTile, oldTerrain)){
+                if (gameState.characterAttack(selectedCharacter, selectedTile.getCharacter())){
                     damageSound.play(volume);
                     chat.getTextArea().appendText("Attacked character " + selectedTile.getCharacter().getName() +
                             " for " + (selectedCharacter.getAttackPoints() - selectedTile.getCharacter().getDefensePoints()) +
                             " damage. HP " + selectedTile.getCharacter().getCurrentHealthPoints() + "/" + selectedTile.getCharacter().getMaxHealthPoints() + "\n");
-                    if (selectedTile.getCharacter().isDead()){
-                        selectedTile.setCharacter(null);
-                    }
                 }
-            } else if (selectedCharacter.getPlayer() == clientPlayer){
+            } else if (selectedCharacter.getPlayer() == gameState.getClientPlayer()){
                 gameState.getMap().getTerrains()[oldTerrain.getX()][oldTerrain.getY()].setCharacter(null);
                 selectedTile.setCharacter(selectedCharacter);
             }
@@ -370,7 +363,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if (selectedTile.getCharacter() != null
                 && selectedCharacter == null
-                && selectedTile.getCharacter().getPlayer() == clientPlayer){ // Select a character if nothing is selected.
+                && selectedTile.getCharacter().getPlayer() == gameState.getClientPlayer()){ // Select a character if nothing is selected.
             selectedCharacter = selectedTile.getCharacter();
             showMovementOptions = true;
         }
@@ -407,11 +400,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void onGetPlayers(final ArrayList<Player> players) {
-        for (Terrain[] terrains : gameState.getMap().getTerrains()) {
-            for (Terrain terrain : terrains) {
-                terrain.setCharacter(null); //Clear terrain of fake characters
-            }
-        }
+        gameState.getMap().clearTerrain();
 
         for (Player player:players) {
             for (Character character:player.getCharacters()) {
@@ -424,13 +413,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
         }
         gameState.setPlayers(players);
+
+        /** Checks who has the turn **/
         for (Player player:gameState.getPlayers()) {
-            if (clientPlayer.getName().equals(player.getName())){
-                clientPlayer = player;
+            if (gameState.getClientPlayer().getName().equals(player.getName())){
+                gameState.setClientPlayer(player);
             }
             if (player.hasTurn()){
                 chat.textArea.appendText("It's " + player.getName() + "'s turn!\n");
-                if (player == clientPlayer){
+                if (player == gameState.getClientPlayer()){
                     alarmSound.play(volume);
                 }
             }
@@ -468,32 +459,13 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     private void updatePlayers(){
-        for (Player player:gameState.getPlayers()) {
-            if (clientPlayer.getName().equals(player.getName())){
-                clientPlayer = player;
-            }
-        }
-        gameState.getClient().sendGameMessagePlayer(clientPlayer);
-        gameState.getClient().sendMessageGetPlayers();
+        gameState.updateClientPlayer();
+        gameState.updatePlayers();
     }
 
     private synchronized void endTurn(){
         showMovementOptions = false;
-
-        for (Player player:gameState.getPlayers()) {
-            if (clientPlayer.getName().equals(player.getName())){
-                clientPlayer = player;
-            }
-        }
-        for (Player player : gameState.getPlayers()){
-            gameState.getClient().sendGameMessagePlayer(player);
-
-            try {
-                wait(100); // Server crashes if it gets too many messages...
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        gameState.getClient().sendGameEndTurn();
+        gameState.updateClientPlayer();
+        gameState.endTurn();
     }
 }

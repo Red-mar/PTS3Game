@@ -33,7 +33,7 @@ import java.util.Random;
 public class ScreenLobby implements Screen, GameEvents {
     private Game game;
     private com.game.classes.Game gameState;
-    private Player clientPlayer;
+    //private Player clientPlayer;
     private Stage stage;
     private Skin skin;
     private Chat chat;
@@ -55,7 +55,7 @@ public class ScreenLobby implements Screen, GameEvents {
         this.game = game;
         this.manager = assetManager;
         this.gameState = gameState;
-        this.clientPlayer = new Player(name);
+        gameState.setClientPlayer(new Player(name));
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
         volume = prefs.getFloat("volume");
         stage = new Stage();
@@ -269,7 +269,7 @@ public class ScreenLobby implements Screen, GameEvents {
 
     @Override
     public void onStartGame() {
-        addCharacter(clientPlayer.getName());
+        addCharacter(gameState.getClientPlayer().getName());
 
         new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
             @Override
@@ -277,7 +277,7 @@ public class ScreenLobby implements Screen, GameEvents {
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        game.setScreen(new ScreenGame(game, tiledMap, gameState, clientPlayer, chat, manager));
+                        game.setScreen(new ScreenGame(game, tiledMap, gameState, chat, manager));
                         stage.clear();
                     }
                 });
@@ -293,76 +293,19 @@ public class ScreenLobby implements Screen, GameEvents {
     /**
      * hacky af
      */
-    private void addGameListener(){
-        gameState.getClient().addGameListener(this);
-    }
+    //private void addGameListener(){
+    //    gameState.getClient().addGameListener(this);
+    //}
 
     private void establishConnection(String name) {
-        if (!gameState.getClient().isConnected()){
-            gameState.getClient().start();
-            while (!gameState.getClient().isConnected()) {
-            } //TODO betere oplossing
-            gameState.getClient().addListener(chat);
-            addGameListener();
-            gameState.getClient().sendMessageSetName(name);
-            gameState.getClient().sendMessageGetPlayers();
-            sound.play(volume);
-        }
+        gameState.establishConnection(name, chat);
+        gameState.getClient().addGameListener(this);
+        //addGameListener();
+        sound.play(volume);
     }
 
-    private void addCharacter(String name){
-        for (Player player: gameState.getPlayers()) {
-            if (player.getName().equals(name)){
-                clientPlayer = player;
-            }
-        }
-        short enemy = 1;
-        if (clientPlayer.getName().equals("Red")){
-            enemy = 2;
-        }
-        String textureFile;
-        Character character;
-        Texture texture;
-        Sprite sprite;
-        for (int i = 0; i < 5; i ++){
-            Random rnd = new Random();
-            Terrain terrain = gameState.getMap().getTerrains()[rnd.nextInt(40)][rnd.nextInt(40)];
-            switch (i){
-
-                case 1:
-                    textureFile = "Sprites/bowman-" + enemy + ".png";
-                    texture = manager.get(textureFile, Texture.class);
-                    sprite = new Sprite(texture);
-                    character = new Character("Bowman", 8, 4, 0, 6, 3, sprite, terrain,textureFile,clientPlayer);
-                    break;
-                case 2:
-                    textureFile = "Sprites/heavy-" + enemy + ".png";
-                    texture = manager.get(textureFile, Texture.class);
-                    sprite = new Sprite(texture);
-                    character = new Character("Heavy Dude", 15, 2, 2, 4, 1, sprite, terrain,textureFile,clientPlayer);
-                    break;
-                case 3:
-                    textureFile = "Sprites/horseman-" + enemy + ".png";
-                    texture = manager.get(textureFile, Texture.class);
-                    sprite = new Sprite(texture);
-                    character = new Character("Man with donkey", 8, 2, 0, 10, 1, sprite, terrain,textureFile,clientPlayer);
-                    break;
-                case 4:
-                    textureFile = "Sprites/wizard-" + enemy + ".png";
-                    texture = manager.get(textureFile, Texture.class);
-                    sprite = new Sprite(texture);
-                    character = new Character("Merrrlijn", 7, 5, 0, 5, 2, sprite, terrain,textureFile,clientPlayer);
-                    break;
-                default:
-                    textureFile = "Sprites/swordsman-" + enemy + ".png";
-                    texture = manager.get(textureFile, Texture.class);
-                    sprite = new Sprite(texture);
-                    character = new Character("Zwaardvechter", 10, 4, 1, 6, 1, sprite, terrain,textureFile,clientPlayer);
-                    break;
-            }
-
-            clientPlayer.addCharacter(character);
-        }
-        gameState.getClient().sendGameMessagePlayer(clientPlayer);
+    private void addCharacter(String name) {
+        gameState.updateClientPlayer(gameState.getClientPlayer());
+        gameState.generateCharacters(gameState.getClientPlayer(), name, manager);
     }
 }

@@ -59,6 +59,17 @@ public class Map implements Serializable {
 
     public int getTileWidth() { return tileWidth; }
 
+    /**
+     * Clears the terrain of any characters.
+     */
+    public void clearTerrain(){
+        for (Terrain[] terrains : getTerrains()) {
+            for (Terrain terrain : terrains) {
+                terrain.setCharacter(null); //Clear terrain of fake characters
+            }
+        }
+    }
+
     /*public Terrain getTerrain() {
         return terrain;
     }*/
