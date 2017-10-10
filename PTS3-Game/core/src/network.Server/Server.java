@@ -173,7 +173,7 @@ public class Server {
             Player thisPlayer;
             System.out.println("Received Message Type of:" + type.toString());
 
-            byte[] buffer = new byte[5000];
+            byte[] buffer = new byte[10000];
 
             switch (type){
                 case TestMessage:

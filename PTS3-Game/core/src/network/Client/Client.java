@@ -275,7 +275,7 @@ public class Client {
                     MessageType type = MessageType.values()[in.readByte()];
                     String message;
 
-                    byte[] buffer = new byte[5000];
+                    byte[] buffer = new byte[10000];
                     System.out.println("Received Message Type of:" + type.toString());
 
                     switch (type) {
