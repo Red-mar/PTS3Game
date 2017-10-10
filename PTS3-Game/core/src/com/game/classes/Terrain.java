@@ -10,6 +10,13 @@ public class Terrain implements Serializable {
     private int y;
 
     /**
+     * for pathfinding
+     */
+    private int gCost;
+    private int hCost;
+    private Terrain parent;
+
+    /**
      * a tile on a map
      * @param property
      */
@@ -45,5 +52,37 @@ public class Terrain implements Serializable {
 
     public void setBonus(int bonus) {
         this.bonus = bonus;
+    }
+
+    public int getgCost() {
+        return gCost;
+    }
+
+    public void setgCost(int gCost) {
+        this.gCost = gCost;
+    }
+
+    public int gethCost() {
+        return hCost;
+    }
+
+    public void sethCost(int hCost) {
+        this.hCost = hCost;
+    }
+
+    public int getfCost(){
+        return gCost + hCost;
+    }
+
+    public Terrain getParent() {
+        return parent;
+    }
+
+    public void setParent(Terrain parent) {
+        this.parent = parent;
+    }
+
+    public int getHeuristic(Terrain terrain){
+        return Math.abs(terrain.getX() - x) + Math.abs(terrain.getY() - y);
     }
 }
