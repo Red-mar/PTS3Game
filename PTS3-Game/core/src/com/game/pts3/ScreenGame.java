@@ -355,15 +355,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             errorSound.play(volume);
             return false;
         }
-
+        Character tempCharacter = selectedTile.getCharacter();
         if (selectedCharacter != null){ //Do something with currently selected character
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!gameState.moveCharacter(selectedCharacter, selectedTile, oldTerrain)){
                 if (gameState.characterAttack(selectedCharacter, selectedTile.getCharacter())){
                     damageSound.play(volume);
-                    chat.getTextArea().appendText("Attacked character " + selectedTile.getCharacter().getName() +
-                            " for " + (selectedCharacter.getAttackPoints() - selectedTile.getCharacter().getDefensePoints()) +
-                            " damage. HP " + selectedTile.getCharacter().getCurrentHealthPoints() + "/" + selectedTile.getCharacter().getMaxHealthPoints() + "\n");
+                    chat.getTextArea().appendText("Attacked character " + tempCharacter.getName() +
+                            " for " + (selectedCharacter.getAttackPoints() - tempCharacter.getDefensePoints()) +
+                            " damage. HP " + tempCharacter.getCurrentHealthPoints() + "/" + tempCharacter.getMaxHealthPoints() + "\n");
                 }
             } else if (selectedCharacter.getPlayer() == gameState.getClientPlayer()){
                 gameState.getMap().getTerrains()[oldTerrain.getX()][oldTerrain.getY()].setCharacter(null);
