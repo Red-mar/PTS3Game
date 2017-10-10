@@ -3,6 +3,7 @@ package network.Client;
 import com.game.classes.Game;
 import com.game.classes.Player;
 import network.Server.MessageType;
+import sun.plugin2.message.Message;
 
 import javax.xml.crypto.Data;
 import java.io.*;
@@ -81,6 +82,8 @@ public class Client {
         }
         else if (userInput.startsWith("/close")){ /* WARNING EXPERIMENTAL */
             connectionHandler.close();
+        }else if (userInput.startsWith("/endturn")){
+            sendGameEndTurn();
         } else {
             sendMessageAll(userInput);
         }
@@ -145,6 +148,11 @@ public class Client {
         connectionHandler.sendMessage(MessageType.GameStartMessage);
     }
 
+    public void sendCharacterMove(int x, int y, String charName, String playerName) {
+        connectionHandler.sendCharacterMove(MessageType.GameCharacterMoveMessage,
+            x, y, charName, playerName);
+    }
+
     /**
      * Stops the connection with the server.
      */
@@ -181,6 +189,7 @@ public class Client {
         private void sendMessage(MessageType type, String name){
             try {
                 out.writeByte(type.ordinal());
+                out.writeInt(name.length()); //mLength
                 out.writeUTF(name);
 
                 out.flush();
@@ -196,6 +205,7 @@ public class Client {
         private void sendMessage(MessageType type){
             try {
                 out.writeByte(type.ordinal());
+                out.writeInt(1); //mLength
                 out.flush();
             } catch (IOException e){
                 e.printStackTrace();
@@ -211,6 +221,7 @@ public class Client {
         private void sendMessage(MessageType type, String firstMessage, String secondMessage){
             try {
                 out.writeByte(type.ordinal());
+                out.writeInt(firstMessage.length() + secondMessage.length()); //mLength
                 out.writeUTF(firstMessage);
                 out.writeUTF(secondMessage); //Split Message
 
@@ -232,9 +243,24 @@ public class Client {
                 ByteArrayOutputStream bOut = new ByteArrayOutputStream();
                 ObjectOutputStream os = new ObjectOutputStream(bOut);
                 os.writeObject(object);
+                out.writeInt(bOut.size()); //mLength
                 out.write(bOut.toByteArray());
                 out.flush();
             } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        private void sendCharacterMove(MessageType type, int x, int y, String charName, String playerName){
+            try {
+                out.writeByte(type.ordinal()); // Message Type
+                out.writeInt(1); // Message length
+                out.writeInt(x); // x Cord
+                out.writeInt(y); // y Cord
+                out.writeUTF(charName); // character name
+                out.writeUTF(playerName); // player name
+                out.flush();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -274,10 +300,12 @@ public class Client {
 
                 while (isReceivingMessages && !socket.isClosed()){
                     MessageType type = MessageType.values()[in.readByte()];
+                    int messageLength = in.readInt();
                     String message;
 
-                    byte[] buffer = new byte[10000];
+                    byte[] buffer = new byte[messageLength];
                     System.out.println("Received Message Type of:" + type.toString());
+                    System.out.println("Message length " + messageLength);
 
                     switch (type) {
                         case ChatMessage: //Type A
@@ -300,14 +328,12 @@ public class Client {
                             break;
                         case GameSendPlayersMessage:
                             try {
-                                in.read(buffer);
+                                in.readFully(buffer);
+
                                 System.out.println(buffer.length);
                                 ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
-                                System.out.println(bIn);
                                 ObjectInputStream is = new ObjectInputStream(bIn);
-                                System.out.println(is.toString());
-                                ArrayList<Player> players = ((ArrayList<Player>) is.readObject());
-                                System.out.println(Arrays.toString(players.toArray()) + ' ' + players.size());
+                                ArrayList<Player> players = (ArrayList<Player>) is.readObject();
 
                                 for (GameEvents ge : gameListeners) {
                                     ge.onGetPlayers(players);

@@ -153,8 +153,8 @@ public class Server {
                 System.out.println("Connection successful!");
 
                 while (!serviceSocket.isClosed() && receivingMessages){
-                    MessageType type = MessageType.values()[in.readByte()];
-                    handleMessage(type, in);
+                    //MessageType type = MessageType.values()[in.readByte()];
+                    handleMessage();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -167,13 +167,16 @@ public class Server {
             }
         }
 
-        private void handleMessage(MessageType type, DataInputStream in) throws IOException {
+        private void handleMessage() throws IOException {
+            MessageType type = MessageType.values()[in.readByte()];
+            int messageLength = in.readInt();
 
             String message;
             Player thisPlayer;
             System.out.println("Received Message Type of:" + type.toString());
+            System.out.println("Message length " + messageLength);
 
-            byte[] buffer = new byte[10000];
+            byte[] buffer = new byte[messageLength];
 
             switch (type){
                 case TestMessage:
@@ -217,7 +220,7 @@ public class Server {
                     break;
                 case ClientSendPlayerMessage: /** Receives an updated player from the client **/
                     try {
-                        in.read(buffer);
+                        in.readFully(buffer);
                         System.out.println(buffer.length);
                         ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
                         ObjectInputStream is = new ObjectInputStream(bIn);
@@ -275,6 +278,23 @@ public class Server {
                 case GameStartMessage:
                     Server.this.sendGameStart();
                     break;
+                case GameCharacterMoveMessage:
+                    int x = in.readInt();
+                    int y = in.readInt();
+                    String charName = in.readUTF();
+                    String playerName = in.readUTF();
+
+                    for (Player player : game.getPlayers()) {
+                        if (player.getName().equals(playerName)){
+                            for (Character character : player.getCharacters()) {
+                                if (character.getName().equals(charName)){
+                                    character.setCurrentTerrain(game.getMap().getTerrains()[x][y]);
+                                }
+                            }
+                        }
+                    }
+                    Server.this.sendGameMessagePlayers();
+                    break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");
                     break;
@@ -289,6 +309,7 @@ public class Server {
         private void sendMessage(MessageType type, String message){
             try {
                 out.writeByte(type.ordinal());
+                out.writeInt(message.length()); //mLength
                 out.writeUTF(message);
                 out.flush();
             } catch (Exception e){
@@ -300,6 +321,7 @@ public class Server {
         private void sendMessage(MessageType type){
             try {
                 out.writeByte(type.ordinal());
+                out.writeInt(1); //mLength
                 out.flush();
             } catch (Exception e){
                 e.printStackTrace();
@@ -317,6 +339,7 @@ public class Server {
                 ByteArrayOutputStream bOut = new ByteArrayOutputStream();
                 ObjectOutputStream os = new ObjectOutputStream(bOut);
                 os.writeObject(object);
+                out.writeInt(bOut.size()); //mLength
                 out.write(bOut.toByteArray());
                 out.flush();
             } catch (Exception e){
