@@ -62,6 +62,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     private boolean showMovementOptions = false;
 
+    private float cameraZoomMin = 0.400f;
+    private float cameraZoomMax = 0.125f;
+    private Vector3 cameraBoundsMax;
+    private Vector3 cameraBoundsMin;
+
     //Debug options
     private boolean showCharacter = false;
 
@@ -72,6 +77,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         stage = new Stage();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, width, height);
+        camera.zoom = cameraZoomMin;
         camera.update();
 
         this.manager = assetManager;
@@ -129,6 +135,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(multiplexer);
+
+
     }
 
     @Override
@@ -141,6 +149,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
         camera.update();
+
+        /**
+         * Camera Bounds
+         */
+        cameraBoundsMin = new Vector3(100 * camera.zoom, 100 * camera.zoom, 0);
+        cameraBoundsMax = new Vector3(gameState.getMap().getSizeX() * gameState.getMap().getTileWidth() - 100 * camera.zoom,
+                gameState.getMap().getSizeY() * gameState.getMap().getTileHeight() - 100 * camera.zoom,
+                0);
 
         /**
          * Tilemap
@@ -267,17 +283,17 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     public void moveCamera(){
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
-            camera.translate(-5, 0);
+            if (camera.position.x - 5 >= cameraBoundsMin.x){camera.translate(-5, 0);}
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
-            camera.translate(5, 0);
+            if (camera.position.x + 5 <= cameraBoundsMax.x){camera.translate(5, 0);}
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
-            camera.translate(0, 5);
+            if (camera.position.y + 5 <= cameraBoundsMax.y) {camera.translate(0, 5);}
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
-            camera.translate(0, -5);
-        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
+            if (camera.position.y - 5 >= cameraBoundsMin.y) {camera.translate(0, -5);}
+        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_UP) && camera.zoom + 0.005f <= cameraZoomMin){
             camera.zoom += 0.005f;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
+        if (Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN) && camera.zoom - 0.005f >= cameraZoomMax){
             camera.zoom += -0.005f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.Q)){
@@ -380,8 +396,10 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     @Override
     public boolean scrolled(int amount) {
         if (amount > 0){
+            if (camera.zoom + 0.05f <= cameraZoomMin)
             camera.zoom += 0.05f;
         } else {
+            if (camera.zoom - 0.05f >= cameraZoomMax)
             camera.zoom -= 0.05f;
         }
         return false;
