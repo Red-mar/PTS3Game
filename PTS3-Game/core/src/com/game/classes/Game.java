@@ -177,11 +177,10 @@ public class Game
 
     /**
      * Generates characters for the clientplayer
-     * @param clientPlayer
      * @param name
      * @param manager
      */
-    public void generateCharacters(Player clientPlayer, String name, AssetManager manager){
+    public void generateCharacters(String name, AssetManager manager){
         short enemy = 1;
         if (clientPlayer.getName().equals("Red")){
             enemy = 2;
