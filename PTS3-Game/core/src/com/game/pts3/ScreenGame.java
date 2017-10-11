@@ -67,8 +67,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     private boolean showMovementOptions = false;
 
-    private float cameraZoomMin = 0.400f;
-    private float cameraZoomMax = 0.125f;
+    private float cameraZoomMin = 0.700f;
+    private float cameraZoomMax = 0.075f;
     private Vector3 cameraBoundsMax;
     private Vector3 cameraBoundsMin;
 

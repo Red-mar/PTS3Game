@@ -208,7 +208,7 @@ public class Game
         Texture texture;
         Sprite sprite;
         int[] ints = new Random().ints(0,60).distinct().limit(15).toArray();
-        for (int i = 0; i < 15; i ++){
+        for (int i = 0; i < 5; i ++){
             int x = ints[i] % 20 + 10;
             int y = enemy == 1 ? ints[i] / 20 : ints[i] / 20 + 37;
             System.out.println(x + " "+ y);
