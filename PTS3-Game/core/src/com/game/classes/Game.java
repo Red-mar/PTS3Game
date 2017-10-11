@@ -3,6 +3,7 @@ package com.game.classes;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.game.classes.pathing.aStarPathing;
 import network.Client.Client;
 import network.Client.GameEvents;
 import network.Server.Server;
@@ -20,6 +21,8 @@ public class Game
     private Server server;
     private Player clientPlayer;
 
+    private aStarPathing pathing;
+
     /**
      * The game.
      * Handles everything that happens in the game.
@@ -30,6 +33,7 @@ public class Game
         this.client = client;
         players = new ArrayList<Player>();
         inGame = false;
+        pathing = new aStarPathing(getMap());
     }
 
     public Game(Server server){
@@ -37,6 +41,7 @@ public class Game
         //this.server.start();
         players = new ArrayList<Player>();
         inGame = false;
+        pathing = new aStarPathing(getMap());
     }
 
     /**
@@ -165,10 +170,12 @@ public class Game
         this.clientPlayer = clientPlayer;
     }
 
+    public aStarPathing getPathing() {
+        return pathing;
+    }
+
     public void establishConnection(String name, com.game.pts3.Chat chat){
         try {
-
-
             if (!getClient().isConnected()) {
                 getClient().start();
                 while (!getClient().isConnected()) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * https://github.com/libgdx/libgdx/wiki/Tile-maps
@@ -69,6 +70,25 @@ public class Map implements Serializable {
     public int getTileHeight() { return tileHeight; }
 
     public int getTileWidth() { return tileWidth; }
+
+    public List<Terrain> getNeighbours(Terrain terrain){
+        ArrayList<Terrain> neighbours = new ArrayList<Terrain>();
+
+        for (int x = -1; x <= 1; x++){
+            for (int y = -1; y <= 1; y++){
+                if (x==0 && y==0) continue;
+
+                int checkX = terrain.getX() + x;
+                int checkY = terrain.getY() + y;
+
+                if (checkX >= 0 && checkX < sizeX && checkY >= 0 && checkY < sizeY){
+                    neighbours.add(terrains[checkX][checkY]);
+                }
+            }
+        }
+
+        return neighbours;
+    }
 
     /**
      * Clears the terrain of any characters.
