@@ -2,6 +2,7 @@ package com.game.classes;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import javafx.scene.shape.Path;
 
 import java.io.Serializable;
 
@@ -20,7 +21,6 @@ public class Character implements Serializable {
     private Player player;
     private transient Sprite sprite;
     private String spriteTexture;
-    private Pathfinder pathfinder;
 
     private boolean hasAttacked = false;
 
@@ -46,7 +46,6 @@ public class Character implements Serializable {
         this.currentTerrain = currentTerrain;
         currentTerrain.setCharacter(this);
         this.player = player;
-        this.pathfinder = new Pathfinder(this);
     }
 
     /**
@@ -196,7 +195,7 @@ public class Character implements Serializable {
             return false;
         } else if (terrain.getProperty() == TerrainProperties.Impassable){
             return false;
-        } else if (terrain.getProperty() != TerrainProperties.Impassable && !pathfinder.canFindPath(terrain)){
+        } else if (terrain.getProperty() != TerrainProperties.Impassable && !Pathfinder.canFindPath(terrain, this)){
             return false;
         }
         return true;
@@ -264,10 +263,6 @@ public class Character implements Serializable {
 
     public void setHasAttacked(boolean hasAttacked) {
         this.hasAttacked = hasAttacked;
-    }
-
-    public void setPathfinderMap(Map map){
-        pathfinder.setMap(map);
     }
 
     public boolean hasAttacked() {

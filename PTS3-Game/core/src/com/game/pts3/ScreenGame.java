@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.game.classes.Character;
+import com.game.classes.Pathfinder;
 import com.game.classes.Player;
 import com.game.classes.Terrain;
 import network.Client.GameEvents;
@@ -62,6 +63,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private float selectedTileY = 0;
     private Terrain selectedTile;
     private Character selectedCharacter;
+    private Pathfinder pathfinder;
 
     private boolean showMovementOptions = false;
 
@@ -103,6 +105,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
+
+        pathfinder = new Pathfinder();
+        pathfinder.setMap(gameState.getMap());
 
         /**
          * UI
@@ -193,7 +198,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             shapeRenderer.end();
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-            selectedCharacter.setPathfinderMap(gameState.getMap());
+
 
             for (int i = 0; i < gameState.getMap().getSizeX(); i++){
                 for (int j = 0; j < gameState.getMap().getSizeY(); j++){
