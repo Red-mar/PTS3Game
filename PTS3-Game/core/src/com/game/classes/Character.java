@@ -195,9 +195,9 @@ public class Character implements Serializable {
             return false;
         } else if (terrain.getProperty() == TerrainProperties.Impassable){
             return false;
-        } else if (terrain.getProperty() != TerrainProperties.Impassable && !Pathfinder.canFindPath(terrain, this)){
-            return false;
-        }
+        }// else if (terrain.getProperty() != TerrainProperties.Impassable && !Pathfinder.canFindPath(terrain, this)){
+         //   return false;
+        //}
         return true;
     }
 

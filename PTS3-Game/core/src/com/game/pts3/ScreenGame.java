@@ -74,6 +74,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     //Debug options
     private boolean showCharacter = false;
+    private boolean showPathing = false;
 
     public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Chat chat, AssetManager assetManager){
         float width = Gdx.graphics.getWidth();
@@ -90,6 +91,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         this.volume = prefs.getFloat("volume");
         this.gameState = gameState;
         gameState.addGameListener(this);
+        gameState.getPathing().setMap(gameState.getMap());
         this.chat = chat;
         //this.clientPlayer = clientPlayer;
         this.game = game;
@@ -197,14 +199,18 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         if (showMovementOptions){
             shapeRenderer.end();
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-
-
             for (int i = 0; i < gameState.getMap().getSizeX(); i++){
                 for (int j = 0; j < gameState.getMap().getSizeY(); j++){
-                    if (!selectedCharacter.canMove(gameState.getMap().getTerrains()[i][j])){
+                    Terrain terrain = gameState.getMap().getTerrains()[i][j];
+                    if (!selectedCharacter.canMove(terrain)){
                         shapeRenderer.setColor(1,0,0,0.5f);
                         shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+                    } else {
+                        gameState.getPathing().findPath(selectedCharacter.getCurrentTerrain(), terrain);
+                        if (gameState.getPathing().getPath().size() > selectedCharacter.getMovementPoints()){
+                            shapeRenderer.setColor(1,0,0,0.5f);
+                            shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+                        }
                     }
                     if (selectedCharacter.canAttack(gameState.getMap().getTerrains()[i][j])){
                         shapeRenderer.setColor(0,0,1,0.5f);
@@ -223,6 +229,21 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             for (int i = 0; i < gameState.getMap().getSizeX(); i++){
                 for (int j = 0; j < gameState.getMap().getSizeY(); j++){
                     if (gameState.getMap().getTerrains()[i][j].getCharacter() != null){
+                        shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+                    }
+                }
+            }
+        }
+
+        if (showPathing){
+            shapeRenderer.end();
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0.5f,0.5f,0.5f, 0.5f);
+
+            for (int i = 0; i < gameState.getMap().getSizeX(); i++){
+                for (int j = 0; j < gameState.getMap().getSizeY(); j++){
+                    if (gameState.getPathing().getPath().size() == 0) break;
+                    if (gameState.getPathing().getPath().contains(gameState.getMap().getTerrains()[i][j])){
                         shapeRenderer.rect(gameState.getMap().getTileWidth() * i, gameState.getMap().getTileHeight() * j, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
                     }
                 }
@@ -355,7 +376,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         catch (ArrayIndexOutOfBoundsException ex){
             selectedTile = gameState.getMap().getTerrains()[x - 1][y];
         }
-        System.out.println("Selected Tile: " + "x:" + selectedTile.getX() + " y:" + selectedTile.getY());
+        gameState.getPathing().findPath(selectedTile, gameState.getMap().getTerrains()[1][1]);
 
         if (!gameState.getClientPlayer().hasTurn()) {
             System.out.println("It is not your turn at the moment.");

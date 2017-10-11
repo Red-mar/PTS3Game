@@ -76,7 +76,11 @@ public class Map implements Serializable {
 
         for (int x = -1; x <= 1; x++){
             for (int y = -1; y <= 1; y++){
-                if (x==0 && y==0) continue;
+                if (x == 0 && y == 0
+                        || x == -1 && y == -1
+                        || x == -1 && y == 1
+                        || x == 1 && y == 1
+                        || x == 1 && y == -1) continue;
 
                 int checkX = terrain.getX() + x;
                 int checkY = terrain.getY() + y;

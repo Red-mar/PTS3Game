@@ -11,32 +11,39 @@ import java.util.List;
 
 public class aStarPathing {
     private Map map;
-
-    private List<Terrain> openList; /** Set of tiles that has not been evaluated **/
-    private HashSet<Terrain> closedList; /** Set of nodes that has been evaluated **/
+    private List<Terrain> path;
 
     public aStarPathing(Map map) {
-        openList = new ArrayList<Terrain>();
-        closedList = new HashSet<Terrain>();
+        this.map = map;
+        path = new ArrayList<Terrain>();
+    }
+
+    public void setMap(Map map) {
         this.map = map;
     }
 
+    public List<Terrain> getPath() {
+        return path;
+    }
+
     public void findPath(Terrain start, Terrain target){
+        List<Terrain> openList = new ArrayList<Terrain>();
+        HashSet<Terrain> closedList = new HashSet<Terrain>();
         openList.add(start);
 
         while (openList.size() > 0){
             Terrain current = openList.get(0);
-            for (Terrain terrain : openList) {
-                if (terrain.getfCost() < current.getfCost() ||
-                        terrain.getfCost() == current.getfCost() && terrain.gethCost() < current.gethCost()){
-                    current = terrain;
+            for (int i = 1;i < openList.size(); i++){
+                if (openList.get(i).getfCost() < current.getfCost() ||
+                        openList.get(i).getfCost() == current.getfCost() && openList.get(i).gethCost() < current.gethCost()){
+                    current = openList.get(i);
                 }
             }
 
             openList.remove(current);
             closedList.add(current);
 
-            if (current == target){
+            if (current.getX() == target.getX() && current.getY() == target.getY()){
                 retracePath(start, target);
                 return;
             }
@@ -69,6 +76,8 @@ public class aStarPathing {
             current = current.getParent();
         }
         Collections.reverse(path);
+
+        this.path = path;
     }
 
     private int getDistance(Terrain tileA, Terrain tileB){
