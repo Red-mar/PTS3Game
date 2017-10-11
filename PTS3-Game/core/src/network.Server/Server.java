@@ -287,7 +287,7 @@ public class Server {
                         if (player.getName().equals(playerName)){
                             for (Character character : player.getCharacters()) {
                                 if (character.getName().equals(charName)){
-                                    character.setCurrentTerrain(game.getMap().getTerrains()[x][y]);
+                                    //character.setCurrentTerrain(game.getMap().getTerrains()[x][y]);
                                 }
                             }
                         }

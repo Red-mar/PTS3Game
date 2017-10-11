@@ -176,11 +176,11 @@ public class Character implements Serializable {
      * Set the current terrain a character is standing on.
      * @param terrain Requires a Terrain object.
      */
-    public boolean setCurrentTerrain(Terrain terrain) {
+    public boolean setCurrentTerrain(Terrain terrain, int amountMoved) {
         if (!canMove(terrain)){
             return false;
         }
-        currentMovementPoints -= calculateTotalMovement(terrain);
+        currentMovementPoints -= amountMoved;
         this.currentTerrain = terrain;
         //TODO: reset pathfinder here
         return true;

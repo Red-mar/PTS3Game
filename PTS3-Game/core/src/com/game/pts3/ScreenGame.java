@@ -315,6 +315,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
         if(keycode == Input.Keys.NUM_2)
             tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
+        if (keycode == Input.Keys.NUM_4){
+            showPathing = !showPathing;
+        }
         return false;
     }
 
