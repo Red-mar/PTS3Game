@@ -14,7 +14,7 @@ public class Terrain implements Serializable {
      */
     private int gCost;
     private int hCost;
-    private Terrain parent;
+    private transient Terrain parent;
 
     /**
      * a tile on a map
