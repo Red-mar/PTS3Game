@@ -184,10 +184,10 @@ public class Game
                         if (client.isConnected()){
                             break;
                         }
+                        client.setConnected(null);
                         return;
                     }
                 } //TODO betere oplossing
-                getClient().addListener(chat);
                 getClient().sendMessageSetName(name);
                 getClient().sendMessageGetPlayers();
             }

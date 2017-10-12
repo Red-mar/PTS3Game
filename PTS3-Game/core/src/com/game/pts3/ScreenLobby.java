@@ -105,6 +105,8 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getBtnSendMessage().setWidth(250);
         chat.getBtnSendMessage().setHeight(20);
 
+        gameState.getClient().addListener(chat);
+
         /**
          * Labels
          */

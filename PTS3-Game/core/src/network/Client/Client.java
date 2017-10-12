@@ -16,6 +16,7 @@ public class Client {
     private ConnectionHandler connectionHandler;
     private ArrayList<ChatEvents> listeners = new ArrayList<ChatEvents>();
     private ArrayList<GameEvents> gameListeners = new ArrayList<GameEvents>();
+    private String serverIP;
     private Boolean isConnected = null;
 
     /**
@@ -26,12 +27,16 @@ public class Client {
         return isConnected;
     }
 
+    public void setConnected(Boolean connected) {
+        isConnected = connected;
+    }
+
     /**
      * Creates a client that will make a connection with a server.
      * @param serverIP The IP the server is running on. (use localhost for local use.)
      */
     public Client(String serverIP){
-        connectionHandler = new ConnectionHandler(this, serverIP);
+        this.serverIP = serverIP;
     }
 
     /**
@@ -93,6 +98,7 @@ public class Client {
      * Starts the client and looks for a server.
      */
     public void start(){
+        connectionHandler = new ConnectionHandler(this, serverIP);
         connectionHandler.start();
     }
 
@@ -356,16 +362,11 @@ public class Client {
                     }
                 }
 
-            } catch (ConnectException ce){
-                ce.printStackTrace();
-                isConnected = false;
-
             }
-
             catch (Exception e){
                 e.printStackTrace();
-                for (ChatEvents ce: listeners) {
-                    ce.onDisconnect(e.getMessage());
+                for (ChatEvents chatEvents: listeners) {
+                    chatEvents.onDisconnect(e.getMessage());
                 }
                 isConnected = false;
                 //this.close();
