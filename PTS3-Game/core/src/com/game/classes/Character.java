@@ -186,6 +186,10 @@ public class Character implements Serializable {
         return true;
     }
 
+    public void forceSetCurrentTerrain(Terrain terrain){
+        this.currentTerrain = terrain;
+    }
+
     public boolean canMove(Terrain terrain){
         int totalMovement = calculateTotalMovement(terrain);
 

@@ -1,6 +1,7 @@
 package network.Client;
 
 import com.game.classes.Game;
+import com.game.classes.Map;
 import com.game.classes.Player;
 import network.Server.MessageType;
 
@@ -144,6 +145,10 @@ public class Client {
 
     public void sendGameMessagePlayer(Player player){
         connectionHandler.sendObjectMessage(MessageType.ClientSendPlayerMessage, player);
+    }
+
+    public void sendGameMap(Map map){
+        connectionHandler.sendObjectMessage(MessageType.GameSendMapMessage, map);
     }
 
     public void sendGameEndTurn(){
@@ -354,6 +359,16 @@ public class Client {
                         case GameEndMessage:
                             for (GameEvents gameListener : gameListeners) {
                                 gameListener.onEndGame();
+                            }
+                            break;
+                        case GameUpdateCharacter:
+                            int x = in.readInt();
+                            int y = in.readInt();
+                            String charName = in.readUTF();
+                            String playerName = in.readUTF();
+
+                            for (GameEvents gameListener : gameListeners) {
+                                gameListener.onUpdateCharacter(x, y, charName, playerName);
                             }
                             break;
                         default:

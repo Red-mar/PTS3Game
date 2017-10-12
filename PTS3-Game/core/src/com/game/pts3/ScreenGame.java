@@ -496,6 +496,19 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }).start();
     }
 
+    @Override
+    public void onUpdateCharacter(int x, int y, String charName, String playerName) {
+        for (Player player : gameState.getPlayers()) {
+            if (player.getName().equals(playerName)){
+                for (Character character : player.getCharacters()) {
+                    if (character.getName().equals(charName)){
+                        character.forceSetCurrentTerrain(gameState.getMap().getTerrains()[x][y]);
+                    }
+                }
+            }
+        }
+    }
+
     private void updatePlayers(){
         gameState.updatePlayers();
     }

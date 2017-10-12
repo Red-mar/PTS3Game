@@ -320,6 +320,8 @@ public class Game
         if (character.setCurrentTerrain(tile, pathing.getPath().size())){
             map.getTerrains()[oldTile.getX()][oldTile.getY()].setCharacter(null);
             tile.setCharacter(character);
+
+            client.sendCharacterMove(tile.getX(), tile.getY(), character.getName(), character.getPlayer().getName());
             return true;
         }
         return false;

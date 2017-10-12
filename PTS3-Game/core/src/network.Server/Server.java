@@ -2,6 +2,7 @@ package network.Server;
 
 import com.game.classes.Character;
 import com.game.classes.Game;
+import com.game.classes.Map;
 import com.game.classes.Player;
 
 import java.io.*;
@@ -78,6 +79,12 @@ public class Server {
     public void sendGameEnd(){
         for (ConnectionHandler client : clients.keySet()) {
             client.sendMessage(MessageType.GameEndMessage);
+        }
+    }
+
+    public void sendCharacter(int x, int y, String charName, String playerName){
+        for (ConnectionHandler client : clients.keySet()) {
+            client.sendCharacterMessage(MessageType.GameUpdateCharacter, x, y, charName, playerName);
         }
     }
 
@@ -284,16 +291,20 @@ public class Server {
                     String charName = in.readUTF();
                     String playerName = in.readUTF();
 
-                    for (Player player : game.getPlayers()) {
-                        if (player.getName().equals(playerName)){
-                            for (Character character : player.getCharacters()) {
-                                if (character.getName().equals(charName)){
-                                    //character.setCurrentTerrain(game.getMap().getTerrains()[x][y]);
-                                }
-                            }
-                        }
+
+                    Server.this.sendCharacter(x,y,charName,playerName);
+                    break;
+                case GameSendMapMessage:
+                    try {
+                        in.readFully(buffer);
+                        ByteArrayInputStream bIn = new ByteArrayInputStream(buffer);
+                        ObjectInputStream is = new ObjectInputStream(bIn);
+                        Map newMap = (Map) is.readObject();
+
+                        game.setMap(newMap);
+                    } catch (Exception e){
+                        e.printStackTrace();
                     }
-                    Server.this.sendGameMessagePlayers();
                     break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");
@@ -343,6 +354,20 @@ public class Server {
                 out.write(bOut.toByteArray());
                 out.flush();
             } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        private void sendCharacterMessage(MessageType type, int x, int y, String charName, String playerName){
+            try {
+                out.writeByte(type.ordinal()); // Message Type
+                out.writeInt(2); // Message length
+                out.writeInt(x); // x Cord
+                out.writeInt(y); // y Cord
+                out.writeUTF(charName); // character name
+                out.writeUTF(playerName); // player name
+                out.flush();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

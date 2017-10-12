@@ -186,6 +186,7 @@ public class ScreenLobby implements Screen, GameEvents {
 
                 Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, mapObjectList);
                 gameState.setMap(gameMap);
+                gameState.getClient().sendGameMap(gameMap);
                 sound.play(volume);
             }
         });
@@ -302,6 +303,11 @@ public class ScreenLobby implements Screen, GameEvents {
 
     @Override
     public void onEndGame() {
+
+    }
+
+    @Override
+    public void onUpdateCharacter(int x, int y, String charName, String playerName) {
 
     }
 

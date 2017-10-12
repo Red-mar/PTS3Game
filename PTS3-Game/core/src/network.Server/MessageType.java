@@ -16,5 +16,7 @@ public enum MessageType {
     GameSendEndTurnMessage,
     GameStartMessage,
     GameEndMessage,
-    GameCharacterMoveMessage
+    GameCharacterMoveMessage,
+    GameSendMapMessage,
+    GameUpdateCharacter
 }
