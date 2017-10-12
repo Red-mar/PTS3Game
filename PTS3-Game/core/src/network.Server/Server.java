@@ -171,6 +171,11 @@ public class Server {
             MessageType type = MessageType.values()[in.readByte()];
             int messageLength = in.readInt();
 
+            if (messageLength > 100000){
+                System.out.println("Message received is huge");
+                return;
+            }
+
             String message;
             Player thisPlayer;
             System.out.println("Received type: " + type.toString() + " length: " + messageLength);
@@ -210,11 +215,7 @@ public class Server {
                     break;
                 case GameReadyMessage: /** Changes the ready state of the sender **/
                     thisPlayer = server.clients.get(this);
-                    if (!thisPlayer.isReady()){
-                        thisPlayer.setReady(true);
-                    } else {
-                        thisPlayer.setReady(false);
-                    }
+                    thisPlayer.setReady(!thisPlayer.isReady());
                     Server.this.sendGameMessagePlayers();
                     break;
                 case ClientSendPlayerMessage: /** Receives an updated player from the client **/
