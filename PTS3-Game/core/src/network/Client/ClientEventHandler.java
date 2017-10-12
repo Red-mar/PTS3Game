@@ -12,7 +12,7 @@ public class ClientEventHandler implements ChatEvents {
     }
 
     @Override
-    public void onDisconnect() {
+    public void onDisconnect(String reason) {
         System.out.println("Not connected.");
     }
 

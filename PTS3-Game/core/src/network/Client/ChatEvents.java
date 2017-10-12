@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public interface ChatEvents {
     void onConnect(String serverName);
 
-    void onDisconnect();
+    void onDisconnect(String reason);
 
     void onMessaged(String message);
 }

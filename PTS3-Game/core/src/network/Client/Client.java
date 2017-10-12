@@ -6,6 +6,7 @@ import network.Server.MessageType;
 
 import javax.xml.crypto.Data;
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,13 +16,13 @@ public class Client {
     private ConnectionHandler connectionHandler;
     private ArrayList<ChatEvents> listeners = new ArrayList<ChatEvents>();
     private ArrayList<GameEvents> gameListeners = new ArrayList<GameEvents>();
-    private boolean isConnected = false;
+    private Boolean isConnected = null;
 
     /**
      * Checks if the client has a connection with a server.
      * @return
      */
-    public boolean isConnected() {
+    public Boolean isConnected() {
         return isConnected;
     }
 
@@ -285,6 +286,7 @@ public class Client {
         public void run() {
             try {
                 socket = new Socket(serverIP, 4321);
+                socket.setSoTimeout(5000);
 
                 if (!socket.isConnected()) return;
 
@@ -354,10 +356,16 @@ public class Client {
                     }
                 }
 
-            } catch (Exception e){
+            } catch (ConnectException ce){
+                ce.printStackTrace();
+                isConnected = false;
+
+            }
+
+            catch (Exception e){
                 e.printStackTrace();
                 for (ChatEvents ce: listeners) {
-                    ce.onDisconnect();
+                    ce.onDisconnect(e.getMessage());
                 }
                 isConnected = false;
                 //this.close();

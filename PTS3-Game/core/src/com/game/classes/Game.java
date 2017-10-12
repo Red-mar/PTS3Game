@@ -176,13 +176,19 @@ public class Game
 
     public void establishConnection(String name, com.game.pts3.Chat chat){
         try {
-            if (!getClient().isConnected()) {
-                getClient().start();
-                while (!getClient().isConnected()) {
+            if (client.isConnected() == null) {
+                client.start();
+                while (true) {
+                    Thread.sleep(10);
+                    if (client.isConnected() != null){
+                        if (client.isConnected()){
+                            break;
+                        }
+                        return;
+                    }
                 } //TODO betere oplossing
                 getClient().addListener(chat);
                 getClient().sendMessageSetName(name);
-                Thread.sleep(100);
                 getClient().sendMessageGetPlayers();
             }
         } catch (InterruptedException e){

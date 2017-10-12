@@ -69,8 +69,8 @@ public class Chat implements ChatEvents {
     }
 
     @Override
-    public void onDisconnect() {
-        textArea.appendText("Disconnected from server.\n");
+    public void onDisconnect(String reason) {
+        textArea.appendText("Disconnected from server. " + reason + "\n");
     }
 
     @Override
