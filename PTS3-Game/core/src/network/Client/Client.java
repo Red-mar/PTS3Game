@@ -292,7 +292,6 @@ public class Client {
         public void run() {
             try {
                 socket = new Socket(serverIP, 4321);
-                socket.setSoTimeout(5000);
 
                 if (!socket.isConnected()) return;
 
