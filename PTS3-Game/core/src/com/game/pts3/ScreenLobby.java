@@ -154,6 +154,10 @@ public class ScreenLobby implements Screen, GameEvents {
                     chat.getTextArea().appendText("Geen map geselecteerd.\n");
                     return;
                 }
+                if (gameState.getClient().isConnected() == null){
+                    chat.getTextArea().appendText("Geen connectie met een server\n");
+                    return;
+                }
                 gameState.getClient().sendMessageReady();
                 sound.play(volume);
             }
