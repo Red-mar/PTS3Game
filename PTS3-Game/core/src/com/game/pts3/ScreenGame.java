@@ -377,7 +377,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             selectedTile = gameState.getMap().getTerrains()[x][y];
         }
         catch (ArrayIndexOutOfBoundsException ex){
-            selectedTile = gameState.getMap().getTerrains()[x - 1][y];
+            //selectedTile = gameState.getMap().getTerrains()[x - 1][y]; can still crash with this
         }
         gameState.getPathing().findPath(selectedTile, gameState.getMap().getTerrains()[1][1]);
 
