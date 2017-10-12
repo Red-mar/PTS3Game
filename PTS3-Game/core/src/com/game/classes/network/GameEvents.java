@@ -1,4 +1,4 @@
-package network.Client;
+package com.game.classes.network;
 
 import com.game.classes.Player;
 

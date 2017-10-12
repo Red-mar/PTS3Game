@@ -1,16 +1,14 @@
-package network.Client;
+package com.game.classes.network.Client;
 
-import com.game.classes.Game;
 import com.game.classes.Map;
 import com.game.classes.Player;
-import network.Server.MessageType;
+import com.game.classes.network.ChatEvents;
+import com.game.classes.network.GameEvents;
+import com.game.classes.network.MessageType;
 
-import javax.xml.crypto.Data;
 import java.io.*;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Client {
 
@@ -109,7 +107,9 @@ public class Client {
      * @param message The message to send.
      */
     public void sendMessageAll(String message){
-        connectionHandler.sendMessage(MessageType.ChatMessage, message);
+        connectionHandler.sendMessage(
+                MessageType.ChatMessage,
+                message);
     }
 
     /**
@@ -119,7 +119,10 @@ public class Client {
      * @param message The message to send.
      */
     public void sendMessageWhisper(String to, String message) {
-        connectionHandler.sendMessage(MessageType.WhisperMessage, to, message);
+        connectionHandler.sendMessage(
+                MessageType.WhisperMessage,
+                to,
+                message);
     }
 
     /**
@@ -128,40 +131,77 @@ public class Client {
      * @param name The name of the client.
      */
     public void sendMessageSetName(String name){
-        connectionHandler.sendMessage(MessageType.SetNameMessage, name);
+        connectionHandler.sendMessage(
+                MessageType.SetNameMessage,
+                name);
     }
 
     /**
      * Asks the server to update the players for all clients.
      */
     public void sendMessageGetPlayers(){
-        connectionHandler.sendMessage(MessageType.GameSendPlayersMessage);
+        connectionHandler.sendMessage(
+                MessageType.GameSendPlayersMessage);
     }
 
     /**
      * Asks the server to change the ready state for the sender.
      */
-    public void sendMessageReady() { connectionHandler.sendMessage(MessageType.GameReadyMessage);}
+    public void sendMessageReady() {
+        connectionHandler.sendMessage(
+                MessageType.GameReadyMessage);
+    }
 
+    /**
+     * Changes ready state of the player.
+     * @param player
+     */
     public void sendGameMessagePlayer(Player player){
-        connectionHandler.sendObjectMessage(MessageType.ClientSendPlayerMessage, player);
+        connectionHandler.sendObjectMessage(
+                MessageType.ClientSendPlayerMessage,
+                player);
     }
 
+    /**
+     * Sends a map to the server.
+     * @param map
+     */
     public void sendGameMap(Map map){
-        connectionHandler.sendObjectMessage(MessageType.GameSendMapMessage, map);
+        connectionHandler.sendObjectMessage(
+                MessageType.GameSendMapMessage,
+                map);
     }
 
-    public void sendGameEndTurn(){
-        connectionHandler.sendMessage(MessageType.GameSendEndTurnMessage);
+    /**
+     * Ends the turn of the sender.
+     */
+    public void sendGameEndTurn() {
+        connectionHandler.sendMessage(
+                MessageType.GameSendEndTurnMessage);
     }
 
+    /**
+     * Make the server start the game for every player
+     */
     public void sendGameStart(){
-        connectionHandler.sendMessage(MessageType.GameStartMessage);
+        connectionHandler.sendMessage(
+                MessageType.GameStartMessage);
     }
 
+    /**
+     * Send a character movement to the server.
+     * @param x
+     * @param y
+     * @param charName
+     * @param playerName
+     */
     public void sendCharacterMove(int x, int y, String charName, String playerName) {
-        connectionHandler.sendCharacterMove(MessageType.GameCharacterMoveMessage,
-            x, y, charName, playerName);
+        connectionHandler.sendCharacterMove(
+                MessageType.GameCharacterMoveMessage,
+                x,
+                y,
+                charName,
+                playerName);
     }
 
     /**
@@ -200,7 +240,7 @@ public class Client {
         private void sendMessage(MessageType type, String name){
             try {
                 out.writeByte(type.ordinal());
-                out.writeInt(name.length()); //mLength
+                out.writeInt(name.getBytes().length); //mLength
                 out.writeUTF(name);
 
                 out.flush();
@@ -232,14 +272,14 @@ public class Client {
         private void sendMessage(MessageType type, String firstMessage, String secondMessage){
             try {
                 out.writeByte(type.ordinal());
-                out.writeInt(firstMessage.length() + secondMessage.length()); //mLength
+                out.writeInt(firstMessage.getBytes().length + secondMessage.getBytes().length); //mLength
                 out.writeUTF(firstMessage);
                 out.writeUTF(secondMessage); //Split Message
 
                 out.flush();
 
             } catch (IOException e){
-
+                e.printStackTrace();
             }
         }
 
@@ -265,7 +305,7 @@ public class Client {
         private void sendCharacterMove(MessageType type, int x, int y, String charName, String playerName){
             try {
                 out.writeByte(type.ordinal()); // Message Type
-                out.writeInt(1); // Message length
+                out.writeInt(9 + charName.getBytes().length + playerName.getBytes().length); // Message length
                 out.writeInt(x); // x Cord
                 out.writeInt(y); // y Cord
                 out.writeUTF(charName); // character name
@@ -378,12 +418,10 @@ public class Client {
 
             }
             catch (Exception e){
-                e.printStackTrace();
                 for (ChatEvents chatEvents: listeners) {
                     chatEvents.onDisconnect(e.getMessage());
                 }
                 isConnected = false;
-                //this.close();
             }
         }
 

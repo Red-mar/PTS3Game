@@ -1,4 +1,4 @@
-package network.Server;
+package com.game.classes.network;
 
 /**
  * Used to specify what to write to the first byte of a message.

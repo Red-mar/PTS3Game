@@ -1,4 +1,4 @@
-import network.Server.Server;
+import com.game.classes.network.Server.Server;
 
 public class Main {
 

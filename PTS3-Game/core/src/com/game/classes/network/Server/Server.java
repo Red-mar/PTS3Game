@@ -1,16 +1,15 @@
-package network.Server;
+package com.game.classes.network.Server;
 
 import com.game.classes.Character;
 import com.game.classes.Game;
 import com.game.classes.Map;
 import com.game.classes.Player;
+import com.game.classes.network.MessageType;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 
 public class Server {
@@ -70,18 +69,31 @@ public class Server {
         }
     }
 
+    /**
+     * Starts the game for all clients
+     */
     public void sendGameStart(){
         for (ConnectionHandler client : clients.keySet()) {
             client.sendMessage(MessageType.GameStartMessage);
         }
     }
 
+    /**
+     * Ends the game for all clients
+     */
     public void sendGameEnd(){
         for (ConnectionHandler client : clients.keySet()) {
             client.sendMessage(MessageType.GameEndMessage);
         }
     }
 
+    /**
+     * Sends a character movement update to all clients.
+     * @param x
+     * @param y
+     * @param charName
+     * @param playerName
+     */
     public void sendCharacter(int x, int y, String charName, String playerName){
         for (ConnectionHandler client : clients.keySet()) {
             client.sendCharacterMessage(MessageType.GameCharacterMoveMessage, x, y, charName, playerName);
@@ -160,8 +172,7 @@ public class Server {
                 System.out.println("Connection successful!");
 
                 while (!serviceSocket.isClosed() && receivingMessages){
-                    //MessageType type = MessageType.values()[in.readByte()];
-                    handleMessage();
+                    handleMessages();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -174,7 +185,12 @@ public class Server {
             }
         }
 
-        private void handleMessage() throws IOException {
+
+        /**
+         * Handles the messages from a client.
+         * @throws IOException
+         */
+        private void handleMessages() throws IOException {
             MessageType type = MessageType.values()[in.readByte()];
             int messageLength = in.readInt();
 
@@ -313,6 +329,20 @@ public class Server {
         }
 
         /**
+         * Send only a message type.
+         * @param type
+         */
+        private void sendMessage(MessageType type){
+            try {
+                out.writeByte(type.ordinal());
+                out.writeInt(1); //mLength
+                out.flush();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        /**
          * Send a String
          * @param type The type of message (see enum)
          * @param message The message as string
@@ -320,21 +350,11 @@ public class Server {
         private void sendMessage(MessageType type, String message){
             try {
                 out.writeByte(type.ordinal());
-                out.writeInt(message.length()); //mLength
+                out.writeInt(message.getBytes().length); //mLength
                 out.writeUTF(message);
                 out.flush();
             } catch (Exception e){
                 System.out.println("Error sending message");
-                e.printStackTrace();
-            }
-        }
-
-        private void sendMessage(MessageType type){
-            try {
-                out.writeByte(type.ordinal());
-                out.writeInt(1); //mLength
-                out.flush();
-            } catch (Exception e){
                 e.printStackTrace();
             }
         }
@@ -358,10 +378,11 @@ public class Server {
             }
         }
 
+
         private void sendCharacterMessage(MessageType type, int x, int y, String charName, String playerName){
             try {
                 out.writeByte(type.ordinal()); // Message Type
-                out.writeInt(2); // Message length
+                out.writeInt(9 + charName.getBytes().length + playerName.getBytes().length); // Message length
                 out.writeInt(x); // x Cord
                 out.writeInt(y); // y Cord
                 out.writeUTF(charName); // character name
@@ -372,9 +393,6 @@ public class Server {
             }
         }
 
-        /**
-         * Kills everything
-         */
         private void close(){
             try {
                 this.receivingMessages = false;

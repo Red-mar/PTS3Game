@@ -1,10 +1,10 @@
 package com.game.classes.unitTest;
 
-import network.Client.Client;
 import com.game.classes.Chat;
 import com.game.classes.Game;
 import com.game.classes.Map;
 import com.game.classes.Player;
+import com.game.classes.network.Client.Client;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

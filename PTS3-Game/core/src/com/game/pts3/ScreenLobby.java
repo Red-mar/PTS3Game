@@ -5,8 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -25,13 +23,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import com.game.classes.Character;
 import com.game.classes.Map;
 import com.game.classes.Player;
-import com.game.classes.Terrain;
-import network.Client.GameEvents;
+import com.game.classes.network.GameEvents;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class ScreenLobby implements Screen, GameEvents {
     private Game game;

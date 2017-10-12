@@ -3,10 +3,10 @@ package com.game.classes;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.game.classes.network.Client.Client;
 import com.game.classes.pathing.aStarPathing;
-import network.Client.Client;
-import network.Client.GameEvents;
-import network.Server.Server;
+import com.game.classes.network.GameEvents;
+import com.game.classes.network.Server.Server;
 
 import java.util.ArrayList;
 import java.util.Random;
