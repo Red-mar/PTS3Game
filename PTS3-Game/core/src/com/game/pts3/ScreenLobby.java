@@ -42,6 +42,7 @@ public class ScreenLobby implements Screen, GameEvents {
     private Chat chat;
     private List playerList;
     private Sound sound;
+    private Sound errorSound;
     private Music music;
     private AssetManager manager;
     private Preferences prefs;
@@ -64,6 +65,7 @@ public class ScreenLobby implements Screen, GameEvents {
         stage = new Stage();
         skin = manager.get("data/uiskin.json", Skin.class);
         sound = manager.get("sound/LobbyIn.wav", Sound.class);
+        errorSound = manager.get("sound/Error.wav", Sound.class);
         music = manager.get("bgm/bgmbase1.mp3", Music.class);
         music.setLooping(true);
         music.setVolume(volume);
@@ -311,18 +313,13 @@ public class ScreenLobby implements Screen, GameEvents {
 
     }
 
-    /**
-     * hacky af
-     */
-    //private void addGameListener(){
-    //    gameState.getClient().addGameListener(this);
-    //}
-
     private void establishConnection(String name) {
-        gameState.establishConnection(name, chat);
-        gameState.getClient().addGameListener(this);
-        //addGameListener();
-        sound.play(volume);
+        if(gameState.establishConnection(name, chat)){
+            gameState.getClient().addGameListener(this);
+            sound.play(volume);
+        } else {
+            errorSound.play(volume);
+        }
     }
 
     private void addCharacter(String name) {

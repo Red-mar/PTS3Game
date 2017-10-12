@@ -174,7 +174,7 @@ public class Game
         return pathing;
     }
 
-    public void establishConnection(String name, com.game.pts3.Chat chat){
+    public boolean establishConnection(String name, com.game.pts3.Chat chat){
         try {
             if (client.isConnected() == null) {
                 client.start();
@@ -185,7 +185,7 @@ public class Game
                             break;
                         }
                         client.setConnected(null);
-                        return;
+                        return false;
                     }
                 } //TODO betere oplossing
                 getClient().sendMessageSetName(name);
@@ -194,6 +194,7 @@ public class Game
         } catch (InterruptedException e){
             e.printStackTrace();
         }
+        return true;
     }
 
     /**
