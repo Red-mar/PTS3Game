@@ -18,5 +18,4 @@ public enum MessageType {
     GameEndMessage,
     GameCharacterMoveMessage,
     GameSendMapMessage,
-    GameUpdateCharacter
 }

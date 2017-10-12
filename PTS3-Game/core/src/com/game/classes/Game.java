@@ -256,6 +256,7 @@ public class Game
 
             clientPlayer.addCharacter(character);
         }
+        if (client.isConnected() == null) return;
         getClient().sendGameMessagePlayer(clientPlayer);
     }
 
@@ -291,6 +292,14 @@ public class Game
         getClient().sendGameEndTurn();
     }
 
+    public void endTurnLocal(){
+        clientPlayer.setHasTurn(true);
+        for (Character character : clientPlayer.getCharacters()) {
+            character.setCurrentMovementPoints(character.getMovementPoints());
+            character.setHasAttacked(false);
+        }
+    }
+
     private void updateClientPlayer(){
         for (Player player:getPlayers()) {
             if (clientPlayer.getName().equals(player.getName())){
@@ -319,10 +328,18 @@ public class Game
         }
 
         if (character.setCurrentTerrain(tile, pathing.getPath().size())){
-            map.getTerrains()[oldTile.getX()][oldTile.getY()].setCharacter(null);
+            map.getTerrains()
+                    [oldTile.getX()]
+                    [oldTile.getY()].setCharacter(null);
             tile.setCharacter(character);
 
-            client.sendCharacterMove(tile.getX(), tile.getY(), character.getName(), character.getPlayer().getName());
+            if (client.isConnected() != null){
+                client.sendCharacterMove(
+                        tile.getX(),
+                        tile.getY(),
+                        character.getName(),
+                        character.getPlayer().getName());
+            }
             return true;
         }
         return false;

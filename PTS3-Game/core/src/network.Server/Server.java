@@ -84,7 +84,7 @@ public class Server {
 
     public void sendCharacter(int x, int y, String charName, String playerName){
         for (ConnectionHandler client : clients.keySet()) {
-            client.sendCharacterMessage(MessageType.GameUpdateCharacter, x, y, charName, playerName);
+            client.sendCharacterMessage(MessageType.GameCharacterMoveMessage, x, y, charName, playerName);
         }
     }
 

@@ -92,7 +92,7 @@ public class ScreenLobby implements Screen, GameEvents {
         enterText = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (gameState == null || gameState.getClient().isConnected() == false){
+                if (gameState.getClient().isConnected() == null){
                     chat.getTextArea().appendText("Geen connectie met een server.\n");
                     chat.getTextField().setText("");
                 } else {
@@ -124,7 +124,14 @@ public class ScreenLobby implements Screen, GameEvents {
         btnStart.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (gameState == null) return;
+                if (gameState.getMap() == null){
+                    chat.getTextArea().appendText("Geen map geselecteerd.\n");
+                    return;
+                }
+                if (gameState.getClient().isConnected() == null){
+                    onStartGame();
+                    return;
+                }
                 for (Player player:gameState.getPlayers()) {
                     if (!player.isReady()) {
                         chat.textArea.appendText("Niet iedereen is READY.\n");
@@ -188,7 +195,9 @@ public class ScreenLobby implements Screen, GameEvents {
 
                 Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, mapObjectList);
                 gameState.setMap(gameMap);
-                gameState.getClient().sendGameMap(gameMap);
+                if (gameState.getClient().isConnected() != null){
+                    gameState.getClient().sendGameMap(gameMap);
+                }
                 sound.play(volume);
             }
         });

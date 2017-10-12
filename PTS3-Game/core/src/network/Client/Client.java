@@ -361,7 +361,7 @@ public class Client {
                                 gameListener.onEndGame();
                             }
                             break;
-                        case GameUpdateCharacter:
+                        case GameCharacterMoveMessage:
                             int x = in.readInt();
                             int y = in.readInt();
                             String charName = in.readUTF();

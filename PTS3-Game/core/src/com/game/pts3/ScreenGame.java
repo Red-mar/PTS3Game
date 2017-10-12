@@ -510,11 +510,22 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     private void updatePlayers(){
+        if (gameState.getClient().isConnected() == null) {
+            ArrayList<Player> clientplayer = new ArrayList<Player>();
+            clientplayer.add(gameState.getClientPlayer());
+            onGetPlayers(clientplayer);
+            return;
+        }
         gameState.updatePlayers();
     }
 
     private synchronized void endTurn(){
         showMovementOptions = false;
+        if (gameState.getClient().isConnected() == null){
+            gameState.endTurnLocal();
+            alarmSound.play(volume);
+            return;
+        }
         gameState.endTurn();
     }
 }
