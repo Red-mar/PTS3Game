@@ -35,14 +35,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Game game;
     private AssetManager manager;
     private Preferences prefs;
-    //private Player clientPlayer;
     private TiledMap tiledMap;
-    private MapObjects mapObjects;
     private com.game.classes.Game gameState;
     private OrthographicCamera camera;
     private TiledMapRenderer renderer;
 
     private Chat chat;
+    private Label lblFPS;
+    private Label lblPlayers;
+    private Label lblCharacter;
 
     private SpriteBatch batch;
     private Sprite sprite;
@@ -69,6 +70,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     //Debug options
     private boolean showCharacter = false;
     private boolean showPathing = false;
+    private boolean debugInfo = true;
 
     public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Chat chat, AssetManager assetManager){
         float width = Gdx.graphics.getWidth();
@@ -87,7 +89,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         gameState.addGameListener(this);
         gameState.getPathing().setMap(gameState.getMap());
         this.chat = chat;
-        //this.clientPlayer = clientPlayer;
         this.game = game;
 
         tiledMap = map;
@@ -104,13 +105,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         pathfinder = new Pathfinder();
         pathfinder.setMap(gameState.getMap());
-
         /**
          * UI
          */
-        Label lblGame = new Label("Game start", skin);
-        lblGame.setPosition(10,10);
-        lblGame.setSize(100,100);
 
         TextButton btnEndTurn = new TextButton("End Turn", skin);
         btnEndTurn.addListener(new ChangeListener() {
@@ -122,7 +119,23 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         btnEndTurn.setPosition(10,10);
         btnEndTurn.setSize(250,20);
 
-        stage.addActor(lblGame);
+        if (debugInfo){
+            lblFPS = new Label("Fps", skin);
+            lblFPS.setPosition(10,height - 20);
+            lblFPS.setSize(100,20);
+
+            lblPlayers = new Label("Characters:", skin);
+            lblPlayers.setPosition(10,height - 40);
+            lblPlayers.setSize(100,20);
+
+            lblCharacter = new Label("Playeres", skin);
+            lblCharacter.setPosition(10,height - 60);
+            lblCharacter.setSize(100,20);
+
+            stage.addActor(lblFPS);
+            stage.addActor(lblPlayers);
+            stage.addActor(lblCharacter);
+        }
         stage.addActor(btnEndTurn);
         stage.addActor(chat.getScrollPane());
         stage.addActor(chat.getTextField());
@@ -159,6 +172,13 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
         camera.update();
+
+        if (debugInfo){
+            lblFPS.setText("FPS:" + Gdx.graphics.getFramesPerSecond());
+            lblPlayers.setText("Amount players: " + gameState.getPlayers().size() +
+                    " Clientplayer: " + gameState.getClientPlayer().getName());
+            lblCharacter.setText("Amount characters: " + gameState.getTotalCharacters());
+        }
 
         /**
          * Camera Bounds
@@ -311,8 +331,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
         if (keycode == Input.Keys.NUM_4){
             showPathing = !showPathing;
-        }
-        return false;
+        }return false;
     }
 
     public void moveCamera(){
@@ -331,16 +350,16 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             camera.zoom += -0.005f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.Q)){
-            camera.rotate(2);
+            camera.rotate(1);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.E)){
-            camera.rotate(-2);
+            camera.rotate(-1);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)){
-            if (showCharacter){
-                showCharacter = false;
-            }else
-                showCharacter = true;
+            showCharacter = !showCharacter;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+            changeFullscreen();
         }
     }
 
@@ -370,9 +389,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         try {
             selectedTile = gameState.getMap().getTerrains()[x][y];
         }
-        catch (ArrayIndexOutOfBoundsException ex){
-            //selectedTile = gameState.getMap().getTerrains()[x - 1][y]; can still crash with this
-        }
+        catch (ArrayIndexOutOfBoundsException ex){ }
         gameState.getPathing().findPath(selectedTile, gameState.getMap().getTerrains()[1][1]);
 
         if (!gameState.getClientPlayer().hasTurn()) {
@@ -454,15 +471,11 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         gameState.setPlayers(players);
 
         /** Checks who has the turn **/
-        for (Player player:gameState.getPlayers()) {
-            if (gameState.getClientPlayer().getName().equals(player.getName())){
-                gameState.setClientPlayer(player);
-            }
-            if (player.hasTurn()){
-                chat.textArea.appendText("It's " + player.getName() + "'s turn!\n");
-                if (player == gameState.getClientPlayer()){
-                    alarmSound.play(volume);
-                }
+        Player turnPlayer = gameState.checkTurn(players);
+        if (turnPlayer != null){
+            chat.textArea.appendText("It's " + turnPlayer.getName() + "'s turn!\n");
+            if (turnPlayer == gameState.getClientPlayer()){
+                alarmSound.play(volume);
             }
         }
     }
@@ -492,15 +505,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void onUpdateCharacter(int x, int y, String charName, String playerName) {
-        for (Player player : gameState.getPlayers()) {
-            if (player.getName().equals(playerName)){
-                for (Character character : player.getCharacters()) {
-                    if (character.getName().equals(charName)){
-                        character.forceSetCurrentTerrain(gameState.getMap().getTerrains()[x][y]);
-                    }
-                }
-            }
-        }
+        gameState.forceMoveCharacter(x,y,charName,playerName);
     }
 
     private void updatePlayers(){
@@ -521,5 +526,17 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             return;
         }
         gameState.endTurn();
+    }
+
+    private void changeFullscreen(){ //TODO zet ergens anders neer
+        if (Gdx.graphics.isFullscreen()){
+            Gdx.graphics.setWindowedMode(1280,720);
+        } else {
+            Graphics.Monitor currMonitor = Gdx.graphics.getMonitor();
+            Graphics.DisplayMode displayMode = Gdx.graphics.getDisplayMode(currMonitor);
+            if (!Gdx.graphics.setFullscreenMode(displayMode)){
+                System.out.println("Could not enter fullscreen mode.");
+            }
+        }
     }
 }

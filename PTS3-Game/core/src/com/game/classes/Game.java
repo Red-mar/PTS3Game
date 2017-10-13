@@ -292,19 +292,11 @@ public class Game
         getClient().sendGameEndTurn();
     }
 
-    public void endTurnLocal(){
+    public void endTurnLocal() {
         clientPlayer.setHasTurn(true);
         for (Character character : clientPlayer.getCharacters()) {
             character.setCurrentMovementPoints(character.getMovementPoints());
             character.setHasAttacked(false);
-        }
-    }
-
-    private void updateClientPlayer(){
-        for (Player player:getPlayers()) {
-            if (clientPlayer.getName().equals(player.getName())){
-                clientPlayer = player;
-            }
         }
     }
 
@@ -345,7 +337,51 @@ public class Game
         return false;
     }
 
+    public void forceMoveCharacter(int x, int y, String charName, String playerName){
+        for (Player player : players) {
+            if (player.getName().equals(playerName)){
+                for (Character character : player.getCharacters()) {
+                    if (character.getName().equals(charName)){
+                        character.forceSetCurrentTerrain(map.getTerrains()[x][y]);
+                    }
+                }
+            }
+        }
+    }
+
     public void addGameListener(GameEvents listener){
         client.addGameListener(listener);
+    }
+
+    public Player checkTurn(ArrayList<Player> players){
+        for (Player player:players) {
+            if (clientPlayer.getName().equals(player.getName())){
+                clientPlayer = player;
+            }
+            if (player.hasTurn()){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public int getTotalCharacters(){
+        int count = 0;
+        for (Player player : players) {
+            for (Character character : player.getCharacters()) {
+                if (!character.isDead()){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private void updateClientPlayer(){
+        for (Player player:getPlayers()) {
+            if (clientPlayer.getName().equals(player.getName())){
+                clientPlayer = player;
+            }
+        }
     }
 }
