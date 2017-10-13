@@ -21,7 +21,6 @@ public class Character implements Serializable {
     private Player player;
     private transient Sprite sprite;
     private String spriteTexture;
-
     private boolean hasAttacked = false;
 
     /**
@@ -86,18 +85,6 @@ public class Character implements Serializable {
      */
     public int getCurrentHealthPoints() {
         return currentHealthPoints;
-    }
-
-    /**
-     * Set the current amount of health points.
-     * @param attackPoints Requires the current amount of health points as int.
-     */
-    public void takeDamage(int attackPoints) {
-        int currentHealth = currentHealthPoints - (attackPoints - defensePoints);
-        this.currentHealthPoints = currentHealth;
-        if (this.currentHealthPoints <= 0){
-            isDead = true;
-        }
     }
 
     /**
@@ -186,40 +173,6 @@ public class Character implements Serializable {
         return true;
     }
 
-    public void forceSetCurrentTerrain(Terrain terrain){
-        this.currentTerrain = terrain;
-    }
-
-    public boolean canMove(Terrain terrain){
-        int totalMovement = calculateTotalMovement(terrain);
-
-        if (totalMovement > currentMovementPoints){
-            return false;
-        } else if (terrain.getCharacter() != null){
-            return false;
-        } else if (terrain.getProperty() == TerrainProperties.Impassable){
-            return false;
-        }// else if (terrain.getProperty() != TerrainProperties.Impassable && !Pathfinder.canFindPath(terrain, this)){
-         //   return false;
-        //}
-        return true;
-    }
-
-    public boolean canAttack(Terrain terrain){
-        int totalMovement = calculateTotalMovement(terrain);
-
-        if (totalMovement > attackRange){
-            return false;
-        }
-        if (terrain.getCharacter() == null && terrain.getCharacter() != this){
-            return false;
-        }
-        if (hasAttacked){
-            return false;
-        }
-        return true;
-    }
-
     /**
      * Get the current position of the character on the map.
      * @return Returns an int array
@@ -275,6 +228,48 @@ public class Character implements Serializable {
 
     public void setCurrentMovementPoints(int currentMovementPoints) {
         this.currentMovementPoints = currentMovementPoints;
+    }
+
+    public void forceSetCurrentTerrain(Terrain terrain){
+        this.currentTerrain = terrain;
+    }
+
+    public void takeDamage(int attackPoints) {
+        int currentHealth = currentHealthPoints - (attackPoints - defensePoints);
+        this.currentHealthPoints = currentHealth;
+        if (this.currentHealthPoints <= 0){
+            isDead = true;
+        }
+    }
+
+    public boolean canMove(Terrain terrain){
+        int totalMovement = calculateTotalMovement(terrain);
+
+        if (totalMovement > currentMovementPoints){
+            return false;
+        } else if (terrain.getCharacter() != null){
+            return false;
+        } else if (terrain.getProperty() == TerrainProperties.Impassable){
+            return false;
+        }// else if (terrain.getProperty() != TerrainProperties.Impassable && !Pathfinder.canFindPath(terrain, this)){
+        //   return false;
+        //}
+        return true;
+    }
+
+    public boolean canAttack(Terrain terrain){
+        int totalMovement = calculateTotalMovement(terrain);
+
+        if (totalMovement > attackRange){
+            return false;
+        }
+        if (terrain.getCharacter() == null && terrain.getCharacter() != this){
+            return false;
+        }
+        if (hasAttacked){
+            return false;
+        }
+        return true;
     }
 
     private int calculateTotalMovement(Terrain terrain){

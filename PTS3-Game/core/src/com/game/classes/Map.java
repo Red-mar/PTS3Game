@@ -1,6 +1,7 @@
 package com.game.classes;
 
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ public class Map implements Serializable {
     private int tileHeight;
     private int tileWidth;
     private Terrain[][] terrains;
+
+    private transient TiledMap tiledMap;
 
     /**
      * A map
@@ -70,6 +73,14 @@ public class Map implements Serializable {
     public int getTileHeight() { return tileHeight; }
 
     public int getTileWidth() { return tileWidth; }
+
+    public TiledMap getTiledMap() {
+        return tiledMap;
+    }
+
+    public void setTiledMap(TiledMap tiledMap) {
+        this.tiledMap = tiledMap;
+    }
 
     public List<Terrain> getNeighbours(Terrain terrain){
         ArrayList<Terrain> neighbours = new ArrayList<Terrain>();

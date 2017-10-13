@@ -43,14 +43,14 @@ public class ScreenLobby implements Screen, GameEvents {
     private Preferences prefs;
     private float volume;
 
-    private TiledMap tiledMap;
-
+    private Label lblMap;
+    private Label lblPlayerName;
     private EventListener enterText;
 
     float red = 0;
     float green = 0;
 
-    public ScreenLobby(final Game game, final String name, final com.game.classes.Game gameState, AssetManager assetManager){
+    public ScreenLobby(Game game, String name, com.game.classes.Game gameState, AssetManager assetManager){
         this.game = game;
         this.manager = assetManager;
         this.gameState = gameState;
@@ -66,9 +66,6 @@ public class ScreenLobby implements Screen, GameEvents {
         music.setVolume(volume);
         music.play();
 
-        /**
-         * Chat
-         */
         TextArea t = new TextArea("Welcome to the game lobby!\nHere you can chat with fellow players.\n", skin);
         chat = new Chat(t,
                 new ScrollPane(t, skin),
@@ -84,131 +81,73 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getTextField().setPosition(10, 40);
         chat.getTextField().setWidth(500);
         chat.getTextField().setHeight(50);
-        enterText = new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (gameState.getClient().isConnected() == null){
-                    chat.getTextArea().appendText("Geen connectie met een server.\n");
-                    chat.getTextField().setText("");
-                } else {
-                    gameState.getClient().readInput(chat.getTextField().getText());
-                    chat.getTextField().setText("");
-                    sound.play(volume);
-                }
-            }
-        };
-        chat.getBtnSendMessage().addListener(enterText);
         chat.getBtnSendMessage().setPosition(260, 10);
         chat.getBtnSendMessage().setWidth(250);
         chat.getBtnSendMessage().setHeight(20);
-
         gameState.getClient().addListener(chat);
 
-        /**
-         * Labels
-         */
-        Label lblPlayerName = new Label("Player name: " + name, skin);
+        lblPlayerName = new Label("Player name: " + name, skin);
         lblPlayerName.setPosition(10,330);
-        final Label lblMap = new Label("Selected map: N/A", skin);
+        lblMap = new Label("Selected map: N/A", skin);
         lblMap.setPosition(10,310);
 
-        /**
-         * Buttons
-         */
         TextButton btnStart = new TextButton("Start Game", skin);
-        btnStart.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (gameState.getMap() == null){
-                    chat.getTextArea().appendText("Geen map geselecteerd.\n");
-                    return;
-                }
-                if (gameState.getClient().isConnected() == null){
-                    onStartGame();
-                    return;
-                }
-                for (Player player:gameState.getPlayers()) {
-                    if (!player.isReady()) {
-                        chat.textArea.appendText("Niet iedereen is READY.\n");
-                        return;
-                    }
-                    System.out.println("Game Starting ...");
-                    sound.play(volume);
-                }
-                gameState.getClient().sendGameStart();
-            }
-        });
         btnStart.setPosition(510,10);
         btnStart.setSize(120,20);
 
         TextButton btnReady = new TextButton("Ready", skin);
-        btnReady.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (tiledMap == null){
-                    chat.getTextArea().appendText("Geen map geselecteerd.\n");
-                    return;
-                }
-                if (gameState.getClient().isConnected() == null){
-                    chat.getTextArea().appendText("Geen connectie met een server\n");
-                    return;
-                }
-                gameState.getClient().sendMessageReady();
-                sound.play(volume);
-            }
-        });
         btnReady.setPosition(510,40);
         btnReady.setSize(120,20);
 
         TextButton btnConnect = new TextButton("Connect with server!", skin);
-        btnConnect.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                establishConnection(name);
-            }
-        });
         btnConnect.setPosition(10,10);
         btnConnect.setWidth(250);
         btnConnect.setHeight(20);
 
         TextButton btnMap = new TextButton("Choose map", skin);
-        btnMap.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                tiledMap = new TmxMapLoader().load("map_2.tmx");
-                lblMap.setText("Selected map: " + "map_2.tmx");
-
-                TiledMapTileLayer tileLayer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
-                int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
-                int tileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
-
-                MapLayer mapLayer = tiledMap.getLayers().get("Impassable Terrain");
-                MapObjects mapObjects = mapLayer.getObjects();
-                ArrayList<RectangleMapObject> mapObjectList = new ArrayList<RectangleMapObject>();
-                for (int i = 0; i < mapObjects.getCount(); i++){
-                    RectangleMapObject rmo = (RectangleMapObject) mapObjects.get(i);
-                    rmo.getRectangle().setX((rmo.getRectangle().x ) / tileWidth );
-                    rmo.getRectangle().setY((rmo.getRectangle().y ) / tileHeight);
-                    mapObjectList.add(rmo);
-                }
-
-                Map gameMap = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, mapObjectList);
-                gameState.setMap(gameMap);
-                if (gameState.getClient().isConnected() != null){
-                    gameState.getClient().sendGameMap(gameMap);
-                }
-                sound.play(volume);
-            }
-        });
         btnMap.setPosition(510, 70);
         btnMap.setSize(120, 20);
 
-        /**
-         * Player list
-         */
         playerList = new List(skin);
         playerList.setPosition(10,350);
         playerList.setSize(250,100);
+
+        enterText = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                startConnection();
+            }
+        };
+
+        chat.getBtnSendMessage().addListener(enterText);
+
+        btnStart.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                startGame();
+            }
+        });
+
+        btnReady.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                setReady();
+            }
+        });
+
+        btnConnect.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                establishConnection();
+            }
+        });
+
+        btnMap.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                loadMap();
+            }
+        });
 
         stage.addActor(playerList);
         stage.addActor(lblMap);
@@ -303,7 +242,7 @@ public class ScreenLobby implements Screen, GameEvents {
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        game.setScreen(new ScreenGame(game, tiledMap, gameState, chat, manager));
+                        game.setScreen(new ScreenGame(game, gameState, chat, manager));
                         stage.clear();
                     }
                 });
@@ -312,17 +251,13 @@ public class ScreenLobby implements Screen, GameEvents {
     }
 
     @Override
-    public void onEndGame() {
-
-    }
+    public void onEndGame() { }
 
     @Override
-    public void onUpdateCharacter(int x, int y, String charName, String playerName) {
+    public void onUpdateCharacter(int x, int y, String charName, String playerName) { }
 
-    }
-
-    private void establishConnection(String name) {
-        if(gameState.establishConnection(name, chat)){
+    private void establishConnection() {
+        if(gameState.establishConnection(gameState.getClientPlayer().getName(), chat)){
             gameState.getClient().addGameListener(this);
             sound.play(volume);
         } else {
@@ -332,5 +267,56 @@ public class ScreenLobby implements Screen, GameEvents {
 
     private void addCharacter(String name) {
         gameState.generateCharacters(name, manager);
+    }
+
+    private void loadMap(){
+        String fileName = "map_2.tmx";
+        gameState.loadMap(fileName);
+        lblMap.setText("Selected map: " + fileName);
+        sound.play(volume);
+    }
+
+    private void setReady(){
+        if (gameState.getMap() == null){
+            chat.getTextArea().appendText("Geen map geselecteerd.\n");
+            return;
+        }
+        if (gameState.getClient().isConnected() == null){
+            chat.getTextArea().appendText("Geen connectie met een server\n");
+            return;
+        }
+        gameState.getClient().sendMessageReady();
+        sound.play(volume);
+    }
+
+    private void startGame(){
+        if (gameState.getMap() == null){
+            chat.getTextArea().appendText("Geen map geselecteerd.\n");
+            return;
+        }
+        if (gameState.getClient().isConnected() == null){
+            onStartGame();
+            return;
+        }
+        for (Player player:gameState.getPlayers()) {
+            if (!player.isReady()) {
+                chat.textArea.appendText("Niet iedereen is READY.\n");
+                return;
+            }
+            System.out.println("Game Starting ...");
+            sound.play(volume);
+        }
+        gameState.getClient().sendGameStart();
+    }
+
+    private void startConnection(){
+        if (gameState.getClient().isConnected() == null){
+            chat.getTextArea().appendText("Geen connectie met een server.\n");
+            chat.getTextField().setText("");
+        } else {
+            gameState.getClient().readInput(chat.getTextField().getText());
+            chat.getTextField().setText("");
+            sound.play(volume);
+        }
     }
 }

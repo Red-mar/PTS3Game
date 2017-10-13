@@ -3,6 +3,12 @@ package com.game.classes;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.game.classes.network.Client.Client;
 import com.game.classes.pathing.aStarPathing;
 import com.game.classes.network.GameEvents;
@@ -258,6 +264,32 @@ public class Game
         }
         if (client.isConnected() == null) return;
         getClient().sendGameMessagePlayer(clientPlayer);
+    }
+
+    public void loadMap(String fileName){ //TODO zet deel in map class
+        TiledMap tiledMap = new TmxMapLoader().load(fileName);
+
+        TiledMapTileLayer tileLayer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
+        int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
+        int tileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
+
+        // Add objects
+        MapLayer mapLayer = tiledMap.getLayers().get("Impassable Terrain");
+        MapObjects mapObjects = mapLayer.getObjects();
+        ArrayList<RectangleMapObject> mapObjectList = new ArrayList<RectangleMapObject>();
+        for (int i = 0; i < mapObjects.getCount(); i++){
+            RectangleMapObject rmo = (RectangleMapObject) mapObjects.get(i);
+            rmo.getRectangle().setX((rmo.getRectangle().x ) / tileWidth );
+            rmo.getRectangle().setY((rmo.getRectangle().y ) / tileHeight);
+            mapObjectList.add(rmo);
+        }
+
+        map = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, mapObjectList);
+        map.setTiledMap(tiledMap);
+
+        if (getClient().isConnected() != null){
+            getClient().sendGameMap(map);
+        }
     }
 
     /**

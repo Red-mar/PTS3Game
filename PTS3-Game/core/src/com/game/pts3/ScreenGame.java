@@ -35,7 +35,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Game game;
     private AssetManager manager;
     private Preferences prefs;
-    private TiledMap tiledMap;
     private com.game.classes.Game gameState;
     private OrthographicCamera camera;
     private TiledMapRenderer renderer;
@@ -72,7 +71,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private boolean showPathing = false;
     private boolean debugInfo = true;
 
-    public ScreenGame(Game game, TiledMap map, final com.game.classes.Game gameState, Chat chat, AssetManager assetManager){
+    public ScreenGame(Game game, com.game.classes.Game gameState, Chat chat, AssetManager assetManager){
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
 
@@ -91,9 +90,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         this.chat = chat;
         this.game = game;
 
-        tiledMap = map;
         selectedTile = gameState.getMap().getTerrains()[0][0];
-        renderer = new OrthogonalTiledMapRenderer(tiledMap);
+        renderer = new OrthogonalTiledMapRenderer(gameState.getMap().getTiledMap());
 
         skin = manager.get("data/uiskin.json", Skin.class);
         damageSound = manager.get("sound/Damage.wav", Sound.class);
@@ -326,9 +324,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.NUM_1)
-            tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
+            gameState.getMap().getTiledMap().getLayers().get(0).setVisible(!gameState.getMap().getTiledMap().getLayers().get(0).isVisible());
         if(keycode == Input.Keys.NUM_2)
-            tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
+            gameState.getMap().getTiledMap().getLayers().get(1).setVisible(!gameState.getMap().getTiledMap().getLayers().get(1).isVisible());
         if (keycode == Input.Keys.NUM_4){
             showPathing = !showPathing;
         }return false;
