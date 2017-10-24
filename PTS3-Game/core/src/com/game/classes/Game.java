@@ -168,10 +168,18 @@ public class Game
         return client;
     }
 
+    /**
+     * get the Hosting player of the game (client player)
+     * @return Returns a Player Object Host
+     */
     public Player getClientPlayer() {
         return clientPlayer;
     }
 
+    /**
+     *
+     * @param clientPlayer
+     */
     public void setClientPlayer(Player clientPlayer) {
         this.clientPlayer = clientPlayer;
     }
