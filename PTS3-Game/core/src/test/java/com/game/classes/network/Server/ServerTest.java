@@ -25,7 +25,7 @@ public class ServerTest {
         server.start();
         client.start();
 
-        clientGame.establishConnection("red", null);
+        clientGame.establishConnection("red");
     }
 
     @After

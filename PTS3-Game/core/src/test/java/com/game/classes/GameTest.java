@@ -1,5 +1,7 @@
 package com.game.classes;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.game.classes.Chat;
 import com.game.classes.Game;
 import com.game.classes.Map;
@@ -9,10 +11,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 public class GameTest {
-
     //fields
     Game instance;
     Client client;
@@ -35,6 +38,15 @@ public class GameTest {
     public void getPlayers() throws Exception
     {
         assertNotEquals(null, instance);
+    }
+
+    @Test
+    public void setPlayers() throws Exception {
+        ArrayList<Player> players = new ArrayList<Player>();
+        players.add(new Player("test1"));
+        players.add(new Player("test2"));
+        instance.setPlayers(players);
+        assertArrayEquals(players.toArray(), instance.getPlayers().toArray());
     }
 
     @Test
@@ -106,4 +118,29 @@ public class GameTest {
         assertEquals(true, instance.getInGame());
     }
 
+    @Test
+    public void establishConnection() throws Exception
+    {
+        instance.establishConnection("test");
+    }
+
+    /*@Test
+    public void generateCharacters() throws Exception
+    {
+        Map toAdd = new Map(40,40, 10, 10, null);
+        instance.setMap(toAdd);
+        AssetManager manager = new AssetManager();
+        manager.load("Sprites/bowman-1.png", Texture.class);
+        manager.load("Sprites/bowman-2.png", Texture.class);
+        manager.load("Sprites/heavy-1.png", Texture.class);
+        manager.load("Sprites/heavy-2.png", Texture.class);
+        manager.load("Sprites/horseman-1.png", Texture.class);
+        manager.load("Sprites/horseman-2.png", Texture.class);
+        manager.load("Sprites/swordsman-1.png", Texture.class);
+        manager.load("Sprites/swordsman-2.png", Texture.class);
+        manager.load("Sprites/wizard-1.png", Texture.class);
+        manager.load("Sprites/wizard-2.png", Texture.class);
+        instance.generateCharacters("test", manager);
+        assertEquals(5, instance.getClientPlayer().getCharacters().size());
+    }*/
 }

@@ -38,11 +38,13 @@ public class Map implements Serializable {
             }
         }
 
-        for (int i = 0; i < mapObjects.size(); i++){
-            for (int h = 0; h < sizeX; h++){
-                for (int j = 0; j < sizeY; j++){
-                    if (terrains[h][j].getX() == mapObjects.get(i).getRectangle().x && terrains[h][j].getY() == mapObjects.get(i).getRectangle().y)
-                        terrains[h][j].setProperty(TerrainProperties.Impassable);
+        if (mapObjects != null) {
+            for (int i = 0; i < mapObjects.size(); i++) {
+                for (int h = 0; h < sizeX; h++) {
+                    for (int j = 0; j < sizeY; j++) {
+                        if (terrains[h][j].getX() == mapObjects.get(i).getRectangle().x && terrains[h][j].getY() == mapObjects.get(i).getRectangle().y)
+                            terrains[h][j].setProperty(TerrainProperties.Impassable);
+                    }
                 }
             }
         }

@@ -180,7 +180,7 @@ public class Game
         return pathing;
     }
 
-    public boolean establishConnection(String name, com.game.pts3.Chat chat){
+    public boolean establishConnection(String name){
         try {
             if (client.isConnected() == null) {
                 client.start();
