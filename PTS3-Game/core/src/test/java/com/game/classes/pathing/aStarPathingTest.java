@@ -8,6 +8,7 @@ import com.game.classes.Terrain;
 import com.game.classes.TerrainProperties;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.css.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,8 @@ public class aStarPathingTest {
     @Before
     public void setUp() throws Exception {
         objects = new ArrayList<RectangleMapObject>();
+        RectangleMapObject mapObject = new RectangleMapObject();
+        objects.add(mapObject);
 
         map = new Map(40,40,15,15, objects);
 
@@ -37,12 +40,12 @@ public class aStarPathingTest {
 
     @Test
     public void getPath() throws Exception {
-        Terrain terrain = new Terrain(TerrainProperties.Normal, 5, 5);
-        Terrain terrain2 = new Terrain(TerrainProperties.Normal, 1, 1);
+        Terrain terrain = map.getTerrains()[5][5];
+        Terrain terrain2 = map.getTerrains()[1][1];
         pathing.findPath(terrain2, terrain);
         List<Terrain> path = pathing.getPath();
 
-        assertEquals(path.get(0), terrain);
         assertEquals(path.get(1).getX(), 2);
+        assertEquals(path.get(0).getX(), 1);
     }
 }

@@ -42,7 +42,7 @@ public class CharacterTest {
     public void setCurrentHealthPoints() throws Exception
     {
         c.takeDamage(5);
-        assertEquals(5, c.getCurrentHealthPoints());
+        assertEquals(35, c.getCurrentHealthPoints());
     }
 
     @Test
@@ -117,6 +117,51 @@ public class CharacterTest {
         Player p = new Player("testPlayer");
         c.setPlayer(p);
         assertEquals(p, c.getPlayer());
+    }
+
+    @Test
+    public void getCurrentHealthPoints() throws Exception {
+        assertEquals(c.getCurrentHealthPoints(), 10);
+    }
+
+    @Test
+    public void isDead() throws Exception {
+        assertEquals(c.isDead(), false);
+    }
+
+    @Test
+    public void getPlayer() throws Exception {
+        assertEquals(c.getPlayer().getName(), "");
+    }
+
+    @Test
+    public void hasAttacked() throws Exception {
+        c.setHasAttacked(true);
+        assertEquals(c.hasAttacked(), true);
+    }
+
+    @Test
+    public void forceSetCurrentTerrain() throws Exception {
+        Terrain newTerrain = new Terrain(TerrainProperties.Normal, 1, 1);
+        c.forceSetCurrentTerrain(newTerrain);
+
+        assertEquals(c.getCurrentTerrain().getX(), 1);
+    }
+
+    @Test
+    public void takeDamage() throws Exception {
+        c.takeDamage(5);
+        assertEquals(c.getCurrentHealthPoints(), 35);
+    }
+
+    @Test
+    public void canMove() throws Exception {
+        assertEquals(c.canMove(new Terrain(TerrainProperties.Normal, 38, 38)), false);
+    }
+
+    @Test
+    public void canAttack() throws Exception {
+        assertEquals(c.canAttack(new Terrain(TerrainProperties.Normal, 1, 30)), false);
     }
 
 }
