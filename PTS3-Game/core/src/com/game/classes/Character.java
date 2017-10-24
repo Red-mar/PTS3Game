@@ -266,7 +266,10 @@ public class Character implements Serializable {
         if (terrain.getCharacter() == null && terrain.getCharacter() != this){
             return false;
         }
-        return !hasAttacked;
+        if (hasAttacked){
+            return false;
+        }
+        return true;
     }
 
     private int calculateTotalMovement(Terrain terrain){
