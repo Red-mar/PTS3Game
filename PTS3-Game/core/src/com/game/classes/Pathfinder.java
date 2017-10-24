@@ -82,10 +82,7 @@ public class Pathfinder {
     }
 
     private static boolean isOnEnd(Terrain terrain){
-        if (terrain.getX() == newCharacterTile.getX() && terrain.getY() == newCharacterTile.getY()){
-            return true;
-        }
-        return false;
+        return terrain.getX() == newCharacterTile.getX() && terrain.getY() == newCharacterTile.getY();
     }
 
     //TODO: Make sure it doesn't fuck shit up.
@@ -130,12 +127,7 @@ public class Pathfinder {
         previousTile = newCharacterTile;
         newCharacterTile = terrains[lowestIndexFValue];
 
-        if (fValues[lowestIndexFValue] > character.getMovementPoints()){
-            return false;
-        }
-        else {
-            return true;
-        }
+        return fValues[lowestIndexFValue] <= character.getMovementPoints();
     }
 
     private static int[] getFvalues(Terrain[] terrains, Character character, Terrain terrain, Terrain previousTile){
@@ -177,7 +169,7 @@ public class Pathfinder {
 
 
     public void setMap(Map map){
-        this.map = map;
+        Pathfinder.map = map;
     }
 
 }
