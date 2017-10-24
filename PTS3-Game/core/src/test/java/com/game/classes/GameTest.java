@@ -124,9 +124,10 @@ public class GameTest {
         instance.establishConnection("test");
     }
 
-    /*@Test
+    @Test
     public void generateCharacters() throws Exception
     {
+        /*
         Map toAdd = new Map(40,40, 10, 10, null);
         instance.setMap(toAdd);
         AssetManager manager = new AssetManager();
@@ -142,5 +143,48 @@ public class GameTest {
         manager.load("Sprites/wizard-2.png", Texture.class);
         instance.generateCharacters("test", manager);
         assertEquals(5, instance.getClientPlayer().getCharacters().size());
-    }*/
+    */}
+
+
+    @Test
+    public void loadMap() throws Exception{/*
+        System.out.println("Working Directory = " +
+                System.getProperty("user.dir"));
+        instance.loadMap("core/assets/map_2.tmx");
+    */}
+
+    @Test
+    public void moveCharacter() throws Exception
+    {
+
+    }
+
+    @Test
+    public void forceMoveCharacter() throws Exception
+    {
+        instance.addPlayer(new Player("test"));
+    }
+
+    @Test
+    public void addGameListner() throws Exception{
+
+    }
+
+    @Test
+    public void checkTurn() throws Exception{
+        ArrayList<Player> players = new ArrayList<Player>();
+        players.add(new Player("1"));
+        players.add(new Player("2"));
+        instance.setClientPlayer(players.get(0));
+        instance.endTurnLocal();
+
+        assertEquals(players.get(0), instance.checkTurn(players));
+    }
+
+    @Test
+    public void getTotalCharacters() throws Exception{
+        instance.addPlayer(new Player("test"));
+        assertEquals(0, instance.getTotalCharacters());
+    }
+
 }
