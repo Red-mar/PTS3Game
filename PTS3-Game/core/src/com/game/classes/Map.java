@@ -58,16 +58,8 @@ public class Map implements Serializable {
         return sizeX;
     }
 
-    public void setSizeX(int sizeX) {
-        this.sizeX = sizeX;
-    }
-
     public int getSizeY() {
         return sizeY;
-    }
-
-    public void setSizeY(int sizeY) {
-        this.sizeY = sizeY;
     }
 
     public int getTileHeight() { return tileHeight; }
@@ -115,9 +107,5 @@ public class Map implements Serializable {
             }
         }
     }
-
-    /*public Terrain getTerrain() {
-        return terrain;
-    }*/
 
 }
