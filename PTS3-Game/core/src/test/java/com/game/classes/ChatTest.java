@@ -1,4 +1,4 @@
-package com.game.classes.unitTest;
+package com.game.classes;
 
 import com.game.classes.Chat;
 import org.junit.After;

@@ -1,4 +1,4 @@
-package com.game.classes.unitTest;
+package com.game.classes;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.game.classes.Character;
