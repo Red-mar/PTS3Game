@@ -3,9 +3,11 @@ package com.game.classes;
 
 import com.game.classes.network.Client.Client;
 
+import java.util.ArrayList;
+
 public class Chat {
     private Game game;
-    private String[] chatlog;
+    private ArrayList<String> chatlog;
     private Client client;
 
     /**
@@ -37,7 +39,7 @@ public class Chat {
      * Get the entire chatlog.
      * @return Returns a string array.
      */
-    public String[] getChatlog() {
+    public ArrayList<String> getChatlog() {
         return chatlog;
     }
 
@@ -46,7 +48,7 @@ public class Chat {
      * Sets the entire chatlog.
      * @param chatlog Requires a string array.
      */
-    public void setChatlog(String[] chatlog) {
+    public void setChatlog(ArrayList<String> chatlog) {
         this.chatlog = chatlog;
     }
 
