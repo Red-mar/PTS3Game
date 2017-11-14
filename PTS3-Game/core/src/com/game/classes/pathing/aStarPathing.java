@@ -29,6 +29,7 @@ public class aStarPathing {
     public void findPath(Terrain start, Terrain target){
         List<Terrain> openList = new ArrayList<Terrain>();
         HashSet<Terrain> closedList = new HashSet<Terrain>();
+
         openList.add(start);
 
         while (openList.size() > 0){

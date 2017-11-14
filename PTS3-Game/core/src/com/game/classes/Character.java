@@ -296,7 +296,7 @@ public class Character implements Serializable {
         if (totalMovement > attackRange){
             return false;
         }
-        if (terrain.getCharacter() == null && terrain.getCharacter() != this){
+        if (terrain.getCharacter() == null && terrain.getCharacter() != this || terrain.getCharacter() == this){
             return false;
         }
         if (hasAttacked){
