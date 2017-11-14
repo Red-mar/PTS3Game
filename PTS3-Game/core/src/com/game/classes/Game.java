@@ -226,7 +226,7 @@ public class Game
         int enemy = 1;
         for (int i = 0; i < players.size(); i++){
             if (players.get(i).getName() == clientPlayer.getName()){
-                enemy = i + 1;
+                enemy = 2;
             }
         }
         String textureFile;
