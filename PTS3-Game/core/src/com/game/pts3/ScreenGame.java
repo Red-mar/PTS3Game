@@ -255,7 +255,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             }
         }
         shapeRenderer.setColor(1, 0, 0, 1f);
-        shapeRenderer.rect((float)Math.ceil((int)selectedTileX / 15) * 15, (float)Math.ceil((int)selectedTileY / 15) * 15, gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
+        shapeRenderer.rect((float)Math.ceil((int)selectedTileX / gameState.getMap().getTileHeight()) * gameState.getMap().getTileWidth(), (float)Math.ceil((int)selectedTileY / gameState.getMap().getTileHeight()) * gameState.getMap().getTileWidth(), gameState.getMap().getTileWidth(), gameState.getMap().getTileHeight());
 
         if (showMovementOptions){
             shapeRenderer.end();
@@ -428,8 +428,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         selectedTileY = worldCoordinates.y;
 
         int x, y;
-        x = (int)Math.ceil((int)selectedTileX / 15);
-        y = (int)Math.ceil((int)selectedTileY / 15);
+        x = (int)Math.ceil((int)selectedTileX / gameState.getMap().getTileWidth());
+        y = (int)Math.ceil((int)selectedTileY / gameState.getMap().getTileHeight());
         if (x < 0 || y < 0 || x > gameState.getMap().getSizeX() || y > gameState.getMap().getSizeY()){
             return false;
         }
@@ -511,7 +511,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 if (character.isDead()) continue;
                 Sprite sprite = new Sprite(manager.get(character.getSpriteTexture(), Texture.class));
 
-                sprite.setPosition(character.getCurrentTerrain().getX()*15, character.getCurrentTerrain().getY()*15);
+                sprite.setPosition(character.getCurrentTerrain().getX()*gameState.getMap().getTileHeight(), character.getCurrentTerrain().getY()*gameState.getMap().getTileWidth());
                 gameState.getMap().getTerrains()[character.getCurrentTerrain().getX()][character.getCurrentTerrain().getY()].setCharacter(character);
                 character.setSprite(sprite);
             }
