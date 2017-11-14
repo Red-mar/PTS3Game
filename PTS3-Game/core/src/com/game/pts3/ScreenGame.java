@@ -16,10 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.game.classes.Character;
 import com.game.classes.Pathfinder;
@@ -44,7 +41,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Label lblFPS;
     private Label lblPlayers;
     private Label lblCharacter;
+
+    //Char values
+    private Table charValues;
+    private Label lblDefensePoints;
     private Label lblAttackPoints;
+    private Label lblHealthPoints;
 
     private SpriteBatch batch;
     private Sprite sprite;
@@ -128,19 +130,43 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             lblPlayers.setPosition(10,height - 40);
             lblPlayers.setSize(100,20);
 
-            lblCharacter = new Label("Playeres", skin);
+            lblCharacter = new Label("Players", skin);
             lblCharacter.setPosition(10,height - 60);
             lblCharacter.setSize(100,20);
 
-            lblAttackPoints = new Label("AttackPoints: ", skin);
-            lblAttackPoints.setPosition(50, -20);
+
+            charValues = new Table();
+            lblAttackPoints = new Label("AttackPoints", skin);
+            lblAttackPoints.setPosition(10, height - 80);
             lblAttackPoints.setSize(100,20);
+            lblAttackPoints.setText("Attack points: ");
+
+            lblDefensePoints = new Label("DefensePoints", skin);
+            lblDefensePoints.setPosition(10, height - 100);
+            lblDefensePoints.setSize(100,20);
+            lblDefensePoints.setText("Defense points: ");
+
+            lblHealthPoints = new Label("HealthPoints", skin);
+            lblHealthPoints.setPosition(10, height - 120);
+            lblHealthPoints.setSize(100,20);
+            lblHealthPoints.setText("Health points: ");
+
 
             stage.addActor(lblFPS);
             stage.addActor(lblPlayers);
             stage.addActor(lblCharacter);
+
+            stage.addActor(lblDefensePoints);
+            stage.addActor(lblHealthPoints);
             stage.addActor(lblAttackPoints);
+
         }
+
+
+
+
+
+
         stage.addActor(btnEndTurn);
         stage.addActor(chat.getScrollPane());
         stage.addActor(chat.getTextField());
@@ -183,6 +209,22 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             lblPlayers.setText("Amount players: " + gameState.getPlayers().size() +
                     " Clientplayer: " + gameState.getClientPlayer().getName());
             lblCharacter.setText("Amount characters: " + gameState.getTotalCharacters());
+            if(selectedCharacter != null)
+            {
+                String AP = Integer.toString(selectedCharacter.getAttackPoints());
+                lblAttackPoints.setText("Attack points: " + AP);
+                String DP = Integer.toString(selectedCharacter.getDefensePoints());
+                lblDefensePoints.setText("Defense points: " + DP);
+                String HP = "HP" + Integer.toString(selectedCharacter.getCurrentHealthPoints()) + "/" + Integer.toString(selectedCharacter.getMaxHealthPoints());
+                lblHealthPoints.setText(HP);
+            }
+            else
+            {
+                lblHealthPoints.setText("");
+                lblDefensePoints.setText("");
+                lblAttackPoints.setText("");
+
+            }
         }
 
         /**
@@ -405,8 +447,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         Character tempCharacter = selectedTile.getCharacter();
 
         if (selectedCharacter != null){ //Do something with currently selected character
-            String attackPoints = Integer.toString(selectedCharacter.getAttackPoints());
-            lblAttackPoints.setText("Attackpoints: " + attackPoints);
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!gameState.moveCharacter(selectedCharacter, selectedTile, oldTerrain)){
                 if (gameState.characterAttack(selectedCharacter, selectedTile.getCharacter())){
