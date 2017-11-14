@@ -42,6 +42,7 @@ public class Game
         pathing = new aStarPathing(getMap());
     }
 
+
     public Game(Server server){
         this.server = server;
         //this.server.start();
@@ -89,6 +90,10 @@ public class Game
         players.remove(temp);
     }
 
+    /**
+     * If a player needs to be removed without having a player object
+     * @param name of the player to remove
+     */
     public void removePlayer(String name){
         Player temp = null;
         for (Player current:players)
@@ -354,7 +359,12 @@ public class Game
     }
 
     public boolean moveCharacter(Character character, Terrain tile, Terrain oldTile){
-        pathing.findPath(oldTile, tile);
+        if (tile.getY() != oldTile.getY() && tile.getX() != oldTile.getX()){
+            pathing.findPath(oldTile, tile);
+        }
+        else {
+            return false;
+        }
         if (pathing.getPath().size() > character.getMovementPoints()){
             return false;
         }

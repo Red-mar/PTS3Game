@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -18,7 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.game.classes.Character;
 import com.game.classes.Pathfinder;
@@ -397,6 +398,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }
         Character tempCharacter = selectedTile.getCharacter();
         if (selectedCharacter != null){ //Do something with currently selected character
+            String attackPoints = Integer.toString(selectedCharacter.getAttackPoints());
+            System.out.println("AttackPoints:" + attackPoints);
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!gameState.moveCharacter(selectedCharacter, selectedTile, oldTerrain)){
                 if (gameState.characterAttack(selectedCharacter, selectedTile.getCharacter())){
