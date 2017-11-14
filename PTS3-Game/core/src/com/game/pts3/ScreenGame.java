@@ -3,6 +3,7 @@ package com.game.pts3;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -43,10 +44,16 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Label lblCharacter;
 
     //Char values
-    private Table charValues;
-    private Label lblDefensePoints;
-    private Label lblAttackPoints;
-    private Label lblHealthPoints;
+
+    private Window charWindow;
+
+    private Label lblDP;
+    private Label lblAP;
+    private Label lblHP;
+    private Label lblCharName;
+    private Label lblRange;
+    private Label lblMovement;
+
 
     private SpriteBatch batch;
     private Sprite sprite;
@@ -121,6 +128,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         btnEndTurn.setPosition(10,10);
         btnEndTurn.setSize(250,20);
 
+
         if (debugInfo){
             lblFPS = new Label("Fps", skin);
             lblFPS.setPosition(10,height - 20);
@@ -135,30 +143,58 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             lblCharacter.setSize(100,20);
 
 
-            charValues = new Table();
-            lblAttackPoints = new Label("AttackPoints", skin);
-            lblAttackPoints.setPosition(10, height - 80);
-            lblAttackPoints.setSize(100,20);
-            lblAttackPoints.setText("Attack points: ");
 
-            lblDefensePoints = new Label("DefensePoints", skin);
-            lblDefensePoints.setPosition(10, height - 100);
-            lblDefensePoints.setSize(100,20);
-            lblDefensePoints.setText("Defense points: ");
-
-            lblHealthPoints = new Label("HealthPoints", skin);
-            lblHealthPoints.setPosition(10, height - 120);
-            lblHealthPoints.setSize(100,20);
-            lblHealthPoints.setText("Health points: ");
 
 
             stage.addActor(lblFPS);
             stage.addActor(lblPlayers);
             stage.addActor(lblCharacter);
 
-            stage.addActor(lblDefensePoints);
-            stage.addActor(lblHealthPoints);
-            stage.addActor(lblAttackPoints);
+            //Char stats display
+
+            charWindow = new Window("Stats", skin);
+            charWindow.setColor(Color.GRAY);
+            charWindow.setPosition(width - 180, height - 80);
+            charWindow.setSize(211, 180);
+
+            //attack points label
+            lblAP = new Label("ap", skin);
+
+            //defense points label
+            lblDP = new Label("dp", skin);
+
+            //hitpoints label
+            lblHP = new Label("hp", skin);
+
+            //charname label
+            lblCharName = new Label("charName", skin);
+
+            //movement label
+            lblMovement = new Label("movement", skin);
+
+            //range label
+            lblRange = new Label("range", skin);
+
+
+            charWindow.add(lblCharName);
+            charWindow.row();
+
+            charWindow.add(lblHP);
+            charWindow.row();
+
+            charWindow.add(lblAP);
+            charWindow.row();
+
+            charWindow.add(lblDP);
+            charWindow.row();
+
+            charWindow.add(lblRange);
+            charWindow.row();
+
+            charWindow.add(lblMovement);
+            charWindow.row();
+
+            stage.addActor(charWindow);
 
         }
 
@@ -211,19 +247,29 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             lblCharacter.setText("Amount characters: " + gameState.getTotalCharacters());
             if(selectedCharacter != null)
             {
+                charWindow.setVisible(true);
+
+                String charName = "Unit: " + selectedCharacter.getName();
+                lblCharName.setText(charName);
+
                 String AP = Integer.toString(selectedCharacter.getAttackPoints());
-                lblAttackPoints.setText("Attack points: " + AP);
+                lblAP.setText("Attack points: " + AP);
+
                 String DP = Integer.toString(selectedCharacter.getDefensePoints());
-                lblDefensePoints.setText("Defense points: " + DP);
-                String HP = "HP" + Integer.toString(selectedCharacter.getCurrentHealthPoints()) + "/" + Integer.toString(selectedCharacter.getMaxHealthPoints());
-                lblHealthPoints.setText(HP);
+                lblDP.setText("Defense points: " + DP);
+
+                String HP = "HP: " + Integer.toString(selectedCharacter.getCurrentHealthPoints()) + "/" + Integer.toString(selectedCharacter.getMaxHealthPoints());
+                lblHP.setText(HP);
+
+                String range = "Range: " + Integer.toString(selectedCharacter.getAttackRange());
+                lblRange.setText(range);
+
+                String movement = "Movement: " + Integer.toString(selectedCharacter.getCurrentMovementPoints()) + "/" + Integer.toString(selectedCharacter.getMovementPoints());
+                lblMovement.setText(movement);
             }
             else
             {
-                lblHealthPoints.setText("");
-                lblDefensePoints.setText("");
-                lblAttackPoints.setText("");
-
+                charWindow.setVisible(false);
             }
         }
 
