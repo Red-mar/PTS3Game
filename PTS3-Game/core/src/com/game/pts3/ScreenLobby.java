@@ -235,7 +235,7 @@ public class ScreenLobby implements Screen, GameEvents {
     @Override
     public void onStartGame() {
         addCharacter(gameState.getClientPlayer().getName());
-        if (gameState.getPlayers().get(0) == gameState.getClientPlayer()){
+        if (gameState.getPlayers().size() == 0 || gameState.getPlayers().get(0) == gameState.getClientPlayer()){
             gameState.getClientPlayer().setHasTurn(true);
         }
 
