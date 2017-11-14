@@ -1,8 +1,6 @@
 package com.game.classes;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
-import javafx.scene.shape.Path;
 
 import java.io.Serializable;
 
@@ -206,29 +204,54 @@ public class Character implements Serializable {
         this.player = player;
     }
 
+    /**
+     * get
+     * @return Sprite
+     */
     public Sprite getSprite() {
         return sprite;
     }
 
+    /**
+     *
+     * @param sprite
+     */
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getSpriteTexture() {
         return spriteTexture;
     }
 
+    /**
+     * Set if a character has (true) or has not (false) attacked this turn
+     * @param hasAttacked requires a boolean
+     */
     public void setHasAttacked(boolean hasAttacked) {
         this.hasAttacked = hasAttacked;
     }
 
+    /**
+     * Check if the character has attacked
+     * @return boolean
+     */
     public boolean hasAttacked() {
         return hasAttacked;
     }
 
+    /**
+     * Set the amount of movement a character can make each turn
+     * @param currentMovementPoints amount of movementpoints a character has
+     */
     public void setCurrentMovementPoints(int currentMovementPoints) {
         this.currentMovementPoints = currentMovementPoints;
     }
+
 
     public void forceSetCurrentTerrain(Terrain terrain){
         this.currentTerrain = terrain;
@@ -242,6 +265,11 @@ public class Character implements Serializable {
         }
     }
 
+    /**
+     * check if a character can still move during this turn
+     * @param terrain check if terrain isn't occupied or not accesible
+     * @return boolean result if character can move
+     */
     public boolean canMove(Terrain terrain){
         int totalMovement = calculateTotalMovement(terrain);
 
@@ -257,6 +285,11 @@ public class Character implements Serializable {
         return true;
     }
 
+    /**
+     * check if character can attack this turn
+     * @param terrain where you attack is occupied or is you
+     * @return result if character can attack or not
+     */
     public boolean canAttack(Terrain terrain){
         int totalMovement = calculateTotalMovement(terrain);
 
@@ -272,6 +305,11 @@ public class Character implements Serializable {
         return true;
     }
 
+    /**
+     * calculate the movement
+     * @param terrain
+     * @return
+     */
     private int calculateTotalMovement(Terrain terrain){
         int xMove = Math.abs(terrain.getX() - currentTerrain.getX());
         int yMove = Math.abs(terrain.getY() - currentTerrain.getY());
