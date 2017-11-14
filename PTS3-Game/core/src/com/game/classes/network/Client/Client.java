@@ -8,6 +8,7 @@ import com.game.classes.network.MessageType;
 
 import java.io.*;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Client {
@@ -17,6 +18,8 @@ public class Client {
     private ArrayList<GameEvents> gameListeners = new ArrayList<GameEvents>();
     private String serverIP;
     private Boolean isConnected = null;
+
+    private RMIClient rmiClient;
 
     /**
      * Checks if the client has a connection with a server.
@@ -36,6 +39,13 @@ public class Client {
      */
     public Client(String serverIP){
         this.serverIP = serverIP;
+
+        rmiClient = new RMIClient(serverIP, 1337);
+        try {
+            rmiClient.getInfo().sendMessage("test");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -88,7 +98,11 @@ public class Client {
             connectionHandler.close();
         }else if (userInput.startsWith("/endturn")){
             sendGameEndTurn();
-        } else {
+        }
+        else if(userInput.startsWith("/spec")){
+
+        }
+        else {
             sendMessageAll(userInput);
         }
     }
@@ -186,6 +200,12 @@ public class Client {
     public void sendGameStart(){
         connectionHandler.sendMessage(
                 MessageType.GameStartMessage);
+    }
+
+    public void sendGameJoin(){
+        connectionHandler.sendMessage(
+                MessageType.GameJoinMessage
+        );
     }
 
     /**

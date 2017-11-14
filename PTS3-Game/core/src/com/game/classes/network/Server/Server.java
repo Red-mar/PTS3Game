@@ -17,11 +17,14 @@ public class Server {
     private ServerSocket serverSocket;
     private HashMap<ConnectionHandler, Player> clients;
     private ServerManager serverManager;
+    private RMIServer rmiServer;
 
     public Server(int port) throws IOException{
         serverSocket= new ServerSocket(port);
         clients = new HashMap<ConnectionHandler, Player>();
         serverManager = new ServerManager(this);
+
+        rmiServer = new RMIServer();
     }
 
     public void start(){
@@ -321,6 +324,9 @@ public class Server {
                     } catch (Exception e){
                         e.printStackTrace();
                     }
+                    break;
+                case GameJoinMessage:
+                    //thisPlayer = server.clients.get(this);
                     break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");
