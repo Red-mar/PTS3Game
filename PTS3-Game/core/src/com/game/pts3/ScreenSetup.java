@@ -4,6 +4,8 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -17,6 +19,9 @@ public class ScreenSetup implements Screen {
     private Preferences prefs;
     private Sound testSound;
     final private AssetManager manager;
+    private SpriteBatch batch;
+    private Texture backgroundImage;
+    private float height = -2000;
 
     Slider sliderVolume;
 
@@ -27,7 +32,8 @@ public class ScreenSetup implements Screen {
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
         testSound = manager.get("sound/LobbyIn.wav", Sound.class);
         skin = manager.get("data/uiskin.json", Skin.class);
-
+        backgroundImage = new Texture(Gdx.files.internal("maan.png"));
+        batch = new SpriteBatch();
         /**
          * Labels
          */
@@ -119,6 +125,15 @@ public class ScreenSetup implements Screen {
          */
         Gdx.gl.glClearColor( 0, 0.1f, 0.1f, 1 );
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
+
+        batch.begin();
+        if (height < 2000){
+            height += 10;
+        } else {
+            height = -2000;
+        }
+        batch.draw(backgroundImage, 100,height);
+        batch.end();
 
         stage.act();
         stage.draw();
