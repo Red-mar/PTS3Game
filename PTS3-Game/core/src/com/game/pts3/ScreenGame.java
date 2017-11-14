@@ -403,9 +403,10 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             return false;
         }
         Character tempCharacter = selectedTile.getCharacter();
-        String attackPoints = Integer.toString(selectedCharacter.getAttackPoints());
-        lblAttackPoints.setText("Attackpoints: " + attackPoints);
+
         if (selectedCharacter != null){ //Do something with currently selected character
+            String attackPoints = Integer.toString(selectedCharacter.getAttackPoints());
+            lblAttackPoints.setText("Attackpoints: " + attackPoints);
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!gameState.moveCharacter(selectedCharacter, selectedTile, oldTerrain)){
                 if (gameState.characterAttack(selectedCharacter, selectedTile.getCharacter())){
