@@ -132,7 +132,7 @@ public class Server {
 
                     Player player = new Player("?");
                     System.out.println("Client found! Connecting...");
-                    if (game.getPlayers().size() >= 4){
+                    if (game.getPlayers().size() >= 2){
                         player.setSpectator(true);
                     }
                     game.addPlayer(player);
@@ -281,6 +281,7 @@ public class Server {
                     }
 
                     for (Player player : game.getPlayers()) {
+                        if (player.isSpectator()) continue;
                         int deadCharacters = 0;
                         for (Character character : player.getCharacters()) {
                             if (character.isDead()){
@@ -294,10 +295,10 @@ public class Server {
 
                     int position = game.getPlayers().indexOf(thisPlayer);
 
-                    if (position+1 >= game.getPlayers().size()){
-                        game.getPlayers().get(0).setHasTurn(true);
+                    if (position == 0){
+                        game.getPlayers().get(1).setHasTurn(true);
                     } else {
-                        game.getPlayers().get(position+1).setHasTurn(true);
+                        game.getPlayers().get(0).setHasTurn(true);
                     }
 
                     Server.this.sendGameMessagePlayers();
