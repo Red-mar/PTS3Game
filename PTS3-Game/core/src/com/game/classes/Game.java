@@ -42,6 +42,7 @@ public class Game
         pathing = new aStarPathing(getMap());
     }
 
+
     public Game(Server server){
         this.server = server;
         //this.server.start();
@@ -89,6 +90,10 @@ public class Game
         players.remove(temp);
     }
 
+    /**
+     * If a player needs to be removed without having a player object
+     * @param name of the player to remove
+     */
     public void removePlayer(String name){
         Player temp = null;
         for (Player current:players)
