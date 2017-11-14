@@ -130,9 +130,12 @@ public class ScreenSetup implements Screen {
         if (height < 2000){
             height += 10;
         } else {
-            height = -2000;
+            height = -1600;
         }
-        batch.draw(backgroundImage, 100,height);
+        batch.draw(backgroundImage, 100,height,400, 400);
+        batch.draw(backgroundImage, 1000,height - 500,250, 250);
+        batch.draw(backgroundImage, 600,height + 1000,600, 600);
+        batch.draw(backgroundImage, 700,height - 1000,200, 200);
         batch.end();
 
         stage.act();
