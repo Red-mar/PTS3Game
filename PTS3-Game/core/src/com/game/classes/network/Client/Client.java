@@ -39,13 +39,14 @@ public class Client {
      */
     public Client(String serverIP){
         this.serverIP = serverIP;
-
+        /*
         rmiClient = new RMIClient(serverIP, 1337);
         try {
             rmiClient.getInfo().sendMessage("test");
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        */
     }
 
     /**
