@@ -235,6 +235,9 @@ public class ScreenLobby implements Screen, GameEvents {
     @Override
     public void onStartGame() {
         addCharacter(gameState.getClientPlayer().getName());
+        if (gameState.getPlayers().get(0) == gameState.getClientPlayer()){
+            gameState.getClientPlayer().setHasTurn(true);
+        }
 
         new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
             @Override

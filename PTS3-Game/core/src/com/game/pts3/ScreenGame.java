@@ -518,7 +518,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     private synchronized void endTurn(){
         if (!gameState.getClientPlayer().hasTurn()){
-            chat.getTextField().appendText("Je bent niet aan de beurt.\n");
+            chat.getTextArea().appendText("Je bent niet aan de beurt.\n");
             return;
         }
         showMovementOptions = false;
