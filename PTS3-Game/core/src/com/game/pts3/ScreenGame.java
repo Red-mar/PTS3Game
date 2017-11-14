@@ -139,6 +139,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             stage.addActor(lblFPS);
             stage.addActor(lblPlayers);
             stage.addActor(lblCharacter);
+            stage.addActor(lblAttackPoints);
         }
         stage.addActor(btnEndTurn);
         stage.addActor(chat.getScrollPane());
