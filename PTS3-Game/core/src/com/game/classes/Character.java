@@ -252,6 +252,16 @@ public class Character implements Serializable {
         this.currentMovementPoints = currentMovementPoints;
     }
 
+    public int getAttackRange()
+    {
+        return attackRange;
+    }
+
+    public int getCurrentMovementPoints()
+    {
+        return currentMovementPoints;
+    }
+
 
     public void forceSetCurrentTerrain(Terrain terrain){
         this.currentTerrain = terrain;
