@@ -359,11 +359,11 @@ public class Game
     }
 
     public boolean moveCharacter(Character character, Terrain tile, Terrain oldTile){
-        if (tile.getY() != oldTile.getY() && tile.getX() != oldTile.getX()){
-            pathing.findPath(oldTile, tile);
+        if (tile.getY() == oldTile.getY() && tile.getX() == oldTile.getX()){
+            return false;
         }
         else {
-            return false;
+            pathing.findPath(oldTile, tile);
         }
         if (pathing.getPath().size() > character.getMovementPoints()){
             return false;
