@@ -44,6 +44,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Label lblFPS;
     private Label lblPlayers;
     private Label lblCharacter;
+    private Label lblAttackPoints;
 
     private SpriteBatch batch;
     private Sprite sprite;
@@ -130,6 +131,10 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             lblCharacter = new Label("Playeres", skin);
             lblCharacter.setPosition(10,height - 60);
             lblCharacter.setSize(100,20);
+
+            lblAttackPoints = new Label("AttackPoints: ", skin);
+            lblAttackPoints.setPosition(50, -20);
+            lblAttackPoints.setSize(100,20);
 
             stage.addActor(lblFPS);
             stage.addActor(lblPlayers);
@@ -397,9 +402,9 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             return false;
         }
         Character tempCharacter = selectedTile.getCharacter();
+        String attackPoints = Integer.toString(selectedCharacter.getAttackPoints());
+        lblAttackPoints.setText("Attackpoints: " + attackPoints);
         if (selectedCharacter != null){ //Do something with currently selected character
-            String attackPoints = Integer.toString(selectedCharacter.getAttackPoints());
-            System.out.println("AttackPoints:" + attackPoints);
             Terrain oldTerrain = selectedCharacter.getCurrentTerrain();
             if (!gameState.moveCharacter(selectedCharacter, selectedTile, oldTerrain)){
                 if (gameState.characterAttack(selectedCharacter, selectedTile.getCharacter())){
