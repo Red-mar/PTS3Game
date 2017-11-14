@@ -241,8 +241,8 @@ public class Game
                 x = (map.getTileWidth() / 2) + 5 + i;
                 y = (map.getTileHeight() / 2) + 5 + i;
             } else {
-                x = (map.getTileWidth() / 2) - 5 - i;
-                y = (map.getTileHeight() / 2) - 5 - i;
+                x = (map.getTileWidth() / 2) + 10 - i;
+                y = (map.getTileHeight() / 2) + 5 - i;
             }
             System.out.println(x + " "+ y);
             Terrain terrain = getMap().getTerrains()[x][y];
