@@ -4,6 +4,7 @@ import com.game.classes.Character;
 import com.game.classes.Game;
 import com.game.classes.Map;
 import com.game.classes.Player;
+import com.game.classes.network.Client.Client;
 import com.game.classes.network.MessageType;
 
 import java.io.*;
@@ -326,7 +327,7 @@ public class Server {
                     }
                     break;
                 case GameJoinMessage:
-                    //thisPlayer = server.clients.get(this);
+                    this.sendMessage(MessageType.GameJoinMessage);
                     break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");

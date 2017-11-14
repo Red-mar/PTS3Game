@@ -99,8 +99,8 @@ public class Client {
         }else if (userInput.startsWith("/endturn")){
             sendGameEndTurn();
         }
-        else if(userInput.startsWith("/spec")){
-
+        else if(userInput.startsWith("/join")){
+            sendGameJoin();
         }
         else {
             sendMessageAll(userInput);
@@ -429,6 +429,11 @@ public class Client {
 
                             for (GameEvents gameListener : gameListeners) {
                                 gameListener.onUpdateCharacter(x, y, charName, playerName);
+                            }
+                            break;
+                        case GameJoinMessage:
+                            for (GameEvents gameListener : gameListeners) {
+                                gameListener.onJoinGame();
                             }
                             break;
                         default:

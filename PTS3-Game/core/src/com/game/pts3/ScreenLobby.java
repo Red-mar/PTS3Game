@@ -257,6 +257,22 @@ public class ScreenLobby implements Screen, GameEvents {
     public void onEndGame() { }
 
     @Override
+    public void onJoinGame(){
+        new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
+            @Override
+            public void run() {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        game.setScreen(new ScreenGame(game, gameState, chat, manager));
+                        stage.clear();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    @Override
     public void onUpdateCharacter(int x, int y, String charName, String playerName) { }
 
     private void establishConnection() {

@@ -512,6 +512,12 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     @Override
+    public void onJoinGame(){
+        chat.getTextArea().appendText("Someone joined the game!\n");
+        alarmSound.play();
+    }
+
+    @Override
     public void onUpdateCharacter(int x, int y, String charName, String playerName) {
         gameState.forceMoveCharacter(x,y,charName,playerName);
     }
