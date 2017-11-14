@@ -303,7 +303,7 @@ public class ScreenLobby implements Screen, GameEvents {
             sound.play(volume);
             lblMap.setText("Selected map: " + fileName);
         }else{
-            chat.getTextArea().appendText("Could not load map: " + fileName);
+            chat.getTextArea().appendText("Could not load map: " + fileName + "\n");
         }
     }
 
