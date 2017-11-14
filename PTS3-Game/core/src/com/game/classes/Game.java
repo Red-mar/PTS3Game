@@ -280,8 +280,13 @@ public class Game
         getClient().sendGameMessagePlayer(clientPlayer);
     }
 
-    public void loadMap(String fileName){ //TODO zet deel in map class
-        TiledMap tiledMap = new TmxMapLoader().load(fileName);
+    public boolean loadMap(String fileName){ //TODO zet deel in map class
+        TiledMap tiledMap = null;
+        try {
+            tiledMap = new TmxMapLoader().load(fileName);
+        } catch (Exception e){
+            return false;
+        }
 
         TiledMapTileLayer tileLayer = (TiledMapTileLayer)tiledMap.getLayers().get(0);
         int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
@@ -289,21 +294,26 @@ public class Game
 
         // Add objects
         MapLayer mapLayer = tiledMap.getLayers().get("Impassable Terrain");
-        MapObjects mapObjects = mapLayer.getObjects();
-        ArrayList<RectangleMapObject> mapObjectList = new ArrayList<RectangleMapObject>();
-        for (int i = 0; i < mapObjects.getCount(); i++){
-            RectangleMapObject rmo = (RectangleMapObject) mapObjects.get(i);
-            rmo.getRectangle().setX((rmo.getRectangle().x ) / tileWidth );
-            rmo.getRectangle().setY((rmo.getRectangle().y ) / tileHeight);
-            mapObjectList.add(rmo);
+        if (mapLayer != null){
+            MapObjects mapObjects = mapLayer.getObjects();
+            ArrayList<RectangleMapObject> mapObjectList = new ArrayList<RectangleMapObject>();
+            for (int i = 0; i < mapObjects.getCount(); i++){
+                RectangleMapObject rmo = (RectangleMapObject) mapObjects.get(i);
+                rmo.getRectangle().setX((rmo.getRectangle().x ) / tileWidth );
+                rmo.getRectangle().setY((rmo.getRectangle().y ) / tileHeight);
+                mapObjectList.add(rmo);
+            }
+            map = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, mapObjectList);
+        } else {
+            map = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, null);
         }
 
-        map = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, mapObjectList);
         map.setTiledMap(tiledMap);
 
         if (getClient().isConnected() != null){
             getClient().sendGameMap(map);
         }
+        return true;
     }
 
     /**

@@ -42,10 +42,12 @@ public class ScreenLobby implements Screen, GameEvents {
     private AssetManager manager;
     private Preferences prefs;
     private float volume;
+    private String mapFile;
 
     private Label lblMap;
     private Label lblPlayerName;
     private EventListener enterText;
+    private TextField tfMap;
 
     float red = 0;
     float green = 0;
@@ -108,6 +110,10 @@ public class ScreenLobby implements Screen, GameEvents {
         btnMap.setPosition(510, 70);
         btnMap.setSize(120, 20);
 
+        tfMap = new TextField("", skin);
+        tfMap.setPosition(640, 70);
+        tfMap.setSize(120, 20);
+
         playerList = new List(skin);
         playerList.setPosition(10,350);
         playerList.setSize(250,100);
@@ -156,6 +162,7 @@ public class ScreenLobby implements Screen, GameEvents {
         stage.addActor(btnStart);
         stage.addActor(btnReady);
         stage.addActor(btnMap);
+        stage.addActor(tfMap);
 
         stage.addActor(chat.scrollPane);
         stage.addActor(chat.textField);
@@ -291,10 +298,13 @@ public class ScreenLobby implements Screen, GameEvents {
     }
 
     private void loadMap(){
-        String fileName = "map_2.tmx";
-        gameState.loadMap(fileName);
-        lblMap.setText("Selected map: " + fileName);
-        sound.play(volume);
+        String fileName = tfMap.getText() + ".tmx";
+        if (gameState.loadMap(fileName)){
+            sound.play(volume);
+            lblMap.setText("Selected map: " + fileName);
+        }else{
+            chat.getTextArea().appendText("Could not load map: " + fileName);
+        }
     }
 
     private void setReady(){
