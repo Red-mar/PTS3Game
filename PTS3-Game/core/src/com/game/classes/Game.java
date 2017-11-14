@@ -226,8 +226,9 @@ public class Game
         int enemy = 1;
         for (int i = 0; i < players.size(); i++){
             if (players.get(i).getName() == clientPlayer.getName()){
-                enemy = 2;
+                enemy = i + 1;
             }
+            if (enemy >= 3) return;
         }
         String textureFile;
         Character character;
@@ -239,8 +240,8 @@ public class Game
             int y = enemy == 1 ? ints[i] / 20 : ints[i] / 20 + 37;
             System.out.println(x + " "+ y);
             Terrain terrain = getMap().getTerrains()[x][y];
-            switch (i){
 
+            switch (i){
                 case 1:
                     textureFile = "Sprites/bowman-" + enemy + ".png";
                     texture = manager.get(textureFile, Texture.class);
