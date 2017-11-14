@@ -234,10 +234,16 @@ public class Game
         Character character;
         Texture texture;
         Sprite sprite;
-        int[] ints = new Random().ints(0,60).distinct().limit(15).toArray();
         for (int i = 0; i < 5; i ++){
-            int x = ints[i] % 20 + 10;
-            int y = enemy == 1 ? ints[i] / 20 : ints[i] / 20 + 37;
+            int x = 0;
+            int y = 0;
+            if (enemy == 1){
+                x = (map.getTileWidth() / 2) + 5 + i;
+                y = (map.getTileHeight() / 2) + 5 + i;
+            } else {
+                x = (map.getTileWidth() / 2) - 5 - i;
+                y = (map.getTileHeight() / 2) - 5 - i;
+            }
             System.out.println(x + " "+ y);
             Terrain terrain = getMap().getTerrains()[x][y];
 
