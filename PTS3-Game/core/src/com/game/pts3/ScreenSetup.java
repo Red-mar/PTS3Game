@@ -2,6 +2,7 @@ package com.game.pts3;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,8 @@ public class ScreenSetup implements Screen {
     private SpriteBatch batch;
     private Texture backgroundImage;
     private float height = -2000;
+    private float volume = 1.0f;
+    private Music music;
 
     Slider sliderVolume;
 
@@ -31,6 +34,11 @@ public class ScreenSetup implements Screen {
         this.manager = assetManager;
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
         testSound = manager.get("sound/LobbyIn.wav", Sound.class);
+        music = manager.get("bgm/bgmbase1.mp3", Music.class);
+        music.setLooping(true);
+        music.setVolume(volume);
+        music.play();
+
         skin = manager.get("data/uiskin.json", Skin.class);
         backgroundImage = new Texture(Gdx.files.internal("maan.png"));
         batch = new SpriteBatch();
@@ -66,7 +74,8 @@ public class ScreenSetup implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 String string = "?";
                 string = tfName.getText();
-                prefs.putFloat("volume", sliderVolume.getValue());
+                prefs.putFloat("volume", volume);
+                testSound.play(volume);
                 com.game.classes.Game gameState = new com.game.classes.Game(new Client(tfIP.getText()));
                 game.setScreen(new ScreenLobby(game, string, gameState, manager));
             }
@@ -98,7 +107,9 @@ public class ScreenSetup implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (!sliderVolume.isDragging()){
-                    testSound.play(sliderVolume.getValue());
+                    volume = sliderVolume.getValue();
+                    music.setVolume(volume);
+                    testSound.play(volume);
                 }
             }
         });

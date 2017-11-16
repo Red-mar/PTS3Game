@@ -516,6 +516,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 && selectedTile.getCharacter().getPlayer() == gameState.getClientPlayer()){ // Select a character if nothing is selected.
             selectedCharacter = selectedTile.getCharacter();
             showMovementOptions = true;
+            manager.get("sound/wololo.wav", Sound.class).play(volume);
         }
 
         return false;
@@ -588,9 +589,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        game.dispose();
                         stage.clear();
-                        Gdx.app.exit();
+                        game.setScreen(new ScreenEnd(game, gameState));
                     }
                 });
             }

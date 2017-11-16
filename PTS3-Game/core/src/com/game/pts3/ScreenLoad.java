@@ -48,8 +48,10 @@ public class ScreenLoad implements Screen {
         manager.load("sound/Error.wav", Sound.class);
         manager.load("sound/Heal.wav", Sound.class);
         manager.load("sound/LobbyIn.wav", Sound.class);
+        manager.load("sound/wololo.wav", Sound.class);
 
         manager.load("bgm/bgmbase1.mp3", Music.class);
+        manager.load("bgm/battlebase1.mp3", Music.class);
 
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         lblProgress = new Label("0/100", skin);

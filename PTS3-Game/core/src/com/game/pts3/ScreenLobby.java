@@ -5,6 +5,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -31,7 +33,6 @@ import java.util.ArrayList;
 public class ScreenLobby implements Screen, GameEvents {
     private Game game;
     private com.game.classes.Game gameState;
-    //private Player clientPlayer;
     private Stage stage;
     private Skin skin;
     private Chat chat;
@@ -42,15 +43,16 @@ public class ScreenLobby implements Screen, GameEvents {
     private AssetManager manager;
     private Preferences prefs;
     private float volume;
-    private String mapFile;
 
     private Label lblMap;
     private Label lblPlayerName;
     private EventListener enterText;
     private TextField tfMap;
+    private SpriteBatch batch;
 
     float red = 0;
     float green = 0;
+    float width = -2000;
 
     public ScreenLobby(Game game, String name, com.game.classes.Game gameState, AssetManager assetManager){
         this.game = game;
@@ -60,13 +62,11 @@ public class ScreenLobby implements Screen, GameEvents {
         this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
         volume = prefs.getFloat("volume");
         stage = new Stage();
+        batch = new SpriteBatch();
         skin = manager.get("data/uiskin.json", Skin.class);
         sound = manager.get("sound/LobbyIn.wav", Sound.class);
         errorSound = manager.get("sound/Error.wav", Sound.class);
-        music = manager.get("bgm/bgmbase1.mp3", Music.class);
-        music.setLooping(true);
-        music.setVolume(volume);
-        music.play();
+        music = manager.get("bgm/battlebase1.mp3", Music.class);
 
         TextArea t = new TextArea("Welcome to the game lobby!\nHere you can chat with fellow players.\n", skin);
         chat = new Chat(t,
@@ -184,6 +184,14 @@ public class ScreenLobby implements Screen, GameEvents {
         Gdx.gl.glClearColor(red, green, 0.343f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        batch.begin();
+        batch.draw(manager.get("Sprites/wizard-1.png", Texture.class), width + 1800, 400, 150, 150);
+        batch.draw(manager.get("Sprites/bowman-2.png", Texture.class), width + 1400, 300, 150, 150);
+        batch.draw(manager.get("Sprites/heavy-1.png", Texture.class), width + 1000, 100, 150, 150);
+        batch.draw(manager.get("Sprites/horseman-2.png", Texture.class), width + 600, 200, 150, 150);
+        batch.draw(manager.get("Sprites/swordsman-1.png", Texture.class), width + 200, 500, 150, 150);
+        batch.end();
+
         stage.act();
         stage.draw();
 
@@ -198,10 +206,15 @@ public class ScreenLobby implements Screen, GameEvents {
         }
         if(Gdx.input.isKeyPressed(Input.Keys.UP) && green < 0.9f){
             green+= 0.01f;
-
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             enterText.handle(new ChangeListener.ChangeEvent());
+        }
+
+        if (width < Gdx.graphics.getWidth() + 100){
+            width += 1;
+        } else {
+            width = -2000;
         }
     }
 
@@ -247,6 +260,11 @@ public class ScreenLobby implements Screen, GameEvents {
                 gameState.getClientPlayer().setHasTurn(true);
             }
         }
+
+        manager.get("bgm/bgmbase1.mp3", Music.class).dispose();
+        music.setVolume(volume);
+        music.setLooping(true);
+        music.play();
 
         new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
             @Override
@@ -334,9 +352,9 @@ public class ScreenLobby implements Screen, GameEvents {
                 chat.textArea.appendText("Niet iedereen is READY.\n");
                 return;
             }
-            System.out.println("Game Starting ...");
-            sound.play(volume);
         }
+        System.out.println("Game Starting ...");
+        sound.play(volume);
         gameState.getClient().sendGameStart();
     }
 
