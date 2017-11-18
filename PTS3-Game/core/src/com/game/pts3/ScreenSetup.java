@@ -22,7 +22,6 @@ public class ScreenSetup implements Screen {
     final private AssetManager manager;
     private SpriteBatch batch;
     private Texture backgroundImage;
-    private float height = -2000;
     private float volume = 1.0f;
     private Music music;
 
@@ -40,7 +39,7 @@ public class ScreenSetup implements Screen {
         music.play();
 
         skin = manager.get("data/uiskin.json", Skin.class);
-        backgroundImage = new Texture(Gdx.files.internal("maan.png"));
+        backgroundImage = manager.get("gridscape_title.jpg", Texture.class);
         batch = new SpriteBatch();
         /**
          * Labels
@@ -138,15 +137,7 @@ public class ScreenSetup implements Screen {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
         batch.begin();
-        if (height < 2000){
-            height += 10;
-        } else {
-            height = -1600;
-        }
-        batch.draw(backgroundImage, 100,height,400, 400);
-        batch.draw(backgroundImage, 1000,height - 500,250, 250);
-        batch.draw(backgroundImage, 600,height + 1000,600, 600);
-        batch.draw(backgroundImage, 700,height - 1000,200, 200);
+        batch.draw(backgroundImage, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
         stage.act();

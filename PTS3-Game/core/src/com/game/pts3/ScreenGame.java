@@ -2,6 +2,7 @@ package com.game.pts3;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -23,6 +24,7 @@ import com.game.classes.Character;
 import com.game.classes.Pathfinder;
 import com.game.classes.Player;
 import com.game.classes.Terrain;
+import com.game.classes.network.Client.Client;
 import com.game.classes.network.GameEvents;
 
 import java.util.ArrayList;
@@ -583,14 +585,19 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void onEndGame() {
+
         new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
             @Override
             public void run() {
                 Gdx.app.postRunnable(new Runnable() {
                     @Override
                     public void run() {
+                        game.setScreen(new ScreenLobby(game, gameState.getClientPlayer().getName(),
+                                new com.game.classes.Game(new Client(gameState.getClient().getServerIP()))
+                                , manager));
+                        manager.get("bgm/battlebase1.mp3", Music.class).dispose();
+                        manager.get("bgm/bgmbase1.mp3", Music.class).play();
                         stage.clear();
-                        game.setScreen(new ScreenEnd(game, gameState));
                     }
                 });
             }

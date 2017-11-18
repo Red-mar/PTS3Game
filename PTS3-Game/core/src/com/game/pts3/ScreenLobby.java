@@ -185,6 +185,7 @@ public class ScreenLobby implements Screen, GameEvents {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+        batch.draw(manager.get("gridscape_title.jpg", Texture.class), 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.draw(manager.get("Sprites/wizard-1.png", Texture.class), width + 1800, 400, 150, 150);
         batch.draw(manager.get("Sprites/bowman-2.png", Texture.class), width + 1400, 300, 150, 150);
         batch.draw(manager.get("Sprites/heavy-1.png", Texture.class), width + 1000, 100, 150, 150);

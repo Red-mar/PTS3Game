@@ -33,6 +33,10 @@ public class Client {
         isConnected = connected;
     }
 
+    public String getServerIP() {
+        return serverIP;
+    }
+
     /**
      * Creates a client that will make a connection with a server.
      * @param serverIP The IP the server is running on. (use localhost for local use.)
@@ -96,7 +100,7 @@ public class Client {
             sendMessageGetPlayers();
         }
         else if (userInput.startsWith("/close")){ /* WARNING EXPERIMENTAL */
-            connectionHandler.close();
+            sendGameEnd();
         }else if (userInput.startsWith("/endturn")){
             sendGameEndTurn();
         }
@@ -201,6 +205,12 @@ public class Client {
     public void sendGameStart(){
         connectionHandler.sendMessage(
                 MessageType.GameStartMessage);
+    }
+
+    public void sendGameEnd(){
+        connectionHandler.sendMessage(
+                MessageType.GameEndMessage
+        );
     }
 
     public void sendGameJoin(){

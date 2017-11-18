@@ -33,10 +33,10 @@ public class Server {
     }
 
     public void stop(){
-        serverManager.acceptingClients = false;
         for (ConnectionHandler client :clients.keySet()) {
             client.close();
         }
+        clients = new HashMap<ConnectionHandler, Player>();
     }
 
     /**
@@ -329,6 +329,10 @@ public class Server {
                     break;
                 case GameJoinMessage:
                     this.sendMessage(MessageType.GameJoinMessage);
+                    break;
+                case GameEndMessage:
+                    sendGameEnd();
+                    Server.this.stop();
                     break;
                 default: /** I DON'T KNOW **/
                     System.out.println("I DON'T KNOW");
