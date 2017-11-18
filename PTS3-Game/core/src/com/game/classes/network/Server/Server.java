@@ -34,7 +34,7 @@ public class Server {
     }
 
     public void stop(){
-        clients.clear();
+        clients = new HashMap<ConnectionHandler, Player>();
         serverManager.game.setPlayers(new ArrayList<Player>());
     }
 
@@ -294,7 +294,7 @@ public class Server {
 
                     int position = game.getPlayers().indexOf(thisPlayer);
 
-                    if (position == 0){
+                    if (position == 0 && game.getPlayers().size() >= 2){
                         game.getPlayers().get(1).setHasTurn(true);
                     } else {
                         game.getPlayers().get(0).setHasTurn(true);
