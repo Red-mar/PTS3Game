@@ -7,10 +7,12 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.game.classes.network.Client.Client;
 
 public class ScreenSetup implements Screen {
@@ -22,6 +24,8 @@ public class ScreenSetup implements Screen {
     final private AssetManager manager;
     private SpriteBatch batch;
     private Texture backgroundImage;
+    private float backgroundWidth;
+    private float backgroundHeight;
     private float volume = 1.0f;
     private Music music;
 
@@ -40,6 +44,8 @@ public class ScreenSetup implements Screen {
 
         skin = manager.get("data/uiskin.json", Skin.class);
         backgroundImage = manager.get("gridscape_title.jpg", Texture.class);
+        backgroundHeight = Gdx.graphics.getHeight();
+        backgroundWidth = Gdx.graphics.getWidth();
         batch = new SpriteBatch();
         /**
          * Labels
@@ -137,7 +143,7 @@ public class ScreenSetup implements Screen {
         Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
         batch.begin();
-        batch.draw(backgroundImage, 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(backgroundImage, 0,0,backgroundWidth, backgroundHeight);
         batch.end();
 
         stage.act();
@@ -146,6 +152,8 @@ public class ScreenSetup implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        //backgroundWidth = width;
+        //backgroundHeight = height;
         stage.getViewport().update(width,height,true);
     }
 

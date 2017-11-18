@@ -34,6 +34,9 @@ public class Server {
     }
 
     public void stop(){
+        for (ConnectionHandler connectionHandler : clients.keySet()) {
+            connectionHandler.close();
+        }
         clients = new HashMap<ConnectionHandler, Player>();
         serverManager.game.setPlayers(new ArrayList<Player>());
     }

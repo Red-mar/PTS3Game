@@ -595,7 +595,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                         game.setScreen(new ScreenLobby(game, gameState.getClientPlayer().getName(),
                                 new com.game.classes.Game(new Client(gameState.getClient().getServerIP()))
                                 , manager));
-                        manager.get("bgm/battlebase1.mp3", Music.class).dispose();
+                        manager.get("bgm/battlebase1.mp3", Music.class).stop();
                         manager.get("bgm/bgmbase1.mp3", Music.class).play();
                         stage.clear();
                     }

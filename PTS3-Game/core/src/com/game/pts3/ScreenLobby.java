@@ -262,7 +262,7 @@ public class ScreenLobby implements Screen, GameEvents {
             }
         }
 
-        manager.get("bgm/bgmbase1.mp3", Music.class).dispose();
+        manager.get("bgm/bgmbase1.mp3", Music.class).stop();
         music.setVolume(volume);
         music.setLooping(true);
         music.play();
