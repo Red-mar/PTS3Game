@@ -25,8 +25,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
+import com.badlogic.gdx.utils.Timer;
 import com.game.classes.Map;
 import com.game.classes.Player;
+import com.game.classes.network.Client.Client;
 import com.game.classes.network.GameEvents;
 import java.util.ArrayList;
 
@@ -263,22 +265,21 @@ public class ScreenLobby implements Screen, GameEvents {
         }
 
         manager.get("bgm/bgmbase1.mp3", Music.class).stop();
-        music.setVolume(volume);
-        music.setLooping(true);
-        music.play();
+        chat.getTextArea().appendText("Starting the game...\n");
 
-        new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
+        Timer timer = new Timer();
+        Timer.Task task = new Timer.Task() {
             @Override
             public void run() {
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        game.setScreen(new ScreenGame(game, gameState, chat, manager));
-                        stage.clear();
-                    }
-                });
+                music.setVolume(volume);
+                music.setLooping(true);
+                music.play();
+
+                game.setScreen(new ScreenGame(game, gameState, chat, manager));
+                stage.clear();
             }
-        }).start();
+        };
+        timer.scheduleTask(task, 2f);
     }
 
     @Override

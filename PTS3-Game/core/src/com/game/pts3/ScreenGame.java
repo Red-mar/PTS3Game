@@ -20,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.game.classes.Character;
 import com.game.classes.Pathfinder;
 import com.game.classes.Player;
@@ -585,23 +587,20 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void onEndGame() {
-
-        new Thread(new Runnable() { //Need to start the game on the open gl thread. so yeah..
+        chat.getTextArea().appendText("Ending the game...\n");
+        manager.get("bgm/battlebase1.mp3", Music.class).stop();
+        Timer timer = new Timer();
+        Task task = new Task() {
             @Override
             public void run() {
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        game.setScreen(new ScreenLobby(game, gameState.getClientPlayer().getName(),
-                                new com.game.classes.Game(new Client(gameState.getClient().getServerIP()))
-                                , manager));
-                        manager.get("bgm/battlebase1.mp3", Music.class).stop();
-                        manager.get("bgm/bgmbase1.mp3", Music.class).play();
-                        stage.clear();
-                    }
-                });
+                game.setScreen(new ScreenLobby(game, gameState.getClientPlayer().getName(),
+                        new com.game.classes.Game(new Client(gameState.getClient().getServerIP()))
+                        , manager));
+                manager.get("bgm/bgmbase1.mp3", Music.class).play();
+                stage.clear();
             }
-        }).start();
+        };
+        timer.scheduleTask(task, 2f);
     }
 
     @Override
