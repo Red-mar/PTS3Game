@@ -45,6 +45,8 @@ public class ScreenLobby implements Screen, GameEvents {
     private AssetManager manager;
     private Preferences prefs;
     private float volume;
+    private float backgroundWidth;
+    private float backgroundHeight;
 
     private Label lblMap;
     private Label lblPlayerName;
@@ -69,6 +71,8 @@ public class ScreenLobby implements Screen, GameEvents {
         sound = manager.get("sound/LobbyIn.wav", Sound.class);
         errorSound = manager.get("sound/Error.wav", Sound.class);
         music = manager.get("bgm/battlebase1.mp3", Music.class);
+        backgroundHeight = Gdx.graphics.getHeight();
+        backgroundWidth = Gdx.graphics.getWidth();
 
         TextArea t = new TextArea("Welcome to the game lobby!\nHere you can chat with fellow players.\n", skin);
         chat = new Chat(t,
@@ -187,7 +191,7 @@ public class ScreenLobby implements Screen, GameEvents {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(manager.get("gridscape_title.jpg", Texture.class), 0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(manager.get("gridscape_title.jpg", Texture.class), 0,0,backgroundWidth, backgroundHeight);
         batch.draw(manager.get("Sprites/wizard-1.png", Texture.class), width + 1800, 400, 150, 150);
         batch.draw(manager.get("Sprites/bowman-2.png", Texture.class), width + 1400, 300, 150, 150);
         batch.draw(manager.get("Sprites/heavy-1.png", Texture.class), width + 1000, 100, 150, 150);
