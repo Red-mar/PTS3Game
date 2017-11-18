@@ -10,6 +10,7 @@ import com.game.classes.network.MessageType;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -33,10 +34,8 @@ public class Server {
     }
 
     public void stop(){
-        for (ConnectionHandler client :clients.keySet()) {
-            client.close();
-        }
-        clients = new HashMap<ConnectionHandler, Player>();
+        clients.clear();
+        serverManager.game.setPlayers(new ArrayList<Player>());
     }
 
     /**
