@@ -54,8 +54,6 @@ public class ScreenLobby implements Screen, GameEvents {
     private TextField tfMap;
     private SpriteBatch batch;
 
-    float red = 0;
-    float green = 0;
     float width = -2000;
 
     public ScreenLobby(Game game, String name, com.game.classes.Game gameState, AssetManager assetManager){
@@ -184,42 +182,30 @@ public class ScreenLobby implements Screen, GameEvents {
 
     @Override
     public void render(float delta) {
-        /**
-         * Clears the screen.
-         */
-        Gdx.gl.glClearColor(red, green, 0.343f, 1);
+        Gdx.gl.glClearColor(1f, 1f, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
         batch.draw(manager.get("gridscape_title.jpg", Texture.class), 0,0,backgroundWidth, backgroundHeight);
-        batch.draw(manager.get("Sprites/wizard-1.png", Texture.class), width + 1800, 400, 150, 150);
-        batch.draw(manager.get("Sprites/bowman-2.png", Texture.class), width + 1400, 300, 150, 150);
-        batch.draw(manager.get("Sprites/heavy-1.png", Texture.class), width + 1000, 100, 150, 150);
-        batch.draw(manager.get("Sprites/horseman-2.png", Texture.class), width + 600, 200, 150, 150);
-        batch.draw(manager.get("Sprites/swordsman-1.png", Texture.class), width + 200, 500, 150, 150);
+        batch.draw(manager.get("Sprites/wizard-1.png", Texture.class), width + 1800, backgroundHeight * 0.5f, 150, 150);
+        batch.draw(manager.get("Sprites/bowman-2.png", Texture.class), width + 1400, backgroundHeight * 0.4f, 150, 150);
+        batch.draw(manager.get("Sprites/heavy-1.png", Texture.class), width + 1000, backgroundHeight * 0.8f, 150, 150);
+        batch.draw(manager.get("Sprites/horseman-2.png", Texture.class), width + 600, backgroundHeight * 0.2f, 150, 150);
+        batch.draw(manager.get("Sprites/swordsman-1.png", Texture.class), width + 200, backgroundHeight * 0.7f, 150, 150);
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
+            batch.draw(manager.get("maan.png", Texture.class), width, backgroundHeight * 0.5f, 200, 300);
+        }
         batch.end();
 
         stage.act();
         stage.draw();
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && red > 0.1f){
-            red-= 0.01f;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && red < 0.9f){
-            red+= 0.01f;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && green > 0.1f){
-            green-= 0.01f;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.UP) && green < 0.9f){
-            green+= 0.01f;
-        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             enterText.handle(new ChangeListener.ChangeEvent());
         }
 
         if (width < Gdx.graphics.getWidth() + 100){
-            width += 1;
+            width += 0.01f / delta;
         } else {
             width = -2000;
         }
@@ -268,22 +254,27 @@ public class ScreenLobby implements Screen, GameEvents {
             }
         }
 
-        manager.get("bgm/bgmbase1.mp3", Music.class).stop();
-        chat.getTextArea().appendText("Starting the game...\n");
-
-        Timer timer = new Timer();
-        Timer.Task task = new Timer.Task() {
+        Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                music.setVolume(volume);
-                music.setLooping(true);
-                music.play();
+                manager.get("bgm/bgmbase1.mp3", Music.class).stop();
+                chat.getTextArea().appendText("Starting the game...\n");
 
-                game.setScreen(new ScreenGame(game, gameState, chat, manager));
-                stage.clear();
+                Timer timer = new Timer();
+                Timer.Task task = new Timer.Task() {
+                    @Override
+                    public void run() {
+                        music.setVolume(volume);
+                        music.setLooping(true);
+                        music.play();
+
+                        game.setScreen(new ScreenGame(game, gameState, chat, manager));
+                        stage.clear();
+                    }
+                };
+                timer.scheduleTask(task, 2f);
             }
-        };
-        timer.scheduleTask(task, 2f);
+        });
     }
 
     @Override

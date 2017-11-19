@@ -587,20 +587,25 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void onEndGame() {
-        chat.getTextArea().appendText("Ending the game...\n");
-        manager.get("bgm/battlebase1.mp3", Music.class).stop();
-        Timer timer = new Timer();
-        Task task = new Task() {
+        Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                game.setScreen(new ScreenLobby(game, gameState.getClientPlayer().getName(),
-                        new com.game.classes.Game(new Client(gameState.getClient().getServerIP()))
-                        , manager));
-                manager.get("bgm/bgmbase1.mp3", Music.class).play();
-                stage.clear();
+                chat.getTextArea().appendText("Ending the game...\n");
+                manager.get("bgm/battlebase1.mp3", Music.class).stop();
+                Timer timer = new Timer();
+                Task task = new Task() {
+                    @Override
+                    public void run() {
+                        game.setScreen(new ScreenLobby(game, gameState.getClientPlayer().getName(),
+                                new com.game.classes.Game(new Client(gameState.getClient().getServerIP()))
+                                , manager));
+                        manager.get("bgm/bgmbase1.mp3", Music.class).play();
+                        stage.clear();
+                    }
+                };
+                timer.scheduleTask(task, 2f);
             }
-        };
-        timer.scheduleTask(task, 2f);
+        });
     }
 
     @Override
