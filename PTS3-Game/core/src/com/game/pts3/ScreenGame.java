@@ -57,7 +57,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private Label lblCharName;
     private Label lblRange;
     private Label lblMovement;
-
+    private Sprite statSprite;
+    private SpriteBatch statSb;
 
     private SpriteBatch batch;
     private Sprite sprite;
@@ -179,6 +180,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             //range label
             lblRange = new Label("range", skin);
 
+            statSb = new SpriteBatch();
+            statSprite = new Sprite();
 
             charWindow.add(lblCharName);
             charWindow.row();
@@ -197,6 +200,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
             charWindow.add(lblMovement);
             charWindow.row();
+
+
 
             stage.addActor(charWindow);
 
@@ -274,6 +279,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
                 String movement = "Movement: " + Integer.toString(selectedCharacter.getCurrentMovementPoints()) + "/" + Integer.toString(selectedCharacter.getMovementPoints());
                 lblMovement.setText(movement);
+
+
             }
             else
             {
@@ -390,6 +397,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }
         batch.end();
 
+
         /**
          * UI
          */
@@ -397,6 +405,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         stage.draw();
 
         moveCamera();
+
+        if(selectedCharacter != null)
+        {
+            statSprite = selectedCharacter.getSprite();
+            statSb.begin();
+            statSb.draw(statSprite,charWindow.getX(),charWindow.getY() - charWindow.getHeight(), statSprite.getHeight() *10, statSprite.getWidth()*10);
+            statSb.end();
+        }
     }
 
     @Override
