@@ -1,14 +1,14 @@
 package com.game.pts3;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.game.classes.Player;
@@ -21,13 +21,16 @@ public class ScreenEnd implements Screen {
     private Game game;
     private com.game.classes.Game gameState;
     private Screen lastScreen;
-    private GameEvents lastScreenEvents;
+    private float volume = 1.0f;
+    private Slider sliderVolume;
+    private Preferences prefs;
 
-    public ScreenEnd(final Game game, com.game.classes.Game gameState, AssetManager manager, Screen lastScreen) {
+    public ScreenEnd(final Game game, com.game.classes.Game gameState, final AssetManager manager, Screen lastScreen) {
         stage = new Stage();
         this.game = game;
         this.gameState = gameState;
         this.lastScreen = lastScreen;
+        this.prefs = Gdx.app.getPreferences("PTS3GamePreferences");
         Skin skin = manager.get("data/uiskin.json", Skin.class);
 
         TextButton endGameButton = new TextButton("Exit the game", skin);
@@ -37,7 +40,7 @@ public class ScreenEnd implements Screen {
                 endGame();
             }
         });
-        endGameButton.setPosition((Gdx.graphics.getWidth() / 2f) - (250 / 2), (Gdx.graphics.getHeight() / 5f) * 2);
+        endGameButton.setPosition((Gdx.graphics.getWidth() / 2f) - (250 / 2), (Gdx.graphics.getHeight() / 5f));
         endGameButton.setSize(250, 50);
 
         TextButton returnButton = new TextButton("Return to the game", skin);
@@ -47,11 +50,28 @@ public class ScreenEnd implements Screen {
                 returnGame();
             }
         });
-        returnButton.setPosition((Gdx.graphics.getWidth() / 2f) - (250 / 2), (Gdx.graphics.getHeight() / 5f));
+        returnButton.setPosition((Gdx.graphics.getWidth() / 2f) - (250 / 2), (Gdx.graphics.getHeight() / 5f)* 2);
         returnButton.setSize(250, 50);
+
+        sliderVolume = new Slider(0f,1f,0.01f,false,skin);
+        sliderVolume.setPosition((Gdx.graphics.getWidth()/2f)-(250/2),(Gdx.graphics.getHeight()/5f) * 3);
+        sliderVolume.setSize(250f, 20f);
+        sliderVolume.setValue(prefs.getFloat("volume"));
+        sliderVolume.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (!sliderVolume.isDragging()){
+                    volume = sliderVolume.getValue();
+                    manager.get("sound/LobbyIn.wav", Sound.class).play(volume);
+                    manager.get("bgm/battlebase1.mp3", Music.class).setVolume(volume);
+                    prefs.putFloat("volume", volume);
+                }
+            }
+        });
 
         stage.addActor(endGameButton);
         stage.addActor(returnButton);
+        stage.addActor(sliderVolume);
     }
 
     @Override
