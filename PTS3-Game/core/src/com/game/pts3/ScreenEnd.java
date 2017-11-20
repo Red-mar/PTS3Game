@@ -64,10 +64,6 @@ public class ScreenEnd implements Screen {
         Gdx.gl.glClearColor(0f, 0f, 0.343f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
-            returnGame();
-        }
-
         stage.act();
         stage.draw();
     }

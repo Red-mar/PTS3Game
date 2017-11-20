@@ -433,7 +433,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         if (keycode == Input.Keys.NUM_4){
             showPathing = !showPathing;
         }
-        if (keycode == Input.Keys.P){
+        if (keycode == Input.Keys.P || keycode == Input.Keys.ESCAPE){
             Screen pauseScreen = new ScreenEnd(game, gameState, manager,game.getScreen());
             game.setScreen(pauseScreen);
             pauseScreen.show();
