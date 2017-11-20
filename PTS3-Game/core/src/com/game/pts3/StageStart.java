@@ -32,7 +32,7 @@ public class StageStart extends Game {
 
         //tiledMap = new TmxMapLoader().load("data/maps/???");
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 40, 30);
+        camera.setToOrtho(false, 16, 9);
         camera.update();
 
         this.setScreen(new ScreenLoad(this));
