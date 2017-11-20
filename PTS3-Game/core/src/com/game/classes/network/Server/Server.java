@@ -388,7 +388,7 @@ public class Server {
                 ObjectOutputStream os = new ObjectOutputStream(bOut);
                 os.writeObject(object);
                 out.writeInt(bOut.size()); //mLength
-                out.write(bOut.toByteArray());
+                out.write(bOut.toByteArray(), 0, bOut.size());
                 out.flush();
             } catch (Exception e){
                 e.printStackTrace();
