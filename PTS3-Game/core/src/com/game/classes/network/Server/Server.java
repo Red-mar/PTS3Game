@@ -70,8 +70,11 @@ public class Server {
      * Updates the players for all clients
      */
     public void sendGameMessagePlayers(){
+        ArrayList<Player> players = serverManager.game.getPlayers();
+
         for (ConnectionHandler client: clients.keySet()) {
-            client.sendObjectMessage(MessageType.GameSendPlayersMessage, serverManager.game.getPlayers());
+            client.sendObjectMessage(MessageType.GameSendPlayersMessage, players);
+            System.out.println(players.size());
         }
     }
 

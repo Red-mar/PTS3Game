@@ -235,6 +235,10 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void show() {
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
@@ -428,7 +432,15 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             gameState.getMap().getTiledMap().getLayers().get(1).setVisible(!gameState.getMap().getTiledMap().getLayers().get(1).isVisible());
         if (keycode == Input.Keys.NUM_4){
             showPathing = !showPathing;
-        }return false;
+        }
+        if (keycode == Input.Keys.P){
+            Screen pauseScreen = new ScreenEnd(game, gameState, manager,game.getScreen());
+            game.setScreen(pauseScreen);
+            pauseScreen.show();
+
+        }
+
+        return false;
     }
 
     public void moveCamera(){
