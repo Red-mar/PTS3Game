@@ -203,6 +203,11 @@ public class ScreenLobby implements Screen, GameEvents {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
             enterText.handle(new ChangeListener.ChangeEvent());
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+            try {
+                gameState.getClient().stop();
+            } catch (NullPointerException e){
+
+            }
             game.setScreen(new ScreenSetup(game, manager));
         }
 
