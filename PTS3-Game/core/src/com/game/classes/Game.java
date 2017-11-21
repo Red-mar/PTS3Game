@@ -15,6 +15,7 @@ import com.game.classes.network.GameEvents;
 import com.game.classes.network.Server.Server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class Game
@@ -28,6 +29,9 @@ public class Game
     private Player clientPlayer;
 
     private aStarPathing pathing;
+
+    private ArrayList<RectangleMapObject> spawnBlueList;
+    private ArrayList<RectangleMapObject> spawnRedList;
 
     /**
      * The game.
@@ -237,12 +241,15 @@ public class Game
         for (int i = 0; i < 5; i ++){
             int x = 0;
             int y = 0;
+            //Player Blue
             if (enemy == 1){
-                x = (map.getTileWidth() / 2) + 5 + i;
-                y = (map.getTileHeight() / 2) + 5 + i;
-            } else {
-                x = (map.getTileWidth() / 2) + 10 - i;
-                y = (map.getTileHeight() / 2) + 5 - i;
+                x = (int) spawnBlueList.get(i).getRectangle().x;
+                y = (int) spawnBlueList.get(i).getRectangle().y;
+            }
+            //Player Red
+            else {
+                x = (int) spawnRedList.get(i).getRectangle().x;
+                y = (int) spawnRedList.get(i).getRectangle().y;
             }
             System.out.println(x + " "+ y);
             Terrain terrain = getMap().getTerrains()[x][y];
@@ -298,15 +305,14 @@ public class Game
         int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
         int tileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
 
-        // Add objects
+        // Add Impassable Terrain
         MapLayer mapLayer = tiledMap.getLayers().get("Impassable Terrain");
         if (mapLayer != null){
             MapObjects mapObjects = mapLayer.getObjects();
             ArrayList<RectangleMapObject> mapObjectList = new ArrayList<RectangleMapObject>();
             for (int i = 0; i < mapObjects.getCount(); i++){
                 RectangleMapObject rmo = (RectangleMapObject) mapObjects.get(i);
-                rmo.getRectangle().setX((rmo.getRectangle().x ) / tileWidth );
-                rmo.getRectangle().setY((rmo.getRectangle().y ) / tileHeight);
+                fixRectangleObject(rmo, tileWidth, tileHeight);
                 mapObjectList.add(rmo);
             }
             map = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, mapObjectList);
@@ -314,12 +320,42 @@ public class Game
             map = new Map(tileLayer.getWidth(), tileLayer.getHeight(), tileHeight, tileWidth, null);
         }
 
+        //Add Spawn Positions
+        MapLayer spawnBlue = tiledMap.getLayers().get("SpawnBlue");
+        if (spawnBlue != null){
+            spawnBlueList = getSpawnFromTiledMap(spawnBlue, tileWidth, tileHeight);
+            Collections.shuffle(spawnBlueList);
+        }
+
+        MapLayer spawnRed = tiledMap.getLayers().get("SpawnRed");
+        if (spawnRed != null){
+            spawnRedList = getSpawnFromTiledMap(spawnRed, tileWidth, tileHeight);
+            Collections.shuffle(spawnRedList);
+        }
+
+
         map.setTiledMap(tiledMap);
 
         if (getClient().isConnected() != null){
             getClient().sendGameMap(map);
         }
         return true;
+    }
+
+    private ArrayList<RectangleMapObject> getSpawnFromTiledMap(MapLayer mapLayer, int tileWidth, int tileHeight){
+        MapObjects spawnPos = mapLayer.getObjects();
+        ArrayList<RectangleMapObject> spawnPosList = new ArrayList<RectangleMapObject>();
+        for (int i = 0; i < spawnPos.getCount(); i ++){
+            RectangleMapObject rmo = (RectangleMapObject) spawnPos.get(i);
+            fixRectangleObject(rmo, tileWidth, tileHeight);
+            spawnPosList.add(rmo);
+        }
+        return spawnPosList;
+    }
+
+    private void fixRectangleObject(RectangleMapObject rmo, int tileWidth, int tileHeight){
+        rmo.getRectangle().setX((rmo.getRectangle().x ) / tileWidth );
+        rmo.getRectangle().setY((rmo.getRectangle().y ) / tileHeight);
     }
 
     /**
