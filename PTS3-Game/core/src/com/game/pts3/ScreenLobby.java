@@ -267,7 +267,7 @@ public class ScreenLobby implements Screen, GameEvents {
                 manager.get("bgm/bgmbase1.mp3", Music.class).stop();
                 chat.getTextArea().appendText("Starting the game...\n");
 
-                Timer timer = new Timer();
+                final Timer timer = new Timer();
                 Timer.Task task = new Timer.Task() {
                     @Override
                     public void run() {
@@ -277,6 +277,7 @@ public class ScreenLobby implements Screen, GameEvents {
 
                         game.setScreen(new ScreenGame(game, gameState, chat, manager));
                         stage.clear();
+                        this.cancel();
                     }
                 };
                 timer.scheduleTask(task, 2f);
@@ -307,7 +308,7 @@ public class ScreenLobby implements Screen, GameEvents {
     public void onUpdateCharacter(int x, int y, String charName, String playerName) { }
 
     private void establishConnection() {
-        if(gameState.establishConnection(gameState.getClientPlayer().getName())){
+        if(gameState.getClient().isConnected() == null && gameState.establishConnection(gameState.getClientPlayer().getName())){
             gameState.getClient().addGameListener(this);
             sound.play(volume);
         } else {
@@ -354,6 +355,13 @@ public class ScreenLobby implements Screen, GameEvents {
         for (Player player:gameState.getPlayers()) {
             if (!player.isReady()) {
                 chat.textArea.appendText("Niet iedereen is READY.\n");
+                return;
+            }
+            if (player.getCharacters().size() > 0){
+                gameState.getClient().sendGameJoin();
+                if (!gameState.getClientPlayer().isSpectator()){
+                    gameState.generateCharacters(gameState.getClientPlayer().getName(), manager);
+                }
                 return;
             }
         }
