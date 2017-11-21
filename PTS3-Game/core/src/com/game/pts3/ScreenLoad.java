@@ -41,7 +41,7 @@ public class ScreenLoad implements Screen {
     private float green = 1f;
 
     public ScreenLoad(final Game game){
-        logo = new Texture(Gdx.files.internal("maan.png"));
+        logo = new Texture(Gdx.files.internal("AALogo.png"));
         loadingMusic = Gdx.audio.newMusic(Gdx.files.internal("bgm/loadbase1.mp3"));
         loadingMusic.play();
         manager = new AssetManager();
@@ -98,7 +98,7 @@ public class ScreenLoad implements Screen {
         } else {
             batch.begin();
             batch.setColor(red,green,1f, logoFade);
-            batch.draw(logo, Gdx.graphics.getWidth() / 4.0f,Gdx.graphics.getHeight() / 8.0f, 500, 600);
+            batch.draw(logo, Gdx.graphics.getWidth() / 4.0f,Gdx.graphics.getHeight() / 8.0f);
             batch.end();
         }
     }
