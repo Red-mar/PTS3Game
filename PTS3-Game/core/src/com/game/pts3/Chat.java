@@ -31,18 +31,6 @@ public class Chat implements ChatEvents {
         this.textField = textField;
         this.btnSendMessage = textButton;
         this.curseWords = new ArrayList<String>();
-
-        try {
-            File file = new File("data/swearWords.txt");
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                // \\s+ means any number of whitespaces between tokens
-                curseWords.add(line);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public TextArea getTextArea() {
@@ -89,5 +77,23 @@ public class Chat implements ChatEvents {
             );
         }
         return sb.toString();
+    }
+
+    private void readFile(){
+        File file = new File("data/swearWords.txt");
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        String line = null;
+
+        try {
+            while ((line = br.readLine()) != null) {
+                // \\s+ means any number of whitespaces between tokens
+                curseWords.add(line);
+            }
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("Finished reading file.");
+        }
     }
 }
