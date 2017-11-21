@@ -43,6 +43,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private TiledMapRenderer renderer;
 
     private Chat chat;
+    private boolean inChat;
     private Label lblFPS;
     private Label lblPlayers;
     private Label lblCharacter;
@@ -104,6 +105,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         gameState.addGameListener(this);
         gameState.getPathing().setMap(gameState.getMap());
         this.chat = chat;
+        inChat = false;
         this.game = game;
 
         selectedTile = gameState.getMap().getTerrains()[0][0];
@@ -209,16 +211,19 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
 
 
-
-
-
         stage.addActor(btnEndTurn);
         stage.addActor(chat.getScrollPane());
         stage.addActor(chat.getTextField());
         stage.addActor(chat.getBtnSendMessage());
         stage.getRoot().addCaptureListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if (!(event.getTarget() instanceof TextField)) stage.setKeyboardFocus(null);
+                if (!(event.getTarget() instanceof TextField)) {
+                    stage.setKeyboardFocus(null);
+                    inChat = false;
+                }
+                else{
+                    inChat = true;
+                }
                 return false;
             }});
 
@@ -237,6 +242,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 0);
 
     }
+
+
 
     @Override
     public void show() {
@@ -460,6 +467,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     }
 
     public void moveCamera(){
+        if(inChat)
+            return;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A))
             if (camera.position.x - 5 >= cameraBoundsMin.x){camera.translate(-5, 0);}
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D))
@@ -571,6 +580,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public boolean scrolled(int amount) {
+        if(inChat)
+            return false;
         if (amount > 0){
             if (camera.zoom + 0.05f <= cameraZoomMin)
             camera.zoom += 0.05f;
