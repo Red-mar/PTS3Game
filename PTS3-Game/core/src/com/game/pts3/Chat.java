@@ -31,6 +31,8 @@ public class Chat implements ChatEvents {
         this.textField = textField;
         this.btnSendMessage = textButton;
         this.curseWords = new ArrayList<String>();
+
+        readFile();
     }
 
     public TextArea getTextArea() {
