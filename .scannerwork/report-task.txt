@@ -1,0 +1,6 @@
+projectKey=PTS3Game
+serverUrl=http://localhost:9000
+serverVersion=6.7.0.33306
+dashboardUrl=http://localhost:9000/dashboard/index/PTS3Game
+ceTaskId=AV_eCeD7qYJ9E8M111ft
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AV_eCeD7qYJ9E8M111ft
