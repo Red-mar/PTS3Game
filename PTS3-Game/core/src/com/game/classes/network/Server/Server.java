@@ -74,7 +74,16 @@ public class Server {
 
         for (ConnectionHandler client: clients.keySet()) {
             client.sendObjectMessage(MessageType.GameSendPlayersMessage, players);
-            System.out.println(players.size());
+        }
+    }
+
+    public void sendClientPlayer(String clientName){
+        ArrayList<Player> players = serverManager.game.getPlayers();
+
+        for (ConnectionHandler connectionHandler : clients.keySet()) {
+            if (connectionHandler.getName().equals(clientName)){
+                connectionHandler.sendObjectMessage(MessageType.GameSendPlayersMessage, players);
+            }
         }
     }
 
@@ -337,6 +346,7 @@ public class Server {
                     break;
                 case GameEndMessage:
                     sendGameEnd();
+                    serverManager.interrupt();
                     Server.this.stop();
                     break;
                 default: /** I DON'T KNOW **/

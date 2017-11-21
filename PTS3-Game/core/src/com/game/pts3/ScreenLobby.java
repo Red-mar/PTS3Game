@@ -302,7 +302,7 @@ public class ScreenLobby implements Screen, GameEvents {
     public void onUpdateCharacter(int x, int y, String charName, String playerName) { }
 
     private void establishConnection() {
-        if(gameState.establishConnection(gameState.getClientPlayer().getName())){
+        if(gameState.getClient().isConnected() == null && gameState.establishConnection(gameState.getClientPlayer().getName())){
             gameState.getClient().addGameListener(this);
             sound.play(volume);
         } else {
