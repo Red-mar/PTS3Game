@@ -615,6 +615,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
     @Override
     public void onEndGame() {
+        gameState.getClient().stop();
+
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
