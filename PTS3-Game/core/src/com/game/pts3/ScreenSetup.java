@@ -7,12 +7,10 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Scaling;
 import com.game.classes.network.Client.Client;
 
 public class ScreenSetup implements Screen {
@@ -29,7 +27,19 @@ public class ScreenSetup implements Screen {
     private float volume = 1.0f;
     private Music music;
 
-    Slider sliderVolume;
+    private Table mainTable;
+    private Label lblVolume;
+    private Slider sliderVolume;
+    private Label lblWelcome;
+    private Label lblName;
+    private TextField tfName;
+    private Button btnLobby;
+    private Label lblIP;
+    private TextField tfIP;
+    private Button btnFullscreen;
+
+
+
 
     public ScreenSetup(final Game game, AssetManager assetManager){
         stage = new Stage();
@@ -48,33 +58,30 @@ public class ScreenSetup implements Screen {
         backgroundWidth = Gdx.graphics.getWidth();
         batch = new SpriteBatch();
         /**
+         * Table
+         */
+        mainTable = new Table(skin);
+
+
+        /**
          * Labels
          */
-        Label lblWelcome = new Label("Welcome to game!\nPlease enter your name!", skin);
-        lblWelcome.setPosition(10, 80);
-        lblWelcome.setSize(90,30);
-        Label lblIP = new Label("Enter IP address", skin);
-        lblIP.setPosition(270,40);
-        lblIP.setSize(90,90);
-        Label lblVolumeSlider = new Label("Set volume",skin);
-        lblVolumeSlider.setPosition(10,160);
-        lblVolumeSlider.setSize(90,30);
+        lblWelcome = new Label("Welcome to game!", skin);
+        lblIP = new Label("Enter IP address", skin);
+        lblName = new Label("Please enter your name!", skin);
+        lblVolume = new Label("Set volume", skin);
 
         /**
          * TextField
          */
-        final TextField tfName = new TextField("", skin);
-        tfName.setSize(250, 30);
-        tfName.setPosition(10, 40);
-        final TextField tfIP = new TextField("localhost", skin);
-        tfIP.setSize(250,30);
-        tfIP.setPosition(270,40);
+        tfIP = new TextField("ENTER NAME", skin);
+        tfName = new TextField("localhost", skin);
 
         /**
          * TextButton
          */
-        TextButton btnStart = new TextButton("To game lobby", skin);
-        btnStart.addListener(new ChangeListener() {
+        btnLobby = new TextButton("To game lobby", skin);
+        btnLobby.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 String string = "?";
@@ -85,9 +92,9 @@ public class ScreenSetup implements Screen {
                 game.setScreen(new ScreenLobby(game, string, gameState, manager));
             }
         });
-        btnStart.setSize(250,20);
-        btnStart.setPosition(10,10);
-        TextButton btnFullscreen = new TextButton("Set Fullscreen", skin);
+
+
+        btnFullscreen = new TextButton("Set Fullscreen", skin);
         btnFullscreen.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -98,15 +105,11 @@ public class ScreenSetup implements Screen {
                 }
             }
         });
-        btnFullscreen.setSize(250,20);
-        btnFullscreen.setPosition(270,10);
 
         /**
          * Slider
          */
         sliderVolume = new Slider(0f,1f,0.01f,false,skin);
-        sliderVolume.setPosition(10,150);
-        sliderVolume.setSize(250f, 20f);
         sliderVolume.setValue(1.0f);
         sliderVolume.addListener(new ChangeListener() {
             @Override
@@ -119,14 +122,37 @@ public class ScreenSetup implements Screen {
             }
         });
 
-        stage.addActor(tfName);
-        stage.addActor(tfIP);
-        stage.addActor(lblWelcome);
-        stage.addActor(lblIP);
-        stage.addActor(lblVolumeSlider);
-        stage.addActor(btnStart);
-        stage.addActor(btnFullscreen);
-        stage.addActor(sliderVolume);
+
+        mainTable.add(lblVolume).width(200).spaceBottom(2);
+        mainTable.row();
+
+        mainTable.add(sliderVolume).width(400).colspan(4);
+        mainTable.row();
+        Label lblWhiteSpace = new Label("", skin);
+        mainTable.add(lblWhiteSpace);
+        mainTable.row();
+        mainTable.add(lblWhiteSpace);
+        mainTable.row();
+
+        mainTable.add(lblWelcome).width(200).spaceBottom(2);
+        mainTable.row();
+
+        mainTable.add(lblName).width(200).spaceBottom(2).spaceRight(2);
+        mainTable.add(lblIP).width(200).spaceBottom(2);
+        mainTable.row();
+
+        mainTable.add(tfName).width(200).spaceBottom(2).spaceRight(2);
+        mainTable.add(tfIP).width(200).spaceBottom(2);
+        mainTable.row();
+
+        mainTable.add(btnLobby).width(200).spaceBottom(2).spaceRight(2);
+        mainTable.add(btnFullscreen).width(200).spaceBottom(2);
+
+        mainTable.setSize(200,200);
+        mainTable.setPosition(  backgroundWidth /2 -100, backgroundHeight - 700);
+        
+        stage.addActor(mainTable);
+
     }
 
     @Override
