@@ -80,11 +80,10 @@ public class Chat implements ChatEvents {
     }
 
     private void readFile(){
-        File file = new File("data/swearWords.txt");
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-        String line = null;
-
         try {
+            File file = new File("data/swearWords.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String line = null;
             while ((line = br.readLine()) != null) {
                 // \\s+ means any number of whitespaces between tokens
                 curseWords.add(line);
