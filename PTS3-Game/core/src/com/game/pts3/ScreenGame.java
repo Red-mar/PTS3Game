@@ -88,6 +88,8 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private boolean showPathing = false;
     private boolean debugInfo = true;
 
+    private ScrollPane scrollPane;
+
     public ScreenGame(Game game, com.game.classes.Game gameState, Chat chat, AssetManager assetManager){
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
@@ -149,9 +151,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             lblCharacter.setPosition(10,height - 60);
             lblCharacter.setSize(100,20);
 
-
-
-
+            scrollPane = chat.getScrollPane();
 
             stage.addActor(lblFPS);
             stage.addActor(lblPlayers);
@@ -209,8 +209,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         }
 
-
-
         stage.addActor(btnEndTurn);
         stage.addActor(chat.getScrollPane());
         stage.addActor(chat.getTextField());
@@ -226,6 +224,19 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 }
                 return false;
             }});
+
+        stage.getRoot().addCaptureListener(new InputListener() {
+             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                 if (!(event.getTarget() instanceof ScrollPane)) {
+                     stage.setScrollFocus(null);
+                     inChat = false;
+                 }
+                 else{
+                     inChat = true;
+                 }
+                 return false;
+             }
+        });
 
         updatePlayers();
 
@@ -541,6 +552,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                     chat.getTextArea().appendText("Attacked character " + tempCharacter.getName() +
                             " for " + (selectedCharacter.getAttackPoints() - tempCharacter.getDefensePoints()) +
                             " damage. HP " + tempCharacter.getCurrentHealthPoints() + "/" + tempCharacter.getMaxHealthPoints() + "\n");
+                    setScrollbar();
                 }
             } else if (selectedCharacter.getPlayer() == gameState.getClientPlayer()){
                 gameState.getMap().getTerrains()[oldTerrain.getX()][oldTerrain.getY()].setCharacter(null);
@@ -612,6 +624,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         Player turnPlayer = gameState.checkTurn(players);
         if (turnPlayer != null){
             chat.textArea.appendText("It's " + turnPlayer.getName() + "'s turn!\n");
+            setScrollbar();
             if (turnPlayer == gameState.getClientPlayer()){
                 alarmSound.play(volume);
             }
@@ -621,6 +634,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     @Override
     public void onStartGame() {
         chat.getTextArea().appendText("Someone tried to start the game?\n");
+        setScrollbar();
         errorSound.play();
     }
 
@@ -632,6 +646,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             @Override
             public void run() {
                 chat.getTextArea().appendText("Ending the game...\n");
+                setScrollbar();
                 manager.get("bgm/battlebase1.mp3", Music.class).stop();
                 Timer timer = new Timer();
                 Task task = new Task() {
@@ -652,6 +667,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     @Override
     public void onJoinGame(){
         chat.getTextArea().appendText("Someone joined the game!\n");
+        setScrollbar();
         alarmSound.play();
     }
 
@@ -673,6 +689,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private synchronized void endTurn(){
         if (!gameState.getClientPlayer().hasTurn()){
             chat.getTextArea().appendText("Je bent niet aan de beurt.\n");
+            setScrollbar();
             return;
         }
         showMovementOptions = false;
@@ -694,5 +711,14 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 System.out.println("Could not enter fullscreen mode.");
             }
         }
+    }
+
+    private void setScrollbar(){
+        if(chat.getTextArea().getText().split("\n").length < 50)
+            chat.getTextArea().setPrefRows(chat.getTextArea().getText().split("\n").length);
+        else
+            chat.getTextArea().setPrefRows(50);
+        scrollPane.layout();
+        scrollPane.setScrollPercentY(100);
     }
 }

@@ -13,10 +13,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -54,6 +51,8 @@ public class ScreenLobby implements Screen, GameEvents {
     private TextField tfMap;
     private SpriteBatch batch;
 
+    private ScrollPane scrollPane;
+
     float width = -2000;
 
     public ScreenLobby(Game game, String name, com.game.classes.Game gameState, AssetManager assetManager){
@@ -73,17 +72,20 @@ public class ScreenLobby implements Screen, GameEvents {
         backgroundWidth = Gdx.graphics.getWidth();
 
         TextArea t = new TextArea("Welcome to the game lobby!\nHere you can chat with fellow players.\n", skin);
+        scrollPane = new ScrollPane(t, skin);
         chat = new Chat(t,
-                new ScrollPane(t, skin),
+                scrollPane,
                 new TextField("", skin),
                 new TextButton("Send Message", skin));
+
         chat.getTextArea().setDisabled(true);
+        chat.getTextArea().setTouchable(Touchable.disabled);
         chat.getScrollPane().setForceScroll(false, true);
         chat.getScrollPane().setFlickScroll(false);
         chat.getScrollPane().setOverscroll(false,true);
         chat.getScrollPane().setBounds(10f, 100f, 500f, 200f);
         chat.getScrollPane().setTouchable(Touchable.disabled);
-        chat.getTextArea().setTouchable(Touchable.disabled);
+
         chat.getTextField().setPosition(10, 40);
         chat.getTextField().setWidth(500);
         chat.getTextField().setHeight(50);
@@ -171,6 +173,8 @@ public class ScreenLobby implements Screen, GameEvents {
         stage.addActor(chat.scrollPane);
         stage.addActor(chat.textField);
         stage.addActor(chat.getBtnSendMessage());
+
+        setScrollbar();
     }
 
 
@@ -216,6 +220,7 @@ public class ScreenLobby implements Screen, GameEvents {
         } else {
             width = -2000;
         }
+
     }
 
     @Override
@@ -266,7 +271,7 @@ public class ScreenLobby implements Screen, GameEvents {
             public void run() {
                 manager.get("bgm/bgmbase1.mp3", Music.class).stop();
                 chat.getTextArea().appendText("Starting the game...\n");
-
+                setScrollbar();
                 final Timer timer = new Timer();
                 Timer.Task task = new Timer.Task() {
                     @Override
@@ -327,16 +332,19 @@ public class ScreenLobby implements Screen, GameEvents {
             lblMap.setText("Selected map: " + fileName);
         }else{
             chat.getTextArea().appendText("Could not load map: " + fileName + "\n");
+            setScrollbar();
         }
     }
 
     private void setReady(){
         if (gameState.getMap() == null){
             chat.getTextArea().appendText("Geen map geselecteerd.\n");
+            setScrollbar();
             return;
         }
         if (gameState.getClient().isConnected() == null){
             chat.getTextArea().appendText("Geen connectie met een server\n");
+            setScrollbar();
             return;
         }
         gameState.getClient().sendMessageReady();
@@ -346,6 +354,7 @@ public class ScreenLobby implements Screen, GameEvents {
     private void startGame(){
         if (gameState.getMap() == null){
             chat.getTextArea().appendText("Geen map geselecteerd.\n");
+            setScrollbar();
             return;
         }
         if (gameState.getClient().isConnected() == null){
@@ -355,6 +364,7 @@ public class ScreenLobby implements Screen, GameEvents {
         for (Player player:gameState.getPlayers()) {
             if (!player.isReady()) {
                 chat.textArea.appendText("Niet iedereen is READY.\n");
+                setScrollbar();
                 return;
             }
             if (player.getCharacters().size() > 0){
@@ -373,11 +383,24 @@ public class ScreenLobby implements Screen, GameEvents {
     private void startConnection(){
         if (gameState.getClient().isConnected() == null){
             chat.getTextArea().appendText("Geen connectie met een server.\n");
+            setScrollbar();
             chat.getTextField().setText("");
         } else {
             gameState.getClient().readInput(chat.getTextField().getText());
             chat.getTextField().setText("");
             sound.play(volume);
         }
+    }
+
+    private void setScrollbar(){
+        if(chat.getTextArea().getText().split("\n").length < 30) {
+            chat.getTextArea().setPrefRows(chat.getTextArea().getText().split("\n").length);
+        }
+        else {
+            chat.getTextArea().setPrefRows(30);
+
+        }
+        scrollPane.layout();
+        scrollPane.setScrollPercentY(100);
     }
 }
