@@ -2,6 +2,8 @@ package com.game.classes.network.Server;
 
 import com.game.classes.network.Informatie;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,7 +16,9 @@ public class RMIServer {
     private Registry registryPush = null;
     private Informatie informatie = null;
 
-    public RMIServer() {
+    public RMIServer(String ip) {
+        System.setProperty("java.rmi.server.hostname", ip);
+
         try {
             informatie = new Informatie();
             System.out.println("Server: informatie created");

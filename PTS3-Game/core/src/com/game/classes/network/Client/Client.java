@@ -110,7 +110,7 @@ public class Client {
     public void start(){
         rmiClient = new RMIClient(serverIP, 1337);
         try {
-            rmiClient.getInfo().sendMessage("test");
+            System.out.println(rmiClient.getInfo().sendMessage("TESTING RMI CONNECTION"));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
