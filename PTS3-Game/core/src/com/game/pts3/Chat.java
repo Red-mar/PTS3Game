@@ -54,11 +54,13 @@ public class Chat implements ChatEvents {
     @Override
     public void onConnect(String serverName) {
         textArea.appendText("Connected with " + serverName + ".\n");
+        setScrollbar();
     }
 
     @Override
     public void onDisconnect(String reason) {
         textArea.appendText("Disconnected from server. " + reason + "\n");
+        setScrollbar();
     }
 
     @Override
@@ -96,5 +98,14 @@ public class Chat implements ChatEvents {
         } finally {
             System.out.println("Finished reading file.");
         }
+    }
+
+    public void setScrollbar(){
+        if(this.getTextArea().getLines() < 30)
+            this.getTextArea().setPrefRows(this.getTextArea().getLines());
+        else
+            this.getTextArea().setPrefRows(30);
+        scrollPane.layout();
+        scrollPane.setScrollPercentY(100);
     }
 }

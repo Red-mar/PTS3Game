@@ -85,6 +85,7 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getScrollPane().setOverscroll(false,true);
         chat.getScrollPane().setBounds(10f, 100f, 500f, 200f);
         chat.getScrollPane().setTouchable(Touchable.disabled);
+        chat.getScrollPane().setFadeScrollBars(false);
 
         chat.getTextField().setPosition(10, 40);
         chat.getTextField().setWidth(500);
@@ -161,6 +162,8 @@ public class ScreenLobby implements Screen, GameEvents {
             }
         });
 
+        chat.setScrollbar();
+
         stage.addActor(playerList);
         stage.addActor(lblMap);
         stage.addActor(lblPlayerName);
@@ -174,7 +177,7 @@ public class ScreenLobby implements Screen, GameEvents {
         stage.addActor(chat.textField);
         stage.addActor(chat.getBtnSendMessage());
 
-        setScrollbar();
+
     }
 
 
@@ -271,7 +274,7 @@ public class ScreenLobby implements Screen, GameEvents {
             public void run() {
                 manager.get("bgm/bgmbase1.mp3", Music.class).stop();
                 chat.getTextArea().appendText("Starting the game...\n");
-                setScrollbar();
+                chat.setScrollbar();
                 final Timer timer = new Timer();
                 Timer.Task task = new Timer.Task() {
                     @Override
@@ -332,19 +335,19 @@ public class ScreenLobby implements Screen, GameEvents {
             lblMap.setText("Selected map: " + fileName);
         }else{
             chat.getTextArea().appendText("Could not load map: " + fileName + "\n");
-            setScrollbar();
+            chat.setScrollbar();
         }
     }
 
     private void setReady(){
         if (gameState.getMap() == null){
             chat.getTextArea().appendText("Geen map geselecteerd.\n");
-            setScrollbar();
+            chat.setScrollbar();
             return;
         }
         if (gameState.getClient().isConnected() == null){
             chat.getTextArea().appendText("Geen connectie met een server\n");
-            setScrollbar();
+            chat.setScrollbar();
             return;
         }
         gameState.getClient().sendMessageReady();
@@ -354,7 +357,7 @@ public class ScreenLobby implements Screen, GameEvents {
     private void startGame(){
         if (gameState.getMap() == null){
             chat.getTextArea().appendText("Geen map geselecteerd.\n");
-            setScrollbar();
+            chat.setScrollbar();
             return;
         }
         if (gameState.getClient().isConnected() == null){
@@ -364,7 +367,7 @@ public class ScreenLobby implements Screen, GameEvents {
         for (Player player:gameState.getPlayers()) {
             if (!player.isReady()) {
                 chat.textArea.appendText("Niet iedereen is READY.\n");
-                setScrollbar();
+                chat.setScrollbar();
                 return;
             }
             if (player.getCharacters().size() > 0){
@@ -383,7 +386,7 @@ public class ScreenLobby implements Screen, GameEvents {
     private void startConnection(){
         if (gameState.getClient().isConnected() == null){
             chat.getTextArea().appendText("Geen connectie met een server.\n");
-            setScrollbar();
+            chat.setScrollbar();
             chat.getTextField().setText("");
         } else {
             gameState.getClient().readInput(chat.getTextField().getText());
@@ -392,15 +395,4 @@ public class ScreenLobby implements Screen, GameEvents {
         }
     }
 
-    private void setScrollbar(){
-        if(chat.getTextArea().getText().split("\n").length < 30) {
-            chat.getTextArea().setPrefRows(chat.getTextArea().getText().split("\n").length);
-        }
-        else {
-            chat.getTextArea().setPrefRows(30);
-
-        }
-        scrollPane.layout();
-        scrollPane.setScrollPercentY(100);
-    }
 }

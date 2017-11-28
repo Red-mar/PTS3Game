@@ -74,8 +74,8 @@ public class ScreenSetup implements Screen {
         /**
          * TextField
          */
-        tfIP = new TextField("ENTER NAME", skin);
-        tfName = new TextField("localhost", skin);
+        tfName = new TextField("ENTER NAME", skin);
+        tfIP = new TextField("localhost", skin);
 
         /**
          * TextButton

@@ -5,6 +5,7 @@ import com.game.classes.Player;
 import com.game.classes.network.ChatEvents;
 import com.game.classes.network.GameEvents;
 import com.game.classes.network.MessageType;
+import sun.plugin2.message.Message;
 
 import java.io.*;
 import java.net.Socket;
@@ -208,9 +209,9 @@ public class Client {
     }
 
     public void sendGameEnd(){
-        connectionHandler.sendMessage(
-                MessageType.GameEndMessage
-        );
+            connectionHandler.sendMessage(
+                    MessageType.GameEndMessage
+            );
     }
 
     public void sendGameJoin(){
@@ -278,6 +279,9 @@ public class Client {
             } catch (IOException e){
                 e.printStackTrace();
             }
+            catch (Exception ex){
+                ex.printStackTrace();
+            }
         }
 
         /**
@@ -291,6 +295,9 @@ public class Client {
                 out.flush();
             } catch (IOException e){
                 e.printStackTrace();
+            }
+            catch(Exception ex){
+                ex.getMessage();
             }
         }
 

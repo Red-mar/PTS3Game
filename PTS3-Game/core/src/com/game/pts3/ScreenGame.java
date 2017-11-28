@@ -552,7 +552,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                     chat.getTextArea().appendText("Attacked character " + tempCharacter.getName() +
                             " for " + (selectedCharacter.getAttackPoints() - tempCharacter.getDefensePoints()) +
                             " damage. HP " + tempCharacter.getCurrentHealthPoints() + "/" + tempCharacter.getMaxHealthPoints() + "\n");
-                    setScrollbar();
+                    chat.setScrollbar();
                 }
             } else if (selectedCharacter.getPlayer() == gameState.getClientPlayer()){
                 gameState.getMap().getTerrains()[oldTerrain.getX()][oldTerrain.getY()].setCharacter(null);
@@ -624,7 +624,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         Player turnPlayer = gameState.checkTurn(players);
         if (turnPlayer != null){
             chat.textArea.appendText("It's " + turnPlayer.getName() + "'s turn!\n");
-            setScrollbar();
+            chat.setScrollbar();
             if (turnPlayer == gameState.getClientPlayer()){
                 alarmSound.play(volume);
             }
@@ -634,7 +634,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     @Override
     public void onStartGame() {
         chat.getTextArea().appendText("Someone tried to start the game?\n");
-        setScrollbar();
+        chat.setScrollbar();
         errorSound.play();
     }
 
@@ -646,7 +646,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             @Override
             public void run() {
                 chat.getTextArea().appendText("Ending the game...\n");
-                setScrollbar();
+                chat.setScrollbar();
                 manager.get("bgm/battlebase1.mp3", Music.class).stop();
                 Timer timer = new Timer();
                 Task task = new Task() {
@@ -667,7 +667,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     @Override
     public void onJoinGame(){
         chat.getTextArea().appendText("Someone joined the game!\n");
-        setScrollbar();
+        chat.setScrollbar();
         alarmSound.play();
     }
 
@@ -689,7 +689,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
     private synchronized void endTurn(){
         if (!gameState.getClientPlayer().hasTurn()){
             chat.getTextArea().appendText("Je bent niet aan de beurt.\n");
-            setScrollbar();
+            chat.setScrollbar();
             return;
         }
         showMovementOptions = false;
@@ -713,12 +713,4 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         }
     }
 
-    private void setScrollbar(){
-        if(chat.getTextArea().getText().split("\n").length < 50)
-            chat.getTextArea().setPrefRows(chat.getTextArea().getText().split("\n").length);
-        else
-            chat.getTextArea().setPrefRows(50);
-        scrollPane.layout();
-        scrollPane.setScrollPercentY(100);
-    }
 }
