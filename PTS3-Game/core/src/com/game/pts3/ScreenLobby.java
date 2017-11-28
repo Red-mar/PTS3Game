@@ -142,8 +142,6 @@ public class ScreenLobby implements Screen, GameEvents {
          * List
          */
         playerList = new List(skin);
-        playerList.setPosition(backgroundWidth /2 + 100,320);
-        playerList.setSize(250,100);
 
         /**
          * Listeners
@@ -191,14 +189,16 @@ public class ScreenLobby implements Screen, GameEvents {
         /**
          * Table Setup
          */
-        Label lblWhiteSpace = new Label("", skin);
+
+        mainTable.add(playerList).left();
+        mainTable.row();
 
         mainTable.add(lblPlayerName).spaceLeft(2).spaceTop(2).left();
         mainTable.row();
 
         mainTable.add(lblMap).spaceLeft(2).spaceTop(2).left();
-
         mainTable.row();
+
         mainTable.add(chat.scrollPane).width(500).height(250).spaceLeft(2);
         mainTable.row();
 
@@ -214,10 +214,10 @@ public class ScreenLobby implements Screen, GameEvents {
         mainTable.add(sbMap).width(200).spaceRight(2).spaceBottom(2);
         mainTable.row();
 
-        mainTable.setSize(1000,200);
-        mainTable.setPosition(  60, backgroundHeight /2 - 260);
+        mainTable.setFillParent(true);
+        mainTable.setDebug(true);
+        mainTable.left().bottom();
 
-        stage.addActor(playerList);
         stage.addActor(mainTable);
 
 
