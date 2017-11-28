@@ -21,12 +21,12 @@ public class Server {
     private ServerManager serverManager;
     private RMIServer rmiServer;
 
-    public Server(int port) throws IOException{
+    public Server(int port, String ip) throws IOException{
         serverSocket= new ServerSocket(port);
         clients = new HashMap<ConnectionHandler, Player>();
         serverManager = new ServerManager(this);
 
-        rmiServer = new RMIServer();
+        rmiServer = new RMIServer(ip);
     }
 
     public void start(){
