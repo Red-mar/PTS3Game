@@ -102,12 +102,16 @@ public class Chat implements ChatEvents {
     }
 
     public void setScrollbar(){
-        if(this.getTextArea().getLines() < 30)
-            this.getTextArea().setPrefRows(this.getTextArea().getLines());
-        else
-            this.getTextArea().setPrefRows(30);
-        scrollPane.layout();
-        scrollPane.setScrollPercentY(100);
-
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                if(getTextArea().getLines() < 30)
+                    getTextArea().setPrefRows(getTextArea().getLines());
+                else
+                    getTextArea().setPrefRows(30);
+                scrollPane.layout();
+                scrollPane.setScrollPercentY(100);
+            }
+        });
     }
 }
