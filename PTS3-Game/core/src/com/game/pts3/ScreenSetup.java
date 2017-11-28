@@ -122,7 +122,6 @@ public class ScreenSetup implements Screen {
             }
         });
 
-
         mainTable.add(lblVolume).width(200).spaceBottom(2);
         mainTable.row();
 

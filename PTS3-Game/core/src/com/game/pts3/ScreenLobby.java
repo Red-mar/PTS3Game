@@ -47,6 +47,7 @@ public class ScreenLobby implements Screen, GameEvents {
     private float backgroundWidth;
     private float backgroundHeight;
 
+    private Table mainTable;
     private Label lblMap;
     private Label lblPlayerName;
     private EventListener enterText;
@@ -74,6 +75,14 @@ public class ScreenLobby implements Screen, GameEvents {
         backgroundHeight = Gdx.graphics.getHeight();
         backgroundWidth = Gdx.graphics.getWidth();
 
+        /**
+         * Table
+         */
+        mainTable = new Table(skin);
+
+        /**
+         * Chat
+         */
         TextArea t = new TextArea("Welcome to the game lobby!\nHere you can chat with fellow players.\n", skin);
         scrollPane = new ScrollPane(t, skin);
         chat = new Chat(t,
@@ -93,32 +102,30 @@ public class ScreenLobby implements Screen, GameEvents {
         chat.getTextField().setPosition(10, 40);
         chat.getTextField().setWidth(500);
         chat.getTextField().setHeight(50);
+        chat.getTextField().setMessageText("Enter Message...");
         chat.getBtnSendMessage().setPosition(260, 10);
         chat.getBtnSendMessage().setWidth(250);
         chat.getBtnSendMessage().setHeight(20);
         gameState.getClient().addListener(chat);
 
-        lblPlayerName = new Label("Player name: " + name, skin);
-        lblPlayerName.setPosition(10,330);
-        lblMap = new Label("Selected map: N/A", skin);
-        lblMap.setPosition(10,310);
 
+        /**
+         * Labels
+         */
+        lblPlayerName = new Label("Player name: " + name, skin);
+        lblMap = new Label("Selected map: N/A", skin);
+
+        /**
+         * Buttons
+         */
         TextButton btnStart = new TextButton("Start Game", skin);
-        btnStart.setPosition(510,10);
-        btnStart.setSize(120,20);
 
         TextButton btnReady = new TextButton("Ready", skin);
-        btnReady.setPosition(510,40);
-        btnReady.setSize(120,20);
 
         TextButton btnConnect = new TextButton("Connect with server!", skin);
-        btnConnect.setPosition(10,10);
-        btnConnect.setWidth(250);
-        btnConnect.setHeight(20);
 
         TextButton btnMap = new TextButton("Choose map", skin);
-        btnMap.setPosition(510, 70);
-        btnMap.setSize(120, 20);
+
 
         sbMap = new SelectBox(skin);
         sbMap.setPosition(640, 70);
@@ -130,10 +137,17 @@ public class ScreenLobby implements Screen, GameEvents {
         tfMap.setPosition(640, 70);
         tfMap.setSize(120, 20);
         */
+
+        /**
+         * List
+         */
         playerList = new List(skin);
-        playerList.setPosition(10,350);
+        playerList.setPosition(backgroundWidth /2 + 100,320);
         playerList.setSize(250,100);
 
+        /**
+         * Listeners
+         */
         enterText = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -173,19 +187,48 @@ public class ScreenLobby implements Screen, GameEvents {
 
         chat.setScrollbar();
 
-        stage.addActor(playerList);
-        stage.addActor(lblMap);
-        stage.addActor(lblPlayerName);
-        stage.addActor(btnConnect);
-        stage.addActor(btnStart);
-        stage.addActor(btnReady);
-        stage.addActor(btnMap);
-        //stage.addActor(tfMap);
-        stage.addActor(sbMap);
 
-        stage.addActor(chat.scrollPane);
-        stage.addActor(chat.textField);
-        stage.addActor(chat.getBtnSendMessage());
+        /**
+         * Table Setup
+         */
+        Label lblWhiteSpace = new Label("", skin);
+
+        mainTable.add(lblPlayerName).left();
+        mainTable.row();
+
+        mainTable.add(lblMap).left();
+        mainTable.add(sbMap).width(200);
+        mainTable.row();
+        mainTable.add(lblWhiteSpace);
+        mainTable.add(btnMap).width(200);
+        mainTable.row();
+
+        mainTable.add(lblWhiteSpace);
+        mainTable.row();
+
+        mainTable.add(lblWhiteSpace);
+        mainTable.row();
+
+        mainTable.add(chat.scrollPane).width(500).height(200).left();
+        mainTable.add(btnConnect).width(200).top();
+        mainTable.row();
+
+        mainTable.add(chat.textField).width(500);
+        mainTable.add(btnReady).width(200);
+        mainTable.row();
+
+        mainTable.add(lblWhiteSpace);
+        mainTable.row();
+
+        mainTable.add(chat.getBtnSendMessage()).width(500);
+        mainTable.add(btnStart).width(200);
+        mainTable.row();
+
+        mainTable.setSize(600,250);
+        mainTable.setPosition(  75, backgroundHeight /2 - 250);
+
+        stage.addActor(playerList);
+        stage.addActor(mainTable);
 
 
     }
@@ -209,8 +252,8 @@ public class ScreenLobby implements Screen, GameEvents {
         batch.draw(manager.get("Sprites/heavy-1.png", Texture.class), width + 1000, backgroundHeight * 0.8f, 150, 150);
         batch.draw(manager.get("Sprites/horseman-2.png", Texture.class), width + 600, backgroundHeight * 0.2f, 150, 150);
         batch.draw(manager.get("Sprites/swordsman-1.png", Texture.class), width + 200, backgroundHeight * 0.7f, 150, 150);
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
-            batch.draw(manager.get("maan.png", Texture.class), width, backgroundHeight * 0.5f, 200, 300);
+        if (Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT) && Gdx.input.isKeyJustPressed(Input.Keys.APOSTROPHE)){
+            batch.draw(manager.get("portrait/anime.png", Texture.class), width, backgroundHeight * 0.5f, 200, 300);
         }
         batch.end();
 
