@@ -193,39 +193,29 @@ public class ScreenLobby implements Screen, GameEvents {
          */
         Label lblWhiteSpace = new Label("", skin);
 
-        mainTable.add(lblPlayerName).left();
+        mainTable.add(lblPlayerName).spaceLeft(2).spaceTop(2).left();
         mainTable.row();
 
-        mainTable.add(lblMap).left();
-        mainTable.add(sbMap).width(200);
-        mainTable.row();
-        mainTable.add(lblWhiteSpace);
-        mainTable.add(btnMap).width(200);
+        mainTable.add(lblMap).spaceLeft(2).spaceTop(2).left();
 
         mainTable.row();
-
-        mainTable.add(lblWhiteSpace);
+        mainTable.add(chat.scrollPane).width(500).height(250).spaceLeft(2);
         mainTable.row();
 
-        mainTable.add(lblWhiteSpace);
-        mainTable.row();
-        mainTable.add(chat.scrollPane).width(500).height(250).left();
-        mainTable.add(btnConnect).width(200).top();
-        mainTable.row();
-
-        mainTable.add(chat.textField).width(500);
-        mainTable.add(btnReady).width(200);
+        mainTable.add(chat.textField).width(500).spaceBottom(2).spaceLeft(2);
+        mainTable.add(btnConnect).width(200).spaceBottom(2);
+        mainTable.add(btnReady).width(200).spaceRight(2).spaceBottom(2);
         mainTable.row();
 
-        mainTable.add(lblWhiteSpace);
+
+        mainTable.add(chat.getBtnSendMessage()).width(500).spaceBottom(2).spaceLeft(2);
+        mainTable.add(btnStart).width(200).spaceBottom(2).spaceRight(2);
+        mainTable.add(btnMap).width(200).spaceRight(2).spaceBottom(2);
+        mainTable.add(sbMap).width(200).spaceRight(2).spaceBottom(2);
         mainTable.row();
 
-        mainTable.add(chat.getBtnSendMessage()).width(500);
-        mainTable.add(btnStart).width(200);
-        mainTable.row();
-
-        mainTable.setSize(600,250);
-        mainTable.setPosition(  75, backgroundHeight /2 - 250);
+        mainTable.setSize(1000,200);
+        mainTable.setPosition(  60, backgroundHeight /2 - 260);
 
         stage.addActor(playerList);
         stage.addActor(mainTable);
