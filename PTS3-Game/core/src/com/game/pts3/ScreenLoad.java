@@ -183,6 +183,12 @@ public class ScreenLoad implements Screen {
             manager.load("sound/wololo.wav", Sound.class);
             manager.load("sound/nice.wav", Sound.class);
 
+            manager.load("portrait/archer.png", Texture.class);
+            manager.load("portrait/donkey.png", Texture.class);
+            manager.load("portrait/heavy.png", Texture.class);
+            manager.load("portrait/mage.png", Texture.class);
+            manager.load("portrait/swordsman.png", Texture.class);
+
             manager.load("bgm/bgmbase1.mp3", Music.class);
             manager.load("bgm/battlebase1.mp3", Music.class);
 
