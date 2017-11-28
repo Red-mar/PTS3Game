@@ -5,8 +5,6 @@ import com.game.classes.Player;
 import com.game.classes.network.ChatEvents;
 import com.game.classes.network.GameEvents;
 import com.game.classes.network.MessageType;
-import sun.plugin2.message.Message;
-
 import java.io.*;
 import java.net.Socket;
 import java.rmi.RemoteException;

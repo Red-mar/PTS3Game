@@ -217,6 +217,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if (!(event.getTarget() instanceof TextField)) {
                     stage.setKeyboardFocus(null);
+                    stage.setScrollFocus(null);
                     inChat = false;
                 }
                 else{
@@ -224,19 +225,6 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 }
                 return false;
             }});
-
-        stage.getRoot().addCaptureListener(new InputListener() {
-             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                 if (!(event.getTarget() instanceof ScrollPane)) {
-                     stage.setScrollFocus(null);
-                     inChat = false;
-                 }
-                 else{
-                     inChat = true;
-                 }
-                 return false;
-             }
-        });
 
         updatePlayers();
 
