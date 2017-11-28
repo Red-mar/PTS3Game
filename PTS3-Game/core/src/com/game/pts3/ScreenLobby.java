@@ -27,6 +27,8 @@ import com.game.classes.Map;
 import com.game.classes.Player;
 import com.game.classes.network.Client.Client;
 import com.game.classes.network.GameEvents;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class ScreenLobby implements Screen, GameEvents {
@@ -49,6 +51,7 @@ public class ScreenLobby implements Screen, GameEvents {
     private Label lblPlayerName;
     private EventListener enterText;
     private TextField tfMap;
+    private SelectBox sbMap;
     private SpriteBatch batch;
 
     private ScrollPane scrollPane;
@@ -117,10 +120,16 @@ public class ScreenLobby implements Screen, GameEvents {
         btnMap.setPosition(510, 70);
         btnMap.setSize(120, 20);
 
+        sbMap = new SelectBox(skin);
+        sbMap.setPosition(640, 70);
+        sbMap.setSize(120, 20);
+        sbMap.setItems(gameState.getMapFiles().toArray());
+
+        /*
         tfMap = new TextField("", skin);
         tfMap.setPosition(640, 70);
         tfMap.setSize(120, 20);
-
+        */
         playerList = new List(skin);
         playerList.setPosition(10,350);
         playerList.setSize(250,100);
@@ -171,7 +180,8 @@ public class ScreenLobby implements Screen, GameEvents {
         stage.addActor(btnStart);
         stage.addActor(btnReady);
         stage.addActor(btnMap);
-        stage.addActor(tfMap);
+        //stage.addActor(tfMap);
+        stage.addActor(sbMap);
 
         stage.addActor(chat.scrollPane);
         stage.addActor(chat.textField);
@@ -331,7 +341,7 @@ public class ScreenLobby implements Screen, GameEvents {
     }
 
     private void loadMap(){
-        String fileName = tfMap.getText() + ".tmx";
+        String fileName = "map/" + sbMap.getSelected().toString();
         if (gameState.loadMap(fileName)){
             sound.play(volume);
             lblMap.setText("Selected map: " + fileName);
