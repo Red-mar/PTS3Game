@@ -188,6 +188,7 @@ public class ScreenLoad implements Screen {
             manager.load("portrait/heavy.png", Texture.class);
             manager.load("portrait/mage.png", Texture.class);
             manager.load("portrait/swordsman.png", Texture.class);
+            manager.load("portrait/anime.png", Texture.class);
 
             manager.load("bgm/bgmbase1.mp3", Music.class);
             manager.load("bgm/battlebase1.mp3", Music.class);

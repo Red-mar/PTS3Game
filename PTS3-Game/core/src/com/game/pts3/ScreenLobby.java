@@ -199,8 +199,8 @@ public class ScreenLobby implements Screen, GameEvents {
         batch.draw(manager.get("Sprites/heavy-1.png", Texture.class), width + 1000, backgroundHeight * 0.8f, 150, 150);
         batch.draw(manager.get("Sprites/horseman-2.png", Texture.class), width + 600, backgroundHeight * 0.2f, 150, 150);
         batch.draw(manager.get("Sprites/swordsman-1.png", Texture.class), width + 200, backgroundHeight * 0.7f, 150, 150);
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
-            batch.draw(manager.get("maan.png", Texture.class), width, backgroundHeight * 0.5f, 200, 300);
+        if (Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT) && Gdx.input.isKeyJustPressed(Input.Keys.APOSTROPHE)){
+            batch.draw(manager.get("portrait/anime.png", Texture.class), width, backgroundHeight * 0.5f, 200, 300);
         }
         batch.end();
 
