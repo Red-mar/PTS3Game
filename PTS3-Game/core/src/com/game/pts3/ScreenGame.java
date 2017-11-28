@@ -14,10 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Timer;
@@ -109,6 +106,23 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         this.chat = chat;
         inChat = false;
         this.game = game;
+
+        chat.getTextArea().setDisabled(true);
+        chat.getTextArea().setTouchable(Touchable.disabled);
+        chat.getScrollPane().setForceScroll(false, true);
+        chat.getScrollPane().setFlickScroll(false);
+        chat.getScrollPane().setOverscroll(false,true);
+        chat.getScrollPane().setBounds(10f, 100f, 500f, 200f);
+        chat.getScrollPane().setTouchable(Touchable.disabled);
+        chat.getScrollPane().setFadeScrollBars(false);
+
+        chat.getTextField().setPosition(10, 40);
+        chat.getTextField().setWidth(500);
+        chat.getTextField().setHeight(50);
+        chat.getTextField().setMessageText("Enter Message...");
+        chat.getBtnSendMessage().setPosition(260, 10);
+        chat.getBtnSendMessage().setWidth(250);
+        chat.getBtnSendMessage().setHeight(20);
 
         selectedTile = gameState.getMap().getTerrains()[0][0];
         renderer = new OrthogonalTiledMapRenderer(gameState.getMap().getTiledMap());
