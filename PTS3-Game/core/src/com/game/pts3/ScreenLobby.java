@@ -274,7 +274,12 @@ public class ScreenLobby implements Screen, GameEvents {
             public void run() {
                 manager.get("bgm/bgmbase1.mp3", Music.class).stop();
                 chat.getTextArea().appendText("Starting the game...\n");
+<<<<<<< HEAD
                 chat.setScrollbar();
+=======
+                manager.get("sound/nice.wav", Sound.class).play(volume);
+                setScrollbar();
+>>>>>>> e21b9c8ec652d4c9eae3c75966adb02ce04df3a0
                 final Timer timer = new Timer();
                 Timer.Task task = new Timer.Task() {
                     @Override
