@@ -648,6 +648,7 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
                 chat.getTextArea().appendText("Ending the game...\n");
                 setScrollbar();
                 manager.get("bgm/battlebase1.mp3", Music.class).stop();
+                manager.get("sound/nice.wav", Sound.class).play(volume);
                 Timer timer = new Timer();
                 Task task = new Task() {
                     @Override
