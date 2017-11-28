@@ -493,7 +493,7 @@ public class Game
         File folder = new File("map");
         File[] listOfFiles = folder.listFiles();
 
-        ArrayList<String> filenames = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<String>();
 
         for (int i = 0; i < listOfFiles.length; i++) {
             if (listOfFiles[i].isFile() && listOfFiles[i].getName().contains(".tmx")) {
