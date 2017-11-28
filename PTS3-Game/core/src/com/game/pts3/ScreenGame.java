@@ -414,9 +414,20 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if(selectedCharacter != null)
         {
-            statSprite = selectedCharacter.getSprite();
+            String texturefile = selectedCharacter.getSpriteTexture();
+            if (texturefile.contains("bowman")){
+                statSprite = new Sprite(manager.get("portrait/archer.png", Texture.class));
+            } else if (texturefile.contains("heavy")){
+                statSprite = new Sprite(manager.get("portrait/heavy.png", Texture.class));
+            }else if (texturefile.contains("horseman")){
+                statSprite = new Sprite(manager.get("portrait/donkey.png", Texture.class));
+            }else if (texturefile.contains("wizard")){
+                statSprite = new Sprite(manager.get("portrait/mage.png", Texture.class));
+            }else if (texturefile.contains("swordsman")){
+                statSprite = new Sprite(manager.get("portrait/swordsman.png", Texture.class));
+            }
             statSb.begin();
-            statSb.draw(statSprite,charWindow.getX(),charWindow.getY() - charWindow.getHeight(), statSprite.getHeight() *10, statSprite.getWidth()*10);
+            statSb.draw(statSprite,charWindow.getX() + 50,charWindow.getY() - statSprite.getHeight(), statSprite.getHeight(), statSprite.getWidth());
             statSb.end();
         }
     }
