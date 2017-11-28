@@ -218,6 +218,7 @@ public class ScreenLobby implements Screen, GameEvents {
         mainTable.setDebug(true);
         mainTable.left().bottom();
 
+
         stage.addActor(mainTable);
 
 

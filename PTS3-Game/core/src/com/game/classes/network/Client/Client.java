@@ -42,14 +42,7 @@ public class Client {
      */
     public Client(String serverIP){
         this.serverIP = serverIP;
-        /*
-        rmiClient = new RMIClient(serverIP, 1337);
-        try {
-            rmiClient.getInfo().sendMessage("test");
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        */
+
     }
 
     /**
@@ -115,6 +108,13 @@ public class Client {
      * Starts the client and looks for a server.
      */
     public void start(){
+        rmiClient = new RMIClient(serverIP, 1337);
+        try {
+            rmiClient.getInfo().sendMessage("test");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         connectionHandler = new ConnectionHandler(this, serverIP);
         connectionHandler.start();
     }
