@@ -1,5 +1,7 @@
 package com.game.classes;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.game.classes.Character;
 import com.game.classes.Player;
@@ -10,7 +12,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class CharacterTest {
-    Character c = new Character("", 10, 20, 30, 40, 1, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1), "", new Player(""));
+    Character c = new Character("", 10, 20, 30, 40, 1, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1), "test", new Player(""));
 
     @Test
     public void getName() throws Exception
@@ -100,7 +102,11 @@ public class CharacterTest {
     @Test
     public void setCurrentTerrain() throws Exception
     {
-
+        Terrain t = new Terrain(TerrainProperties.Normal, 38, 38);
+        assertEquals(c.setCurrentTerrain(t, 0), false);
+        t = new Terrain(TerrainProperties.Normal, 1, 1);
+        t.setCharacter(null);
+        assertEquals(c.setCurrentTerrain(t, 0), true);
     }
 
     @Test
@@ -152,16 +158,57 @@ public class CharacterTest {
     public void takeDamage() throws Exception {
         c.takeDamage(5);
         assertEquals(c.getCurrentHealthPoints(), 35);
+        c.takeDamage(100);
+        assertEquals(c.isDead(), true);
     }
 
     @Test
     public void canMove() throws Exception {
         assertEquals(c.canMove(new Terrain(TerrainProperties.Normal, 38, 38)), false);
+        c.setCurrentMovementPoints(40);
+        Terrain t = new Terrain(TerrainProperties.Impassable,1 , 1);
+        t.setCharacter(c);
+        assertEquals(c.canMove(t), false);
+
+        t.setCharacter(null);
+        assertEquals(c.canMove(t), false);
+
+        t = new Terrain(TerrainProperties.Normal, 1, 1);
+        assertEquals(c.canMove(t), true);
     }
 
     @Test
     public void canAttack() throws Exception {
-        assertEquals(c.canAttack(new Terrain(TerrainProperties.Normal, 1, 30)), false);
+        Terrain t = new Terrain(TerrainProperties.Normal,1 , 1);
+
+        assertEquals(c.canAttack(t), false);
+        t.setCharacter(c);
+
+        c.setHasAttacked(true);
+
+        Character enemy = c;
+        assertEquals(c.canAttack(t), false);
+
+
     }
 
+    @Test
+    public void currentMovementPoints() throws Exception {
+        int movementpoints = 40;
+        c.setCurrentMovementPoints(movementpoints);
+        assertEquals(c.getCurrentMovementPoints(), movementpoints);
+    }
+
+    @Test
+    public void sprite() throws Exception {
+        Sprite sprite = new Sprite();
+        c.setSprite(sprite);
+        assertEquals(c.getSprite(), sprite);
+        assertEquals(c.getSpriteTexture(), "test");
+    }
+
+    @Test
+    public void attackRange() throws Exception {
+        assertEquals(c.getAttackRange(), 1);
+    }
 }

@@ -80,5 +80,10 @@ public class MapTest {
         assertEquals(map.getTerrains()[0][0].getCharacter(), null);
     }
 
-
+    @Test
+    public void TiledMap() throws Exception {
+        TiledMap tm = new TiledMap();
+        map.setTiledMap(tm);
+        assertEquals(tm, map.getTiledMap());
+    }
 }

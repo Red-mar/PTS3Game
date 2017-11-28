@@ -43,4 +43,40 @@ public class TerrainTest {
         assertEquals(1, terrain.getBonus());
     }
 
+    @Test
+    public void gCost() throws Exception {
+        int cost = 3;
+        terrain.setgCost(cost);
+        assertEquals(terrain.getgCost(), cost);
+    }
+
+    @Test
+    public void hCost() throws Exception {
+        int cost = 3;
+        terrain.sethCost(cost);
+        assertEquals(terrain.gethCost(), cost);
+    }
+
+    @Test
+    public void fCost() throws Exception {
+        int cost = 3;
+        terrain.sethCost(cost);
+        terrain.setgCost(cost);
+        assertEquals(terrain.getfCost(), cost + cost);
+    }
+
+    @Test
+    public void parent() throws Exception {
+        Terrain parent = new Terrain(terrainProperties, 5 , 5);
+        terrain.setParent(parent);
+        assertEquals(parent, terrain.getParent());
+    }
+
+    @Test
+    public void getHeuristic() throws Exception {
+        int x = 3;
+        int y = 2;
+        int testHeuristic = Math.abs(terrain.getX()) + Math.abs(terrain.getY());
+        assertEquals(testHeuristic, terrain.getHeuristic(terrain));
+    }
 }
