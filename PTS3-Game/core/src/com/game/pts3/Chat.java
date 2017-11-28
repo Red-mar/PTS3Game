@@ -1,5 +1,6 @@
 package com.game.pts3;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -107,5 +108,6 @@ public class Chat implements ChatEvents {
             this.getTextArea().setPrefRows(30);
         scrollPane.layout();
         scrollPane.setScrollPercentY(100);
+
     }
 }
