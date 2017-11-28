@@ -14,6 +14,7 @@ import com.game.classes.pathing.aStarPathing;
 import com.game.classes.network.GameEvents;
 import com.game.classes.network.Server.Server;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -486,5 +487,19 @@ public class Game
                 clientPlayer = player;
             }
         }
+    }
+
+    public ArrayList<String> getMapFiles() {
+        File folder = new File("map");
+        File[] listOfFiles = folder.listFiles();
+
+        ArrayList<String> filenames = new ArrayList<String>();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile() && listOfFiles[i].getName().contains(".tmx")) {
+                filenames.add(listOfFiles[i].getName());
+            }
+        }
+        return filenames;
     }
 }

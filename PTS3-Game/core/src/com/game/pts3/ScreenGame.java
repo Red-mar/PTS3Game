@@ -14,10 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Timer;
@@ -107,6 +104,23 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
         this.chat = chat;
         inChat = false;
         this.game = game;
+
+        chat.getTextArea().setDisabled(true);
+        chat.getTextArea().setTouchable(Touchable.disabled);
+        chat.getScrollPane().setForceScroll(false, true);
+        chat.getScrollPane().setFlickScroll(false);
+        chat.getScrollPane().setOverscroll(false,true);
+        chat.getScrollPane().setBounds(10f, 100f, 500f, 200f);
+        chat.getScrollPane().setTouchable(Touchable.disabled);
+        chat.getScrollPane().setFadeScrollBars(false);
+
+        chat.getTextField().setPosition(10, 40);
+        chat.getTextField().setWidth(500);
+        chat.getTextField().setHeight(50);
+        chat.getTextField().setMessageText("Enter Message...");
+        chat.getBtnSendMessage().setPosition(260, 10);
+        chat.getBtnSendMessage().setWidth(250);
+        chat.getBtnSendMessage().setHeight(20);
 
         selectedTile = gameState.getMap().getTerrains()[0][0];
         renderer = new OrthogonalTiledMapRenderer(gameState.getMap().getTiledMap());
@@ -409,9 +423,20 @@ public class ScreenGame implements Screen, InputProcessor, GameEvents {
 
         if(selectedCharacter != null)
         {
-            statSprite = selectedCharacter.getSprite();
+            String texturefile = selectedCharacter.getSpriteTexture();
+            if (texturefile.contains("bowman")){
+                statSprite = new Sprite(manager.get("portrait/archer.png", Texture.class));
+            } else if (texturefile.contains("heavy")){
+                statSprite = new Sprite(manager.get("portrait/heavy.png", Texture.class));
+            }else if (texturefile.contains("horseman")){
+                statSprite = new Sprite(manager.get("portrait/donkey.png", Texture.class));
+            }else if (texturefile.contains("wizard")){
+                statSprite = new Sprite(manager.get("portrait/mage.png", Texture.class));
+            }else if (texturefile.contains("swordsman")){
+                statSprite = new Sprite(manager.get("portrait/swordsman.png", Texture.class));
+            }
             statSb.begin();
-            statSb.draw(statSprite,charWindow.getX(),charWindow.getY() - charWindow.getHeight(), statSprite.getHeight() *10, statSprite.getWidth()*10);
+            statSb.draw(statSprite,charWindow.getX() + 50,charWindow.getY() - statSprite.getHeight(), statSprite.getHeight(), statSprite.getWidth());
             statSb.end();
         }
     }

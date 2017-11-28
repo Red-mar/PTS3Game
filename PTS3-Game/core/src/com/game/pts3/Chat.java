@@ -102,7 +102,6 @@ public class Chat implements ChatEvents {
     }
 
     public void setScrollbar(){
-
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
