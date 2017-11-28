@@ -27,6 +27,8 @@ import com.game.classes.Map;
 import com.game.classes.Player;
 import com.game.classes.network.Client.Client;
 import com.game.classes.network.GameEvents;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class ScreenLobby implements Screen, GameEvents {
@@ -50,6 +52,7 @@ public class ScreenLobby implements Screen, GameEvents {
     private Label lblPlayerName;
     private EventListener enterText;
     private TextField tfMap;
+    private SelectBox sbMap;
     private SpriteBatch batch;
 
     private ScrollPane scrollPane;
@@ -123,10 +126,17 @@ public class ScreenLobby implements Screen, GameEvents {
 
         TextButton btnMap = new TextButton("Choose map", skin);
 
-        /**
-         * TextFields
-         */
-        tfMap = new TextField("castle", skin);
+
+        sbMap = new SelectBox(skin);
+        sbMap.setPosition(640, 70);
+        sbMap.setSize(120, 20);
+        sbMap.setItems(gameState.getMapFiles().toArray());
+
+        /*
+        tfMap = new TextField("", skin);
+        tfMap.setPosition(640, 70);
+        tfMap.setSize(120, 20);
+        */
 
         /**
          * List
@@ -177,6 +187,7 @@ public class ScreenLobby implements Screen, GameEvents {
 
         chat.setScrollbar();
 
+
         /**
          * Table Setup
          */
@@ -186,7 +197,7 @@ public class ScreenLobby implements Screen, GameEvents {
         mainTable.row();
 
         mainTable.add(lblMap).left();
-        mainTable.add(tfMap).width(200);
+        mainTable.add(sbMap).width(200);
         mainTable.row();
         mainTable.add(lblWhiteSpace);
         mainTable.add(btnMap).width(200);
@@ -198,18 +209,18 @@ public class ScreenLobby implements Screen, GameEvents {
 
         mainTable.add(lblWhiteSpace);
         mainTable.row();
-        mainTable.add(chat.scrollPane).width(400).height(200).left();
+        mainTable.add(chat.scrollPane).left();
         mainTable.add(btnConnect).width(200).top();
         mainTable.row();
 
-        mainTable.add(chat.textField).width(200).left();
+        mainTable.add(chat.textField);
         mainTable.add(btnReady).width(200);
         mainTable.row();
 
         mainTable.add(lblWhiteSpace);
         mainTable.row();
 
-        mainTable.add(chat.getBtnSendMessage()).width(200);
+        mainTable.add(chat.getBtnSendMessage());
         mainTable.add(btnStart).width(200);
         mainTable.row();
 
@@ -373,7 +384,7 @@ public class ScreenLobby implements Screen, GameEvents {
     }
 
     private void loadMap(){
-        String fileName = tfMap.getText() + ".tmx";
+        String fileName = "map/" + sbMap.getSelected().toString();
         if (gameState.loadMap(fileName)){
             sound.play(volume);
             lblMap.setText("Selected map: " + fileName);
