@@ -190,6 +190,7 @@ public class ScreenLobby implements Screen, GameEvents {
         mainTable.row();
         mainTable.add(lblWhiteSpace);
         mainTable.add(btnMap).width(200);
+
         mainTable.row();
 
         mainTable.add(lblWhiteSpace);
@@ -197,19 +198,18 @@ public class ScreenLobby implements Screen, GameEvents {
 
         mainTable.add(lblWhiteSpace);
         mainTable.row();
-
-        mainTable.add(chat.scrollPane).width(500).height(200).left();
+        mainTable.add(chat.scrollPane).left();
         mainTable.add(btnConnect).width(200).top();
         mainTable.row();
 
-        mainTable.add(chat.textField).width(500);
+        mainTable.add(chat.textField);
         mainTable.add(btnReady).width(200);
         mainTable.row();
 
         mainTable.add(lblWhiteSpace);
         mainTable.row();
 
-        mainTable.add(chat.getBtnSendMessage()).width(500);
+        mainTable.add(chat.getBtnSendMessage());
         mainTable.add(btnStart).width(200);
         mainTable.row();
 
