@@ -60,4 +60,7 @@ public class ChatTest {
         assertNotNull(chat.getChatlog());
     }
 
+    @Test
+    public void message() throws Exception {
+    }
 }

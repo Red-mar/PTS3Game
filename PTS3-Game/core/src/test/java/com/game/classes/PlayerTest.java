@@ -77,4 +77,34 @@ public class PlayerTest {
         assertEquals(true, p.isLocalPlayer());
     }
 
+    @Test
+    public void setName() throws Exception {
+        String name = "test";
+        p.setName(name);
+        assertEquals(name, p.getName());
+    }
+
+    @Test
+    public void addCharacter() throws Exception {
+        Character c = new Character("", 10, 20, 30, 40, 1, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1), "", new Player(""));
+        p.addCharacter(c);
+        ArrayList<Character> chars = new ArrayList<Character>();
+        chars = p.getCharacters();
+        assertEquals(chars.get(0), c);
+    }
+
+    @Test
+    public void testToString() throws Exception {
+        String s = p.getName() + "\t|\tNot Ready.";
+        assertEquals(s, p.toString());
+
+        p.setSpectator(true);
+        s = p.getName() + "\t|\tSpectator.";
+        assertEquals(s, p.toString());
+
+        p.setSpectator(false);
+        p.setReady(true);
+        s = p.getName() + "\t|\tReady!";
+        assertEquals(s, p.toString());
+    }
 }

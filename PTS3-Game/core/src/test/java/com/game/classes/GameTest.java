@@ -7,6 +7,7 @@ import com.game.classes.Game;
 import com.game.classes.Map;
 import com.game.classes.Player;
 import com.game.classes.network.Client.Client;
+import com.game.classes.network.Server.Server;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,14 +19,18 @@ import static org.junit.Assert.*;
 public class GameTest {
     //fields
     Game instance;
+    Game game;
     Client client;
+    Server server;
 
 
     @Before
     public void setUp() throws Exception
     {
+        //server = new Server(82, "ip");
         client = new Client("gameTest");
         instance = new Game(client);
+        game = new Game(server);
     }
 
     @After
@@ -63,6 +68,13 @@ public class GameTest {
         Player testPlayer = new Player("test");
         instance.addPlayer(testPlayer);
         instance.removePlayer(testPlayer);
+        assertEquals(0, instance.getPlayers().size());
+
+        instance.addPlayer(testPlayer);
+        instance.removePlayer("fail");
+        assertEquals(1, instance.getPlayers().size());
+
+        instance.removePlayer("test");
         assertEquals(0, instance.getPlayers().size());
     }
 
@@ -109,6 +121,12 @@ public class GameTest {
         instance.setInGame(true);
         assertEquals(true, instance.getInGame());
     }
+
+    @Test
+    public void getClient() throws Exception {
+        assertEquals(client, instance.getClient());
+    }
+
 
     @Test
     public void setInGame() throws Exception
@@ -186,5 +204,18 @@ public class GameTest {
         instance.addPlayer(new Player("test"));
         assertEquals(0, instance.getTotalCharacters());
     }
+
+    @Test
+    public void getMapFiles() throws Exception {
+        ArrayList<String> filenames = new ArrayList<String>();
+    }
+
+    @Test
+    public void clientPlayer() throws Exception {
+        Player p = new Player("test");
+        instance.setClientPlayer(p);
+        assertEquals(instance.getClientPlayer(), p);
+    }
+
 
 }

@@ -282,16 +282,13 @@ public class Character implements Serializable {
      */
     public boolean canMove(Terrain terrain){
         int totalMovement = calculateTotalMovement(terrain);
-
         if (totalMovement > currentMovementPoints){
             return false;
         } else if (terrain.getCharacter() != null){
             return false;
         } else if (terrain.getProperty() == TerrainProperties.Impassable){
             return false;
-        }// else if (terrain.getProperty() != TerrainProperties.Impassable && !Pathfinder.canFindPath(terrain, this)){
-        //   return false;
-        //}
+        }
         return true;
     }
 
