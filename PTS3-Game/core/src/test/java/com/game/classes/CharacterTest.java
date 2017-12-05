@@ -180,16 +180,15 @@ public class CharacterTest {
     @Test
     public void canAttack() throws Exception {
         Terrain t = new Terrain(TerrainProperties.Normal,1 , 1);
-
         assertEquals(c.canAttack(t), false);
-        t.setCharacter(c);
+
+        Terrain enemyterrain = new Terrain(TerrainProperties.Normal,1 , 1);
+        Character enemy = new Character("", 10, 20, 30, 40, 1, new Sprite(), new Terrain(TerrainProperties.Normal, 1, 1), "test", new Player(""));
+        enemyterrain.setCharacter(enemy);
+        assertEquals(c.canAttack(enemyterrain), true);
 
         c.setHasAttacked(true);
-
-        Character enemy = c;
-        assertEquals(c.canAttack(t), false);
-
-
+        assertEquals(c.canAttack(enemyterrain), false);
     }
 
     @Test

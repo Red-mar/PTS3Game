@@ -109,10 +109,10 @@ public class Game
             }
         }
 
-        if (temp == null){
-            return;
+        if (temp != null){
+            players.remove(temp);
         }
-        players.remove(temp);
+
     }
 
     /**

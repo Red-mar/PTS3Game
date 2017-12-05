@@ -6,6 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
+
 import static org.junit.Assert.*;
 
 public class ServerTest {
@@ -13,12 +15,13 @@ public class ServerTest {
     private Client client;
     private Game serverGame;
     private Game clientGame;
-
+/*
     @Before
     public void setUp() throws Exception {
-        /*
-        server = new Server(4321);
-        client = new Client("localhost");
+        String port = "";
+
+        server = new Server(4321, port);
+        client = new Client(port);
 
         serverGame = new Game(server);
         clientGame = new Game(client);
@@ -26,18 +29,29 @@ public class ServerTest {
         server.start();
         client.start();
 
+
+
         clientGame.establishConnection("red");
     }
 
     @After
     public void tearDown() throws Exception {
-        //client.stop();
-        //server.stop();
+        if (server != null) {
+            server.stop();
+            server = null;
+            try {
+                Thread.sleep(5000);
+            }
+            catch (InterruptedException e) {
+                // do nothing.
+            }
+        }
     }
 
     @Test
     public void start() throws Exception {
-        //assertEquals(true, client.isConnected());
+
+        assertEquals(true, client.isConnected());
     }
 
     @Test
@@ -76,6 +90,6 @@ public class ServerTest {
     public void sendCharacter() throws Exception {
         //server.sendCharacter(0,0, "testChar", "testPlayer");
         assertEquals(true,true);
-    }
-     */}
+    }*/
+
 }

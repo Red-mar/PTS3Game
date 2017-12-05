@@ -62,6 +62,5 @@ public class ChatTest {
 
     @Test
     public void message() throws Exception {
-
     }
 }
