@@ -215,7 +215,6 @@ public class ScreenLobby implements Screen, GameEvents {
         mainTable.row();
 
         mainTable.setFillParent(true);
-        mainTable.setDebug(true);
         mainTable.left().bottom();
 
 
