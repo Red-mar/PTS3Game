@@ -66,7 +66,7 @@ public class Chat implements ChatEvents {
 
     @Override
     public void onMessaged(String message) {
-        textArea.appendText(message.replaceAll(censorWords(curseWords.toArray(new String[curseWords.size()])), "*") + "\n");
+        textArea.appendText(message.replaceAll("(?i)"+censorWords(curseWords.toArray(new String[curseWords.size()])), "*") + "\n");
     }
 
     // Creates the regex to censor
