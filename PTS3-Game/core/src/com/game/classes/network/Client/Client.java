@@ -390,6 +390,11 @@ public class Client {
                     int messageLength = in.readInt();
                     String message;
 
+                    if (messageLength > 100000){
+                        System.out.println("Message received is huge");
+                        return;
+                    }
+
                     byte[] buffer = new byte[messageLength];
                     System.out.println("Received type: " + type.toString() + " length: " + messageLength);
 
